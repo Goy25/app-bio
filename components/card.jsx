@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, Text, View, Pressable, Image } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from 'expo-image-picker';
 import defaultImage from '../assets/images/default.png';
 
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
     padding: 5,
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     gap: 5,
   },
@@ -47,11 +48,37 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  addCard: {
+    backgroundColor: "#00C8E0",
+    borderRadius: 10,
+    width: 150,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 200,
+  },
+  plusSign: {
+    backgroundColor: "#151E21",
+    height: 100,
+    width: 100,
+    borderRadius: 50,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textPlusSign: {
+    fontSize: 100,
+    fontWeight: "bold",
+    color: "#00C8E0",
+    lineHeight: 110,
+    includeFontPadding: false,
+  },
 });
 
-export default function Card( {nombre = "Planta"} ) {
+export function Card( { nombre = "Planta" } ) {
 
   const [url, setUrl] = useState(defaultImage);
+  const navigation = useNavigation();
 
   const selectImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -76,9 +103,27 @@ export default function Card( {nombre = "Planta"} ) {
           style={styles.image}
         />
       </Pressable>
-      <Pressable style={styles.button}>
+      <Pressable 
+        style={styles.button}
+        onPress={() => navigation.navigate("Data")}
+      >
         <Text style={styles.textButton}>Ver más</Text>
       </Pressable>
     </View>
   )
+}
+
+export function AddCard( { card } ) {
+
+  const addCard = () => {
+    card.setter([...card.value, {}]);
+  }
+
+  return (
+    <Pressable style={styles.addCard} onPress={addCard}>
+      <View style={styles.plusSign}>
+        <Text style={styles.textPlusSign}>+</Text>
+      </View>
+    </Pressable>
+  );
 }

@@ -1,6 +1,4 @@
-import { useState } from "react";
-import Card from "./card";
-import { StyleSheet, Text, View, ScrollView, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -9,9 +7,7 @@ const styles = StyleSheet.create({
     height: "100%",
     display: "flex",
     gap: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    padding: 20,
   },
   dates: {
     display: "flex",
@@ -57,39 +53,10 @@ const styles = StyleSheet.create({
     rowGap: 20,
     paddingVertical: 20,
   },
-  addCard: {
-    backgroundColor: "#00C8E0",
-    borderRadius: 10,
-    width: 150,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  plusSign: {
-    backgroundColor: "#151E21",
-    height: 100,
-    width: 100,
-    borderRadius: 50,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textPlusSign: {
-    fontSize: 100,
-    fontWeight: "bold",
-    color: "#00C8E0",
-    lineHeight: 110,
-    includeFontPadding: false,
-  },
 });
 
 export default function Dates() {
 
-  const [cards, setCards] = useState([]);
-
-  const addCard = () => {
-    setCards([...cards, {}]);
-  }
 
   return (
     <View style={styles.container}>
@@ -112,20 +79,6 @@ export default function Dates() {
           <Text style={styles.text}>{">"}</Text>
         </Pressable>
       </View>
-      <ScrollView
-        contentContainerStyle={styles.content}
-      >
-        <Card />
-        <Card nombre="El nombre tiene mas de una linea"/>
-        {cards.map((card, index) => (
-          <Card key={index} />
-        ))}
-        <Pressable style={styles.addCard} onPress={addCard}>
-          <View style={styles.plusSign}>
-            <Text style={styles.textPlusSign}>+</Text>
-          </View>
-        </Pressable>
-      </ScrollView>
     </View>
   );
 }
