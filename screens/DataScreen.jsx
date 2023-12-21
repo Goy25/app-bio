@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import Field from "../components/field";
 
 const styles = StyleSheet.create({
   container: {
@@ -15,7 +16,9 @@ const styles = StyleSheet.create({
 export default function DataScreen() {
   return (
     <View style={styles.container}>
-      <Text >Data Screen</Text>
+      <Field></Field>
+      <Field></Field>
+      <Field></Field>
     </View>
   );
 }

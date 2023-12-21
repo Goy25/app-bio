@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Card, AddCard } from "../components/card"; 
+import Dates from "../components/dates";
+import { Card, AddCard } from "../components/card";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,6 +28,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Dates />
       <ScrollView
         contentContainerStyle={styles.content}
       >

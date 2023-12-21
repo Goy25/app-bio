@@ -22,7 +22,7 @@ export function StackNavigator() {
           name="Home"
           component={HomeScreen}
           options={{ 
-            title: "Inicio"
+            title: "Inicio",
           }}
         />
         <Stack.Screen
