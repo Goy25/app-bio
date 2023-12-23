@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
 
 export default function Dates() {
 
-  handleChange = (value) => {
+  const handleChange = (value) => {
     console.log(value);
   }
 
@@ -28,6 +28,10 @@ export default function Dates() {
           placeholder: {
             color: "#DDDDDD",
           },
+        }}
+        placeholder={{
+          label: "Selecciona una fecha",
+          value: null,
         }}
       />
     </View>

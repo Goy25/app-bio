@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Pressable, Image } from "react-native";
+import AddModal from "./addModal";
 import Check from "../assets/images/check.png";
 
 const styles = StyleSheet.create({
@@ -48,10 +49,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 4,
-  }
+  },
+  addField: {
+    padding: 10,
+    backgroundColor: "#00C8E0",
+    width: "100%",
+    borderRadius: 8,
+    alignItems: "center"
+  },
+  addFieldText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
 });
 
-export default function Field ( { name = "Nombre", text = {value: "", setter: () => console.log()} } ) {
+export default function Field ( { name = "Nombre", text = "" } ) {
 
   const [isEditable, setIsEditable] = useState(false);
 
@@ -70,5 +83,43 @@ export default function Field ( { name = "Nombre", text = {value: "", setter: ()
         </Pressable>
       </View>      
     </View>
+  )
+}
+
+export function AddField ( { fields } ) {
+
+  const [name, setName] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [exist, setExist] = useState(true);
+
+  const addField = () => {
+    fields.setter([...fields.value, { name, text: "" }]);
+    setVisible(false);
+    setName("");
+  };
+
+  const handleSelectChange = (value) => {
+    setName(value);
+  };
+
+  const handleInputChange = (e) => {
+    setName(e.nativeEvent.text);
+  }
+
+  return (
+    <>
+      <Pressable style={styles.addField} onPress={() => setVisible(true)}>
+        <Text style={styles.addFieldText}>Agregar campo</Text>      
+      </Pressable>
+      <AddModal
+        visible={visible}
+        exist={{ value: exist, setter: setExist }}
+        value={name}
+        handleAdd={addField}
+        handleCancel={() => setVisible(false)}
+        handleSelectChange={handleSelectChange}
+        handleInputChange={handleInputChange}
+      />
+    </>
   )
 }

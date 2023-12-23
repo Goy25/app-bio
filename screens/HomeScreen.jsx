@@ -35,9 +35,9 @@ export default function HomeScreen() {
         <Card />
         <Card nombre="El nombre tiene mas de una linea"/>
         {cards.map((card, index) => (
-          <Card key={index} />
+          <Card key={index} name={card.name}/>
         ))}
-        <AddCard card={{value: cards, setter: setCards}} />
+        <AddCard cards={{value: cards, setter: setCards}} />
       </ScrollView>
     </View>
   );
