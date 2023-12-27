@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import AddModal from "./addModal";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native"
 import * as ImagePicker from "expo-image-picker";
+import { select } from "../query";
 import defaultImage from "../assets/images/default.png";
 
 const styles = StyleSheet.create({
@@ -77,6 +78,7 @@ const styles = StyleSheet.create({
 });
 
 export function Card({ name = "Planta" }) {
+
   const [url, setUrl] = useState(defaultImage);
   const navigation = useNavigation();
 
@@ -102,7 +104,7 @@ export function Card({ name = "Planta" }) {
       </Pressable>
       <Pressable
         style={styles.button}
-        onPress={() => navigation.navigate("Data")}
+        onPress={() => navigation.navigate("Info")}
       >
         <Text style={styles.textButton}>Ver más</Text>
       </Pressable>
@@ -115,8 +117,13 @@ export function AddCard({ cards }) {
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
   const [exist, setExist] = useState(true);
+  const [items, setItems] = useState([]);
 
   const addCard = () => {
+    if (name === "") {
+      return;
+    }
+
     cards.setter([...cards.value, { name }]);
     setVisible(false);
     setName("");
@@ -141,6 +148,7 @@ export function AddCard({ cards }) {
         visible={visible}
         exist={{ value: exist, setter: setExist }}
         value={name}
+        items={items}
         handleAdd={addCard}
         handleCancel={() => setVisible(false)}
         handleSelectChange={handleSelectChange}

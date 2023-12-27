@@ -1,7 +1,7 @@
-import { StackNavigator } from "./Navigation"
+import Navigation from "./Navigation"
 
 export default function App () {
   return (
-    <StackNavigator />
+    <Navigation />
   )
 }

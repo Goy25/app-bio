@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import Dates from "../components/dates";
 import { Card, AddCard } from "../components/card";
@@ -22,9 +22,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function HomeScreen() {
+export default function HomeScreen( {route} ) {
 
   const [cards, setCards] = useState([]);
+  const { plant, date } = route.params;
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -32,8 +37,6 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
       >
-        <Card />
-        <Card nombre="El nombre tiene mas de una linea"/>
         {cards.map((card, index) => (
           <Card key={index} name={card.name}/>
         ))}

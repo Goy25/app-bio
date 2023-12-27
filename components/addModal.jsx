@@ -73,6 +73,7 @@ export default function AddModal({
   visible,
   exist,
   value,
+  items,
   handleAdd,
   handleCancel,
   handleInputChange,
@@ -113,18 +114,14 @@ export default function AddModal({
               <RNPickerSelect
                 value={value}
                 onValueChange={handleSelectChange}
-                items={[
-                  { label: "Football", value: "football" },
-                  { label: "Baseball", value: "baseball" },
-                  { label: "Hockey", value: "hockey" },
-                ]}
+                items={items}
                 style={{
                   placeholder: {
                     color: "#DDDDDD",
                   },
                 }}
                 placeholder={{
-                  label: "Selecciona una fecha",
+                  label: "Selecciona una opcion...",
                   value: null,
                 }}
               />
