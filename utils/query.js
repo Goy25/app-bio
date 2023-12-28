@@ -21,4 +21,11 @@ export const select = {
   VISTA: "SELECT * FROM VISTA;",
 }
 
+export const update = {
+  PLANTA: "UPDATE PLANTA SET nombre = ? WHERE id = ?;",
+  CARACTERISTICA: "UPDATE CARACTERISTICA SET tipo = ? WHERE id = ?;",
+  FECHA: "UPDATE FECHA SET fecha = ? WHERE id = ?;",
+  VISTA: "UPDATE VISTA SET descripcion = ? WHERE idPlanta = ? AND idCaracteristica = ? AND idFecha = ?;",
+}
+
 export const homeLoad = "SELECT * FROM FECHA F INNER JOIN TIENE T ON F.id = T.idFecha AND F.fecha = ? INNER JOIN PLANTA P ON T.idPlanta = P.id;"

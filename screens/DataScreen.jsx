@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { View, StyleSheet, ScrollView } from "react-native"
 import SelectTable from "../components/selectTable";
 import Row from "../components/row";
-import { select } from "../query";
+import { select } from "../utils/query";
 import { useEffect, useState } from "react";
-import { Context } from "../Navigation";
+import { context, tableContext } from "../utils/context";
 
 const styles = StyleSheet.create({
   container: {
@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
 
 export default function DataScreen () {
 
-  const db = useContext(Context);
-  const [table, setTable] = useState("PLANTA");
-  const [elements, setElements] = useState([{id: 1, data: "data1"}, {id: 2, data: "data2"}, {id: 3, data: "data3"}, {id: 4, data: "data4"}, {id: 5, data: "data5"}, {id: 6, data: "data6"}, {id: 7, data: "data7"}, {id: 8, data: "data8"}, {id: 9, data: "data9"}, {id: 10, data: "data10"}]);
+  const db = useContext(context);
+  const [table, setTable] = useContext(tableContext);
+  const [elements, setElements] = useState([]);
   const atribute = {
     PLANTA: "nombre",
     CARACTERISTICA: "tipo",
@@ -46,7 +46,7 @@ export default function DataScreen () {
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {elements.map((element) => (
-          <Row row={element} key={element.id} />
+          <Row row={element} key={element.data} />
         ))}
       </ScrollView>
     </View>

@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,9 +7,9 @@ import InfoScreen from "./screens/InfoScreen";
 import DataScreen from "./screens/DataScreen";
 import HeaderAdd from "./components/headerAdd";
 import * as SQLite from "expo-sqlite";
-import { create } from "./query"
+import { create } from "./utils/query"
+import { ContextProvider } from "./utils/context"
 
-export const Context = createContext();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -52,6 +52,7 @@ export function StackNavigator() {
 export default function Navigation () {
 
   const db = SQLite.openDatabase("example.db");
+  const [table, setTable] = useState("PLANTA");
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -77,7 +78,7 @@ export default function Navigation () {
   }, []);
 
   return (
-    <Context.Provider value={db}>
+    <ContextProvider value={db}>
       <NavigationContainer>
         <Tab.Navigator
           initialRouteName="Start"
@@ -98,18 +99,16 @@ export default function Navigation () {
               title: "Inicio",
             }}
           />
-          <Tab.Screen
-            name="Data"
-            component={DataScreen}
-            options={{
-              title: "Datos",
-              headerRight: () => <HeaderAdd/>,
-
-            }}
-
-          />
+            <Tab.Screen
+              name="Data"
+              component={DataScreen}
+              options={{
+                title: "Datos",
+                headerRight: () => <HeaderAdd/>,
+              }}
+            />
         </Tab.Navigator>
       </NavigationContainer>
-    </Context.Provider>
+    </ContextProvider>
   );
 }

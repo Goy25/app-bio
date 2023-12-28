@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { insert, select } from "../query";
-import { Context } from "../Navigation";
+import { insert, select } from "../utils/query";
+import { context } from "../utils/context";
 
 const styles = StyleSheet.create({
   content: {
@@ -40,39 +40,27 @@ export default function Dates( ) {
 
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState("");
-  const db = useContext(Context);
+  const db = useContext(context);
 
   useEffect(() => {
-    console.log(db)
-    // db.transaction((tx) => {
-    //   tx.executeSql(
-    //     select.fecha,
-    //     [],
-    //     (_, { rows: { _array } }) => setItems(_array.map(date => ({label: date.fecha, value: date.fecha})))
-    //   );
-    // });
+    db.transaction((tx) => {
+      tx.executeSql(
+        select.FECHA,
+        [],
+        (_, { rows: { _array } }) => setItems(_array.map(date => ({label: date.fecha, value: date.fecha})))
+      );
+    });
   }, []);
 
   const handleChange = (value) => {
     setSelected(value);
   }
 
-  const handleOther = (event, date) => {
-    const newDate = `${date.toISOString().slice(0, 10)}`
-    db.transaction((tx) => {
-      tx.executeSql(
-        insert.fecha,
-        [newDate]
-      );
-    });
-    setSelected(newDate);
-  }
-
   return (
     <View style={styles.content}>
       <RNPickerSelect
         onValueChange={handleChange}
-        items={[{label: "Otro", value: "otro"}, ...items]}
+        items={items}
         style={{
           placeholder: {
             color: "#DDDDDD",
@@ -83,14 +71,6 @@ export default function Dates( ) {
           value: null,
         }}
       />
-      {selected === "otro" && 
-        <DateTimePicker
-          value={new Date()}
-          mode="date"
-          display="default"
-          onChange={handleOther}
-        />
-      }
     </View>
   );
 }

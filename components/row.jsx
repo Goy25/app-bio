@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { View, StyleSheet, Text, Pressable, Image, TextInput } from "react-native";
 import check from "../assets/images/check.png";
+import { context, tableContext } from "../utils/context";
+import { update } from "../utils/query";
 
 const styles = StyleSheet.create({
   content: {
@@ -53,6 +55,18 @@ export default function Row( { row } ) {
 
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState(row.data);
+  const [table, setTable] = useContext(tableContext);
+  const db = useContext(context);
+
+  const handleSave = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        update[table],
+        [data, row.id]
+      );
+    });
+    setEdit(false);
+  }
 
   return (
     <View style={styles.content}>
@@ -76,7 +90,7 @@ export default function Row( { row } ) {
       </View>
       {edit && 
         <View style={styles.row}>
-          <Pressable style={styles.button}>
+          <Pressable style={styles.button} onPress={handleSave}>
             <Text style={styles.textButton}>
               Guardar
             </Text>

@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import AddModal from "./addModal";
 import { useNavigation } from "@react-navigation/native"
 import * as ImagePicker from "expo-image-picker";
-import { select } from "../query";
+import { select } from "../utils/query";
 import defaultImage from "../assets/images/default.png";
 
 const styles = StyleSheet.create({
