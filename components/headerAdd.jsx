@@ -70,9 +70,10 @@ const styles = StyleSheet.create({
 
 export default function HeaderAdd() {
   const [table, setTable] = useContext(tableContext);
-  const db = useContext(context);
+  const { db } = useContext(context);
   const [modal, setModal] = useState(false);
   const [value, setValue] = useState("");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     setValue("");
@@ -92,6 +93,11 @@ export default function HeaderAdd() {
     setModal(false);
   }
 
+  const handleDateChange = (event, date) => {
+    setValue(`${date.toISOString().slice(0, 10)}`);
+    setShow(false);
+  };
+
   return (
     <>
       <Pressable onPress={handlePress}>
@@ -104,15 +110,16 @@ export default function HeaderAdd() {
               value={value}
               onChangeText={setValue}
               style={styles.textInput}
-              onPressIn={table === "FECHA" ? () => console.log("hola") : null }
+              onPressIn={table === "FECHA" ? () => setShow(true) : null }
+              placeholder={table === "FECHA" ? "AAAA-MM-DD" : "Nombre"}
             />
             {
-              table === "FECHA" &&
+              show &&
               <DateTimePicker
                 value={new Date()}
                 mode="date"
                 display="default"
-                onChange={(event, date) => setValue(`${date.toISOString().slice(0, 10)}`)}
+                onChange={handleDateChange}
               />
             }
             <View style={styles.buttons}>

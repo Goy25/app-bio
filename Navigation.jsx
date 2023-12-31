@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -6,24 +6,20 @@ import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import DataScreen from "./screens/DataScreen";
 import HeaderAdd from "./components/headerAdd";
-import * as SQLite from "expo-sqlite";
 import { create } from "./utils/query"
-import { ContextProvider } from "./utils/context"
+import { context } from "./utils/context"
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export function StackNavigator() {
 
-  const [plant, setPlant] = useState("");
-  const [date, setDate] = useState("");
-
   return (
     <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerTitleAlign: "center",
-        headerTintColor: "#151E21",
+        headerTintColor: "#FFFFFF",
         headerStyle: {
           backgroundColor: "#00C8E0"
         }
@@ -32,7 +28,6 @@ export function StackNavigator() {
       <Stack.Screen
         name="Home"
         component={HomeScreen}   
-        initialParams={{ plant: {value: plant, setter: setPlant}, date: {value: date, setter: setDate}}}
         options={{
           title: "Inicio",
         }}
@@ -40,7 +35,6 @@ export function StackNavigator() {
       <Stack.Screen
         name="Info"
         component={InfoScreen}
-        initialParams={{ plant: {value: plant, setter: setPlant}, date: {value: date, setter: setDate}}}
         options={{ 
           title: "Info"
         }}
@@ -51,8 +45,7 @@ export function StackNavigator() {
 
 export default function Navigation () {
 
-  const db = SQLite.openDatabase("example.db");
-  const [table, setTable] = useState("PLANTA");
+  const { db } = useContext(context);
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -78,37 +71,41 @@ export default function Navigation () {
   }, []);
 
   return (
-    <ContextProvider value={db}>
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName="Start"
-          screenOptions={{
-            headerTitleAlign: "center",
-            headerTintColor: "#151E21",
-            headerStyle: {
-              backgroundColor: "#00C8E0",
-            }
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Start"
+        screenOptions={{
+          headerTitleAlign: "center",
+          headerTintColor: "#FFFFFF",
+          headerStyle: {
+            backgroundColor: "#00C8E0",
+          },
+          tabBarStyle: {
+            backgroundColor: "#00C8E0",
+          },
+          tabBarLabelStyle: {
+            color: "#FFFFFF",
+          },
+        }}
+        
+      >
+        <Tab.Screen
+          name="Start"
+          component={StackNavigator}
+          options={{
+            headerShown: false,
+            title: "Inicio",
           }}
-
-        >
+        />
           <Tab.Screen
-            name="Start"
-            component={StackNavigator}
+            name="Data"
+            component={DataScreen}
             options={{
-              headerShown: false,
-              title: "Inicio",
+              title: "Datos",
+              headerRight: () => <HeaderAdd/>,
             }}
           />
-            <Tab.Screen
-              name="Data"
-              component={DataScreen}
-              options={{
-                title: "Datos",
-                headerRight: () => <HeaderAdd/>,
-              }}
-            />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </ContextProvider>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }

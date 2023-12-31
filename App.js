@@ -1,7 +1,10 @@
 import Navigation from "./Navigation"
+import { ContextProvider } from "./utils/context"
 
 export default function App () {
   return (
-    <Navigation />
+    <ContextProvider>
+      <Navigation />
+    </ContextProvider>
   )
 }

@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 
 export default function DataScreen () {
 
-  const db = useContext(context);
+  const { db } = useContext(context);
   const [table, setTable] = useContext(tableContext);
   const [elements, setElements] = useState([]);
   const atribute = {

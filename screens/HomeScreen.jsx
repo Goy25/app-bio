@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import Dates from "../components/dates";
 import { Card, AddCard } from "../components/card";
+import { context } from "../utils/context";
+import { homeLoad } from "../utils/query";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,14 +24,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function HomeScreen( {route} ) {
+export default function HomeScreen( ) {
 
   const [cards, setCards] = useState([]);
-  const { plant, date } = route.params;
+  const { db, date } = useContext(context);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
-    
-  }, []);
+    db.transaction((tx) => {
+      tx.executeSql(
+        homeLoad,
+        [date.value.id],
+        (_, { rows: { _array } }) => setCards(_array)
+      );
+    });
+  }, [reload, date]);
 
   return (
     <View style={styles.container}>
@@ -37,10 +46,10 @@ export default function HomeScreen( {route} ) {
       <ScrollView
         contentContainerStyle={styles.content}
       >
-        {cards.map((card, index) => (
-          <Card key={index} name={card.name}/>
+        {cards.map((card) => (
+          <Card key={card.id} info={card}/>
         ))}
-        <AddCard cards={{value: cards, setter: setCards}} />
+        <AddCard reload={{value: reload, setter: setReload}} />
       </ScrollView>
     </View>
   );

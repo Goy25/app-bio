@@ -1,6 +1,8 @@
 import { View, StyleSheet, ScrollView } from "react-native";
 import Field, { AddField } from "../components/field";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { context } from "../utils/context";
+import { infoLoad } from "../utils/query";
 
 const styles = StyleSheet.create({
   container: {
@@ -16,10 +18,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function InfoScreen( {route} ) {
+export default function InfoScreen( ) {
 
   const [fields, setFields] = useState([]);
-  const { plant, date } = route.params;
+  const { db, plant, date } = useContext(context);
+
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        infoLoad,
+        [plant.value.id, date.value.id],
+        (_, { rows: { _array } }) => {
+          setFields(_array);
+        }
+      );
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -27,7 +41,7 @@ export default function InfoScreen( {route} ) {
         contentContainerStyle={styles.content}
       >
         {fields.map((field, index) => (
-          <Field key={index} name={field.name} text={field.text} />
+          <Field key={index} info={field}/>
         ))}
         <AddField fields={{value: fields, setter: setFields}} />
       </ScrollView>

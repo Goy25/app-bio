@@ -1,12 +1,14 @@
+import { useState, useContext, useEffect } from "react";
 import {
   View,
   StyleSheet,
   Modal,
   Pressable,
   Text,
-  TextInput,
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import { insert } from "../utils/query";
+import { context } from "../utils/context";
 
 const styles = StyleSheet.create({
   modalContent: {
@@ -71,67 +73,73 @@ const styles = StyleSheet.create({
 
 export default function AddModal({
   visible,
-  exist,
-  value,
-  items,
-  handleAdd,
-  handleCancel,
-  handleInputChange,
-  handleSelectChange,
+  plants,
+  atributes,
+  reload,
 }) {
+
+  const [plant, setPlant] = useState("")
+  const [atribute, setAtribute] = useState("")
+  const { db, date } = useContext(context);
+  
+  const handleCancel = () => {
+    visible.setter(false);
+    setPlant("");
+    setAtribute("");
+  };
+
+  const handleAdd = () => {
+    if (plant === "" || atribute === "") {
+      alert("Ambos campos son obligatorios")
+      return
+    }
+    db.transaction((tx) => {
+      tx.executeSql(
+        insert.VISTA,
+        [plant.id, atribute.id, date.value.id, ""],
+        (_) => {
+          reload.setter(!reload.value);
+          visible.setter(false);
+        }
+      )
+    });
+  };
+
   return (
-    <Modal visible={visible} style={styles.modal}>
+    <Modal visible={visible.value} style={styles.modal}>
       <View style={styles.modalContent}>
         <View style={styles.addInfo}>
-          <View style={styles.modalType}>
-            <Pressable
-              style={
-                exist.value
-                  ? styles.typeLeftButton
-                  : { ...styles.typeLeftButton, backgroundColor: "#00A8C0" }
-              }
-              onPress={() => exist.setter(true)}
-            >
-              <Text style={styles.modalButtonText}>Existente</Text>
-            </Pressable>
-            <Pressable
-              style={
-                exist.value
-                  ? styles.typeRightButton
-                  : { ...styles.typeRightButton, backgroundColor: "#00C8E0" }
-              }
-            >
-              <Text
-                style={styles.modalButtonText}
-                onPress={() => exist.setter(false)}
-              >
-                Nuevo
-              </Text>
-            </Pressable>
+          <View style={styles.modalSelect}>
+            <RNPickerSelect
+              value={plant}
+              onValueChange={(value) => setPlant(value)}
+              items={plants}
+              style={{
+                placeholder: {
+                  color: "#DDDDDD",
+                },
+              }}
+              placeholder={{
+                label: "Selecciona una planta",
+                value: "",
+              }}
+            />
           </View>
           <View style={styles.modalSelect}>
-            {exist.value ? (
-              <RNPickerSelect
-                value={value}
-                onValueChange={handleSelectChange}
-                items={items}
-                style={{
-                  placeholder: {
-                    color: "#DDDDDD",
-                  },
-                }}
-                placeholder={{
-                  label: "Selecciona una opcion...",
-                  value: null,
-                }}
-              />
-            ) : (
-              <TextInput
-                style={styles.modalInput}
-                value={value}
-                onChange={handleInputChange}
-              />
-            )}
+            <RNPickerSelect
+              value={atribute}
+              onValueChange={(value) => setAtribute(value)}
+              items={atributes}
+              style={{
+                placeholder: {
+                  color: "#DDDDDD",
+                },
+              }}
+              placeholder={{
+                label: "Selecciona una característica",
+                value: "",
+              }}
+            />
           </View>
           <View style={styles.modalButtons}>
             <Pressable style={styles.modalButton} onPress={handleCancel}>

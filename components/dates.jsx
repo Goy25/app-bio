@@ -1,8 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View} from "react-native";
 import RNPickerSelect from 'react-native-picker-select';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { insert, select } from "../utils/query";
+import { select } from "../utils/query";
 import { context } from "../utils/context";
 
 const styles = StyleSheet.create({
@@ -36,24 +35,23 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Dates( ) {
+export default function Dates(  ) {
 
   const [items, setItems] = useState([]);
-  const [selected, setSelected] = useState("");
-  const db = useContext(context);
+  const { db, date } = useContext(context);
 
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
         select.FECHA,
         [],
-        (_, { rows: { _array } }) => setItems(_array.map(date => ({label: date.fecha, value: date.fecha})))
+        (_, { rows: { _array } }) => setItems(_array.map(date => ({label: date.fecha, value: date})))
       );
     });
   }, []);
 
   const handleChange = (value) => {
-    setSelected(value);
+    date.setter(value);
   }
 
   return (
@@ -65,10 +63,16 @@ export default function Dates( ) {
           placeholder: {
             color: "#DDDDDD",
           },
+          inputAndroid: {
+            color: "#FFFFFF",
+          },
+          inputIOS: {
+            color: "#FFFFFF",
+          },
         }}
         placeholder={{
           label: "Selecciona una fecha",
-          value: null,
+          value: {id: 0},
         }}
       />
     </View>

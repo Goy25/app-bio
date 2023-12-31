@@ -1,5 +1,3 @@
-// Crear Tablas
-
 export const create = {
   planta: "CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url VARCHAR(200) DEFAULT '');",
   caracteristica: "CREATE TABLE IF NOT EXISTS CARACTERISTICA (id INTEGER PRIMARY KEY AUTOINCREMENT,tipo VARCHAR(100) UNIQUE);",
@@ -28,4 +26,5 @@ export const update = {
   VISTA: "UPDATE VISTA SET descripcion = ? WHERE idPlanta = ? AND idCaracteristica = ? AND idFecha = ?;",
 }
 
-export const homeLoad = "SELECT * FROM FECHA F INNER JOIN TIENE T ON F.id = T.idFecha AND F.fecha = ? INNER JOIN PLANTA P ON T.idPlanta = P.id;"
+export const homeLoad = "SELECT P.id, P.nombre, P.url FROM (SELECT DISTINCT idPlanta FROM VISTA WHERE idFecha = ?) V JOIN PLANTA P on P.id = V.idPlanta;"
+export const infoLoad = "SELECT C.id, C.tipo, V.descripcion FROM (SELECT DISTINCT idCaracteristica, descripcion FROM VISTA WHERE idPlanta = ? AND idFecha = ?) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica;"

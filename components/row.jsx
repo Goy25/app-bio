@@ -56,7 +56,7 @@ export default function Row( { row } ) {
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState(row.data);
   const [table, setTable] = useContext(tableContext);
-  const db = useContext(context);
+  const { db } = useContext(context);
 
   const handleSave = () => {
     db.transaction((tx) => {

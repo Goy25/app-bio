@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import AddModal from "./addModal";
 import { useNavigation } from "@react-navigation/native"
 import * as ImagePicker from "expo-image-picker";
 import { select } from "../utils/query";
 import defaultImage from "../assets/images/default.png";
+import { context } from "../utils/context";
 
 const styles = StyleSheet.create({
   container: {
@@ -77,10 +78,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Card({ name = "Planta" }) {
+export function Card({ info }) {
 
-  const [url, setUrl] = useState(defaultImage);
+  const [url, setUrl] = useState(info.url === "" ? defaultImage : { uri: info.url });
   const navigation = useNavigation();
+  const { plant } = useContext(context);
+
 
   const selectImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -96,15 +99,20 @@ export function Card({ name = "Planta" }) {
     setUrl({ uri: picker.assets[0].uri });
   };
 
+  const handlePress = () => {
+    plant.setter(info);
+    navigation.navigate("Info");
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>{name}</Text>
+      <Text style={styles.titulo}>{info.nombre}</Text>
       <Pressable onPress={selectImage}>
         <Image source={url} style={styles.image} />
       </Pressable>
       <Pressable
         style={styles.button}
-        onPress={() => navigation.navigate("Info")}
+        onPress={handlePress}
       >
         <Text style={styles.textButton}>Ver más</Text>
       </Pressable>
@@ -112,47 +120,50 @@ export function Card({ name = "Planta" }) {
   );
 }
 
-export function AddCard({ cards }) {
+export function AddCard({ reload }) {
 
-  const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
-  const [exist, setExist] = useState(true);
-  const [items, setItems] = useState([]);
-
-  const addCard = () => {
-    if (name === "") {
+  const { db, date } = useContext(context);
+  const [plants, setPlants] = useState([]);
+  const [atributes, setAtributes] = useState([]);
+  
+  const handlePress = () => {
+    if (!date.value) {
+      alert("Seleccione una fecha");
       return;
     }
-
-    cards.setter([...cards.value, { name }]);
-    setVisible(false);
-    setName("");
+    setVisible(true);
   };
 
-  const handleSelectChange = (value) => {
-    setName(value);
-  };
-
-  const handleInputChange = (e) => {
-    setName(e.nativeEvent.text);
-  }
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        select.PLANTA,
+        [],
+        (_, { rows: { _array } }) => setPlants(_array.map(plant => ({label: plant.nombre, value: plant})))
+      );
+    });
+    db.transaction((tx) => {
+      tx.executeSql(
+        select.CARACTERISTICA,
+        [],
+        (_, { rows: { _array } }) => setAtributes(_array.map(atribute => ({label: atribute.tipo, value: atribute})))
+      );
+    });
+  }, [visible]);
 
   return (
     <>
-      <Pressable style={styles.addCard} onPress={() => setVisible(true)}>
+      <Pressable style={styles.addCard} onPress={handlePress}>
         <View style={styles.plusSign}>
           <Text style={styles.textPlusSign}>+</Text>
         </View>
       </Pressable>
       <AddModal
-        visible={visible}
-        exist={{ value: exist, setter: setExist }}
-        value={name}
-        items={items}
-        handleAdd={addCard}
-        handleCancel={() => setVisible(false)}
-        handleSelectChange={handleSelectChange}
-        handleInputChange={handleInputChange}
+        visible={{value: visible, setter: setVisible}}
+        plants={plants}
+        atributes={atributes}
+        reload={reload}
       />
     </>
   );
