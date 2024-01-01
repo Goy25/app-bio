@@ -4,11 +4,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Pressable,
-  Image,
 } from "react-native";
-import AddModal from "./addModal";
-import Check from "../assets/images/check.png";
 
 const styles = StyleSheet.create({
   container: {
@@ -41,22 +37,15 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     color: "#151E21",
   },
-  addField: {
-    padding: 10,
-    backgroundColor: "#00C8E0",
-    width: "100%",
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  addFieldText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
 });
 
 export default function Field({ info }) {
+  
   const [text, setText] = useState(info.descripcion);
+  const handleChange = (value) => {
+    setText(value);
+    info.descripcion = value;
+  }
 
   return (
     <View style={styles.container}>
@@ -66,18 +55,9 @@ export default function Field({ info }) {
           style={styles.input}
           multiline={true}
           value={text}
-          onChangeText={(value) => setText(value)}
+          onChangeText={handleChange}
         />
       </View>
     </View>
-  );
-}
-
-export function AddField({ handlePress }) {
-
-  return (
-    <Pressable style={styles.addField} onPress={handlePress}>
-      <Text style={styles.addFieldText}>Agregar campo</Text>
-    </Pressable>
   );
 }

@@ -1,9 +1,10 @@
 import { View, StyleSheet, ScrollView } from "react-native";
-import Field, { AddField } from "../components/field";
+import Field from "../components/field";
+import InfoButtons from "../components/infoButtons";
 import FieldModal from "../components/fieldModal";
 import { useState, useContext, useEffect } from "react";
 import { context } from "../utils/context";
-import { infoLoad } from "../utils/query";
+import { infoLoad, update } from "../utils/query";
 
 const styles = StyleSheet.create({
   container: {
@@ -38,6 +39,17 @@ export default function InfoScreen( ) {
     });
   }, [reloadC]);
 
+  const handleSave = () => {
+    fields.forEach((field) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          update.VISTA,
+          [field.descripcion, plant.value.id, field.id, date.value.id],
+        );
+      });
+    });
+  }
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -47,7 +59,10 @@ export default function InfoScreen( ) {
           <Field key={index} info={field}/>
         ))}
       </ScrollView>
-      <AddField handlePress={() => setShowModal(true)} />
+      <InfoButtons
+        handleAdd={() => setShowModal(true)}
+        handleSave={handleSave}
+      />
       <FieldModal visible={{value: showModal, setter: setShowModal}} reload={{value: reloadC, setter: setReloadC}} />
     </View>
   );

@@ -88,11 +88,11 @@ export default function AddModal({
   const [plant, setPlant] = useState("")
   const [atribute, setAtribute] = useState("")
   const { db, date } = useContext(context);
-  
+
   const handleCancel = () => {
-    visible.setter(false);
     setPlant("");
     setAtribute("");
+    visible.setter(false);
   };
 
   const handleAdd = () => {
@@ -106,9 +106,9 @@ export default function AddModal({
         [plant.id, atribute.id, date.value.id, ""],
         (_) => {
           reload.setter(!reload.value);
-          visible.setter(false);
           setPlant("");
           setAtribute("");
+          visible.setter(false);
         }
       )
     });
