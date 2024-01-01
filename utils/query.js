@@ -26,5 +26,5 @@ export const update = {
   VISTA: "UPDATE VISTA SET descripcion = ? WHERE idPlanta = ? AND idCaracteristica = ? AND idFecha = ?;",
 }
 
-export const homeLoad = "SELECT P.id, P.nombre, P.url FROM (SELECT DISTINCT idPlanta FROM VISTA WHERE idFecha = ?) V JOIN PLANTA P on P.id = V.idPlanta;"
-export const infoLoad = "SELECT C.id, C.tipo, V.descripcion FROM (SELECT DISTINCT idCaracteristica, descripcion FROM VISTA WHERE idPlanta = ? AND idFecha = ?) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica;"
+export const homeLoad = "SELECT P.id, P.nombre, P.url FROM (SELECT DISTINCT idPlanta FROM VISTA WHERE idFecha = ?) V JOIN PLANTA P on P.id = V.idPlanta ORDER BY P.nombre;"
+export const infoLoad = "SELECT C.id, C.tipo, V.descripcion FROM (SELECT DISTINCT idCaracteristica, descripcion FROM VISTA WHERE idPlanta = ? AND idFecha = ?) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica ORDER BY C.tipo;"

@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   information: {
     display: "flex",
     flexDirection: "column",
-    width: "85%",
+    width: "100%",
   },
   name: {
     color: "#00C8E0",
@@ -41,21 +41,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     color: "#151E21",
   },
-  editable: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  editText: {
-    color: "#00C8E0",
-    fontWeight: "bold",
-  },
-  edit: {
-    backgroundColor: "white",
-    width: 40,
-    height: 40,
-    borderRadius: 4,
-  },
   addField: {
     padding: 10,
     backgroundColor: "#00C8E0",
@@ -71,7 +56,6 @@ const styles = StyleSheet.create({
 });
 
 export default function Field({ info }) {
-  const [isEditable, setIsEditable] = useState(false);
   const [text, setText] = useState(info.descripcion);
 
   return (
@@ -80,49 +64,20 @@ export default function Field({ info }) {
         <Text style={styles.name}>{info.tipo}</Text>
         <TextInput
           style={styles.input}
-          editable={isEditable}
           multiline={true}
           value={text}
           onChangeText={(value) => setText(value)}
         />
       </View>
-      <View style={styles.editable}>
-        <Text style={styles.editText}>Editar</Text>
-        <Pressable
-          style={styles.edit}
-          onPress={() => setIsEditable(!isEditable)}
-        >
-          {isEditable && <Image source={Check}></Image>}
-        </Pressable>
-      </View>
     </View>
   );
 }
 
-export function AddField({ fields }) {
-  const [name, setName] = useState("");
-  const [visible, setVisible] = useState(false);
-  const [exist, setExist] = useState(true);
-
-  const addField = () => {
-    fields.setter([...fields.value, { name, text: "" }]);
-    setVisible(false);
-    setName("");
-  };
-
-  const handleSelectChange = (value) => {
-    setName(value);
-  };
-
-  const handleInputChange = (e) => {
-    setName(e.nativeEvent.text);
-  };
+export function AddField({ handlePress }) {
 
   return (
-    <>
-      <Pressable style={styles.addField} onPress={() => setVisible(true)}>
-        <Text style={styles.addFieldText}>Agregar campo</Text>
-      </Pressable>
-    </>
+    <Pressable style={styles.addField} onPress={handlePress}>
+      <Text style={styles.addFieldText}>Agregar campo</Text>
+    </Pressable>
   );
 }

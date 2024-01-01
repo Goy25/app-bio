@@ -36,7 +36,7 @@ export function StackNavigator() {
         name="Info"
         component={InfoScreen}
         options={{ 
-          title: "Info"
+          title: "Información"
         }}
       />
     </Stack.Navigator>

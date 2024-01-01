@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -69,6 +69,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 20,
   },
+  modalLabel: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 10,
+  },
 });
 
 export default function AddModal({
@@ -100,6 +107,8 @@ export default function AddModal({
         (_) => {
           reload.setter(!reload.value);
           visible.setter(false);
+          setPlant("");
+          setAtribute("");
         }
       )
     });
@@ -109,6 +118,7 @@ export default function AddModal({
     <Modal visible={visible.value} style={styles.modal}>
       <View style={styles.modalContent}>
         <View style={styles.addInfo}>
+          <Text style={styles.modalLabel}>Planta</Text>
           <View style={styles.modalSelect}>
             <RNPickerSelect
               value={plant}
@@ -125,6 +135,7 @@ export default function AddModal({
               }}
             />
           </View>
+          <Text style={styles.modalLabel}>Caracteristica</Text>
           <View style={styles.modalSelect}>
             <RNPickerSelect
               value={atribute}

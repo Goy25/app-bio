@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 export default function DataScreen () {
 
   const { db } = useContext(context);
-  const [table, setTable] = useContext(tableContext);
+  const {table, setTable, reloadDS} = useContext(tableContext);
   const [elements, setElements] = useState([]);
   const atribute = {
     PLANTA: "nombre",
@@ -37,7 +37,7 @@ export default function DataScreen () {
         (_, { rows: { _array } }) => setElements(_array.map((element) => ({id: element.id, data: element[atribute[table]]})))
       );
     });
-  }, [table])
+  }, [table, reloadDS])
 
   return (
     <View style={styles.container}>

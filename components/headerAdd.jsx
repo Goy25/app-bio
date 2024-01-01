@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 });
 
 export default function HeaderAdd() {
-  const [table, setTable] = useContext(tableContext);
+  const { table, reloadDS, setReloadDS } = useContext(tableContext);
   const { db } = useContext(context);
   const [modal, setModal] = useState(false);
   const [value, setValue] = useState("");
@@ -91,6 +91,7 @@ export default function HeaderAdd() {
       );
     });
     setModal(false);
+    setReloadDS(!reloadDS);
   }
 
   const handleDateChange = (event, date) => {

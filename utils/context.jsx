@@ -9,6 +9,7 @@ export function ContextProvider({ children }) {
   const [plant, setPlant] = useState("");
   const [date, setDate] = useState("");
   const [table, setTable] = useState("PLANTA");
+  const [reloadDS, setReloadDS] = useState(false);
 
   return (
     <context.Provider
@@ -18,7 +19,7 @@ export function ContextProvider({ children }) {
         date: { value: date, setter: setDate },
       }}
     >
-      <tableContext.Provider value={[table, setTable]}>
+      <tableContext.Provider value={{table, setTable, reloadDS, setReloadDS}}>
         {children}
       </tableContext.Provider>
     </context.Provider>
