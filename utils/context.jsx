@@ -9,6 +9,7 @@ export function ContextProvider({ children }) {
   const [plant, setPlant] = useState("");
   const [date, setDate] = useState("");
   const [table, setTable] = useState("PLANTA");
+  const [exportType, setExportType] = useState("date"); // ["date", "plant"]
   const [reloadDS, setReloadDS] = useState(false);
 
   return (
@@ -17,9 +18,17 @@ export function ContextProvider({ children }) {
         db,
         plant: { value: plant, setter: setPlant },
         date: { value: date, setter: setDate },
+        exportType: { value: exportType, setter: setExportType },
       }}
     >
-      <tableContext.Provider value={{table, setTable, reloadDS, setReloadDS}}>
+      <tableContext.Provider
+        value={{
+          table,
+          setTable,
+          reloadDS,
+          setReloadDS,
+        }}
+      >
         {children}
       </tableContext.Provider>
     </context.Provider>

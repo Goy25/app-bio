@@ -24,7 +24,13 @@ export const update = {
   CARACTERISTICA: "UPDATE CARACTERISTICA SET tipo = ? WHERE id = ?;",
   FECHA: "UPDATE FECHA SET fecha = ? WHERE id = ?;",
   VISTA: "UPDATE VISTA SET descripcion = ? WHERE idPlanta = ? AND idCaracteristica = ? AND idFecha = ?;",
+  IMAGE: "UPDATE PLANTA SET url = ? WHERE id = ?;",
 }
 
 export const homeLoad = "SELECT P.id, P.nombre, P.url FROM (SELECT DISTINCT idPlanta FROM VISTA WHERE idFecha = ?) V JOIN PLANTA P on P.id = V.idPlanta ORDER BY P.nombre;"
 export const infoLoad = "SELECT C.id, C.tipo, V.descripcion FROM (SELECT DISTINCT idCaracteristica, descripcion FROM VISTA WHERE idPlanta = ? AND idFecha = ?) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica ORDER BY C.tipo;"
+
+export const toCSV = {
+  plant: "SELECT C.tipo, V.descripcion FROM (SELECT * FROM VISTA WHERE idPlanta = ? AND idFecha = ?) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica ORDER BY C.tipo;",
+  date: "SELECT V.nombre, C.tipo, V.descripcion FROM (SELECT X.nombre, X.idCaracteristica, V.descripcion FROM (SELECT P.nombre, V.idCaracteristica, V.idFecha, P.id FROM (SELECT DISTINCT idCaracteristica, idFecha FROM VISTA WHERE idFecha = ?) V JOIN PLANTA P ON P.id IN (SELECT DISTINCT idPlanta FROM VISTA WHERE idFecha = V.idFecha)) X LEFT JOIN VISTA V ON X.idCaracteristica = V.idCaracteristica AND V.idFecha = X.idFecha AND V.idPlanta = X.id) V JOIN CARACTERISTICA C ON C.id = V.idCaracteristica ORDER BY V.nombre, C.tipo;"
+}

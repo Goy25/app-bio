@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import AddModal from "./addModal";
 import { useNavigation } from "@react-navigation/native"
 import * as ImagePicker from "expo-image-picker";
-import { select } from "../utils/query";
+import { select, update } from "../utils/query";
 import defaultImage from "../assets/images/default.png";
 import { context } from "../utils/context";
 
@@ -82,7 +82,7 @@ export function Card({ info }) {
 
   const [url, setUrl] = useState(info.url === "" ? defaultImage : { uri: info.url });
   const navigation = useNavigation();
-  const { plant } = useContext(context);
+  const { db, plant } = useContext(context);
 
 
   const selectImage = async () => {
@@ -92,11 +92,17 @@ export function Card({ info }) {
       return;
     }
     const picker = await ImagePicker.launchImageLibraryAsync();
-    console.log(picker);
     if (picker.canceled) {
       return;
     }
     setUrl({ uri: picker.assets[0].uri });
+    info.url = picker.assets[0].uri;
+    db.transaction((tx) => {
+      tx.executeSql(
+        update.IMAGE,
+        [picker.assets[0].uri, info.id],
+      );
+    })
   };
 
   const handlePress = () => {
@@ -128,7 +134,7 @@ export function AddCard({ reload }) {
   const [atributes, setAtributes] = useState([]);
   
   const handlePress = () => {
-    if (!date.value) {
+    if (date.value.id === 0) {
       alert("Seleccione una fecha");
       return;
     }
