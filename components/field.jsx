@@ -1,10 +1,5 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -40,12 +35,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Field({ info }) {
-  
   const [text, setText] = useState(info.descripcion);
   const handleChange = (value) => {
     setText(value);
     info.descripcion = value;
-  }
+  };
 
   return (
     <View style={styles.container}>

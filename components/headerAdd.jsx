@@ -1,8 +1,15 @@
 import { useContext, useEffect, useState } from "react";
-import { Text, Pressable, StyleSheet, Modal, View, TextInput } from "react-native";
+import {
+  Text,
+  Pressable,
+  StyleSheet,
+  Modal,
+  View,
+  TextInput,
+} from "react-native";
 import { insert } from "../utils/query";
 import { context, tableContext } from "../utils/context";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const styles = StyleSheet.create({
   add: {
@@ -71,6 +78,7 @@ const styles = StyleSheet.create({
 export default function HeaderAdd() {
   const { table, reloadDS, setReloadDS } = useContext(tableContext);
   const { db } = useContext(context);
+  const { reloadDates, setReloadDates } = useContext(tableContext);
   const [modal, setModal] = useState(false);
   const [value, setValue] = useState("");
   const [show, setShow] = useState(false);
@@ -83,16 +91,23 @@ export default function HeaderAdd() {
     setModal(true);
   };
 
+  const handleCancel = () => {
+    setValue("");
+    setModal(false);
+  };
+
   const handleSave = () => {
     db.transaction((tx) => {
-      tx.executeSql(
-        insert[table],
-        [value]
-      );
+      tx.executeSql(insert[table], [value], () => {
+        if (table === "FECHA") {
+          setReloadDates(!reloadDates);
+        }
+      });
     });
+    setValue("");
     setModal(false);
     setReloadDS(!reloadDS);
-  }
+  };
 
   const handleDateChange = (event, date) => {
     setValue(`${date.toISOString().slice(0, 10)}`);
@@ -111,24 +126,25 @@ export default function HeaderAdd() {
               value={value}
               onChangeText={setValue}
               style={styles.textInput}
-              onPressIn={table === "FECHA" ? () => setShow(true) : null }
+              onPressIn={table === "FECHA" ? () => setShow(true) : null}
               placeholder={table === "FECHA" ? "AAAA-MM-DD" : "Nombre"}
             />
-            {
-              show &&
+            {show && (
               <DateTimePicker
                 value={new Date()}
                 mode="date"
                 display="default"
                 onChange={handleDateChange}
               />
-            }
+            )}
             <View style={styles.buttons}>
-              <Pressable style={styles.button} onPress={() => setModal(false)}>
+              <Pressable style={styles.button} onPress={handleCancel}>
                 <Text style={styles.buttonText}>Cancelar</Text>
               </Pressable>
               <Pressable style={styles.button}>
-                <Text style={styles.buttonText} onPress={handleSave}>Guardar</Text>
+                <Text style={styles.buttonText} onPress={handleSave}>
+                  Guardar
+                </Text>
               </Pressable>
             </View>
           </View>

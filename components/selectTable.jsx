@@ -1,5 +1,5 @@
-import { View, StyleSheet } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
+import { View, StyleSheet } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
 
 const styles = StyleSheet.create({
   content: {
@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
 });
 
 export default function SelectTable({ table }) {
-
   return (
     <View style={styles.content}>
       <RNPickerSelect
@@ -24,12 +23,11 @@ export default function SelectTable({ table }) {
         value={table.value}
         style={{
           inputAndroid: {
-            color: "white"
-            
+            color: "white",
           },
           inputIOS: {
-            color: "white"
-          },          
+            color: "white",
+          },
         }}
       />
     </View>

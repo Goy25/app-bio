@@ -1,11 +1,5 @@
 import { useState, useContext } from "react";
-import {
-  View,
-  StyleSheet,
-  Modal,
-  Pressable,
-  Text,
-} from "react-native";
+import { View, StyleSheet, Modal, Pressable, Text } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { insert } from "../utils/query";
 import { context } from "../utils/context";
@@ -78,15 +72,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function AddModal({
-  visible,
-  plants,
-  atributes,
-  reload,
-}) {
-
-  const [plant, setPlant] = useState("")
-  const [atribute, setAtribute] = useState("")
+export default function AddModal({ visible, plants, atributes, reload }) {
+  const [plant, setPlant] = useState("");
+  const [atribute, setAtribute] = useState("");
   const { db, date } = useContext(context);
 
   const handleCancel = () => {
@@ -97,8 +85,8 @@ export default function AddModal({
 
   const handleAdd = () => {
     if (plant === "" || atribute === "") {
-      alert("Ambos campos son obligatorios")
-      return
+      alert("Ambos campos son obligatorios");
+      return;
     }
     db.transaction((tx) => {
       tx.executeSql(
@@ -110,7 +98,7 @@ export default function AddModal({
           setAtribute("");
           visible.setter(false);
         }
-      )
+      );
     });
   };
 

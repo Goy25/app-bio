@@ -1,5 +1,12 @@
 import { useState, useContext, useEffect } from "react";
-import { View, StyleSheet, Text, Pressable, Image, TextInput } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Pressable,
+  Image,
+  TextInput,
+} from "react-native";
 import check from "../assets/images/check.png";
 import { context, tableContext } from "../utils/context";
 import { update } from "../utils/query";
@@ -51,8 +58,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Row( { row } ) {
-
+export default function Row({ row }) {
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState(row.data);
   const { table } = useContext(tableContext);
@@ -60,13 +66,10 @@ export default function Row( { row } ) {
 
   const handleSave = () => {
     db.transaction((tx) => {
-      tx.executeSql(
-        update[table],
-        [data, row.id]
-      );
+      tx.executeSql(update[table], [data, row.id]);
     });
     setEdit(false);
-  }
+  };
 
   return (
     <View style={styles.content}>
@@ -80,23 +83,17 @@ export default function Row( { row } ) {
         <View style={styles.column}>
           <Text>Editar</Text>
           <Pressable style={styles.checkBox} onPress={() => setEdit(!edit)}>
-            {edit &&
-              <Image
-                source={check}
-              /> 
-            }
+            {edit && <Image source={check} />}
           </Pressable>
         </View>
       </View>
-      {edit && 
+      {edit && (
         <View style={styles.row}>
           <Pressable style={styles.button} onPress={handleSave}>
-            <Text style={styles.textButton}>
-              Guardar
-            </Text>
+            <Text style={styles.textButton}>Guardar</Text>
           </Pressable>
         </View>
-      }
+      )}
     </View>
   );
 }

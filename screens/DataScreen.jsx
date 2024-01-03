@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { View, StyleSheet, ScrollView } from "react-native"
+import { View, StyleSheet, ScrollView } from "react-native";
 import SelectTable from "../components/selectTable";
 import Row from "../components/row";
 import { select } from "../utils/query";
@@ -18,37 +18,37 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function DataScreen () {
-
+export default function DataScreen() {
   const { db } = useContext(context);
-  const {table, setTable, reloadDS} = useContext(tableContext);
+  const { table, setTable, reloadDS } = useContext(tableContext);
   const [elements, setElements] = useState([]);
   const atribute = {
     PLANTA: "nombre",
     CARACTERISTICA: "tipo",
     FECHA: "fecha",
-  }
+  };
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        select[table],
-        [],
-        (_, { rows: { _array } }) => setElements(_array.map((element) => ({id: element.id, data: element[atribute[table]]})))
+      tx.executeSql(select[table], [], (_, { rows: { _array } }) =>
+        setElements(
+          _array.map((element) => ({
+            id: element.id,
+            data: element[atribute[table]],
+          }))
+        )
       );
     });
-  }, [table, reloadDS])
+  }, [table, reloadDS]);
 
   return (
     <View style={styles.container}>
-      <SelectTable 
-        table={{value: table, setter: setTable}}
-      />
+      <SelectTable table={{ value: table, setter: setTable }} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {elements.map((element) => (
           <Row row={element} key={element.data} />
         ))}
       </ScrollView>
     </View>
-  )
+  );
 }

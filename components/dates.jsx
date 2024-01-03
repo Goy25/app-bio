@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { StyleSheet, View} from "react-native";
-import RNPickerSelect from 'react-native-picker-select';
+import { StyleSheet, View } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
 import { select } from "../utils/query";
-import { context } from "../utils/context";
+import { context, tableContext } from "../utils/context";
 
 const styles = StyleSheet.create({
   content: {
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   otherView: {
     width: "100%",
     padding: 10,
-    backgroundColor: "red"
+    backgroundColor: "red",
   },
   inputDate: {
     backgroundColor: "#FFFFFF",
@@ -35,24 +35,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Dates(  ) {
-
+export default function Dates() {
   const [items, setItems] = useState([]);
   const { db, date } = useContext(context);
+  const { reloadDates } = useContext(tableContext);
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        select.FECHA,
-        [],
-        (_, { rows: { _array } }) => setItems(_array.map(date => ({label: date.fecha, value: date})))
+      tx.executeSql(select.FECHA, [], (_, { rows: { _array } }) =>
+        setItems(_array.map((date) => ({ label: date.fecha, value: date })))
       );
     });
-  }, []);
+  }, [reloadDates]);
 
   const handleChange = (value) => {
     date.setter(value);
-  }
+  };
 
   return (
     <View style={styles.content}>
@@ -72,7 +70,7 @@ export default function Dates(  ) {
         }}
         placeholder={{
           label: "Selecciona una fecha",
-          value: {id: 0},
+          value: { id: 0 },
         }}
       />
     </View>

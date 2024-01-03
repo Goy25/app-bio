@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 const styles = StyleSheet.create({
   content: {
@@ -25,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function InfoButtons ( { handleAdd, handleSave } ) {
+export default function InfoButtons({ handleAdd, handleSave }) {
   return (
     <View style={styles.content}>
       <Pressable style={styles.addField} onPress={handleAdd}>

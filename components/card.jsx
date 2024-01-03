@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
 import AddModal from "./addModal";
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import { select, update } from "../utils/query";
 import defaultImage from "../assets/images/default.png";
@@ -79,11 +79,11 @@ const styles = StyleSheet.create({
 });
 
 export function Card({ info }) {
-
-  const [url, setUrl] = useState(info.url === "" ? defaultImage : { uri: info.url });
+  const [url, setUrl] = useState(
+    info.url === "" ? defaultImage : { uri: info.url }
+  );
   const navigation = useNavigation();
   const { db, plant } = useContext(context);
-
 
   const selectImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -98,11 +98,8 @@ export function Card({ info }) {
     setUrl({ uri: picker.assets[0].uri });
     info.url = picker.assets[0].uri;
     db.transaction((tx) => {
-      tx.executeSql(
-        update.IMAGE,
-        [picker.assets[0].uri, info.id],
-      );
-    })
+      tx.executeSql(update.IMAGE, [picker.assets[0].uri, info.id]);
+    });
   };
 
   const handlePress = () => {
@@ -116,10 +113,7 @@ export function Card({ info }) {
       <Pressable onPress={selectImage}>
         <Image source={url} style={styles.image} />
       </Pressable>
-      <Pressable
-        style={styles.button}
-        onPress={handlePress}
-      >
+      <Pressable style={styles.button} onPress={handlePress}>
         <Text style={styles.textButton}>Ver más</Text>
       </Pressable>
     </View>
@@ -127,12 +121,11 @@ export function Card({ info }) {
 }
 
 export function AddCard({ reload }) {
-
   const [visible, setVisible] = useState(false);
   const { db, date } = useContext(context);
   const [plants, setPlants] = useState([]);
   const [atributes, setAtributes] = useState([]);
-  
+
   const handlePress = () => {
     if (date.value.id === 0) {
       alert("Seleccione una fecha");
@@ -143,17 +136,17 @@ export function AddCard({ reload }) {
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        select.PLANTA,
-        [],
-        (_, { rows: { _array } }) => setPlants(_array.map(plant => ({label: plant.nombre, value: plant})))
+      tx.executeSql(select.PLANTA, [], (_, { rows: { _array } }) =>
+        setPlants(
+          _array.map((plant) => ({ label: plant.nombre, value: plant }))
+        )
       );
     });
     db.transaction((tx) => {
-      tx.executeSql(
-        select.CARACTERISTICA,
-        [],
-        (_, { rows: { _array } }) => setAtributes(_array.map(atribute => ({label: atribute.tipo, value: atribute})))
+      tx.executeSql(select.CARACTERISTICA, [], (_, { rows: { _array } }) =>
+        setAtributes(
+          _array.map((atribute) => ({ label: atribute.tipo, value: atribute }))
+        )
       );
     });
   }, [visible]);
@@ -166,7 +159,7 @@ export function AddCard({ reload }) {
         </View>
       </Pressable>
       <AddModal
-        visible={{value: visible, setter: setVisible}}
+        visible={{ value: visible, setter: setVisible }}
         plants={plants}
         atributes={atributes}
         reload={reload}

@@ -22,7 +22,6 @@ export const styles = StyleSheet.create({
 });
 
 export default function SaveToCSV() {
-
   const { db, plant, date, exportType } = useContext(context);
 
   const handlePress = () => {
@@ -32,21 +31,26 @@ export default function SaveToCSV() {
           toCSV.plant,
           [plant.value.id, date.value.id],
           (_, { rows: { _array } }) => {
-            const content = `${date.value.fecha},${_array.map((row) => row.tipo).join(",")}\n${plant.value.nombre},${_array.map((row) => row.descripcion).join(",")}`;
+            const content = `${date.value.fecha},${_array
+              .map((row) => row.tipo)
+              .join(",")}\n${plant.value.nombre},${_array
+              .map((row) => row.descripcion)
+              .join(",")}`;
             createCSV(content, `${plant.value.nombre}-${date.value.fecha}`);
           }
         );
       });
-    }
-    else if (date.value.id !== 0) {
+    } else if (date.value.id !== 0) {
       db.transaction((tx) => {
         tx.executeSql(
           toCSV.date,
           [date.value.id],
           (_, { rows: { _array } }) => {
-            createCSV(generateContent(_array, date.value.fecha), date.value.fecha);
-          },
-
+            createCSV(
+              generateContent(_array, date.value.fecha),
+              date.value.fecha
+            );
+          }
         );
       });
     }
@@ -54,7 +58,7 @@ export default function SaveToCSV() {
 
   return (
     <Pressable style={styles.button} onPress={handlePress}>
-      <Text  style={styles.text}>Exportar</Text>
+      <Text style={styles.text}>Exportar</Text>
     </Pressable>
   );
 }

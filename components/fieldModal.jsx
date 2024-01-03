@@ -1,8 +1,15 @@
 import { useEffect, useState, useContext } from "react";
-import { View, Modal, StyleSheet, Pressable, Text, TextInput} from "react-native";
+import {
+  View,
+  Modal,
+  StyleSheet,
+  Pressable,
+  Text,
+  TextInput,
+} from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { context } from "../utils/context";
-import { select, insert } from "../utils/query"
+import { select, insert } from "../utils/query";
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +33,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 8,
     padding: 5,
-    color: "#151E21"
+    color: "#151E21",
   },
   buttons: {
     display: "flex",
@@ -48,8 +55,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function FieldModal ( { visible, reload } ) {
-
+export default function FieldModal({ visible, reload }) {
   const [fields, setFields] = useState([]);
   const [text, setText] = useState(`Seleccionados: ${fields.join(", ")}`);
   const [items, setItems] = useState([]);
@@ -60,30 +66,30 @@ export default function FieldModal ( { visible, reload } ) {
   };
 
   const handleSave = () => {
-    fields.forEach(field => {
+    fields.forEach((field) => {
       db.transaction((tx) => {
         tx.executeSql(
           insert.VISTA,
           [plant.value.id, field.id, date.value.id, ""],
-          () => reload.setter(!reload.value),
+          () => reload.setter(!reload.value)
         );
       });
     });
     visible.setter(false);
-  }
+  };
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        select.CARACTERISTICA,
-        [],
-        (_, { rows: { _array } }) => setItems(_array.map(atribute => ({label: atribute.tipo, value: atribute})))
+      tx.executeSql(select.CARACTERISTICA, [], (_, { rows: { _array } }) =>
+        setItems(
+          _array.map((atribute) => ({ label: atribute.tipo, value: atribute }))
+        )
       );
     });
-  }, [])
+  }, []);
 
   useEffect(() => {
-    setText(`Seleccionados: ${fields.map(field => field.tipo).join(", ")}`);
+    setText(`Seleccionados: ${fields.map((field) => field.tipo).join(", ")}`);
   }, [fields]);
 
   return (
@@ -99,11 +105,14 @@ export default function FieldModal ( { visible, reload } ) {
             }}
           />
         </View>
-        {fields.length !== 0 && 
-          <TextInput style={styles.input} value={text} editable={false}/>
-        }
+        {fields.length !== 0 && (
+          <TextInput style={styles.input} value={text} editable={false} />
+        )}
         <View style={styles.buttons}>
-          <Pressable style={styles.button} onPress={() => visible.setter(false)}>
+          <Pressable
+            style={styles.button}
+            onPress={() => visible.setter(false)}
+          >
             <Text style={styles.buttonText}>Cerrar</Text>
           </Pressable>
           <Pressable style={styles.button} onPress={handleSave}>

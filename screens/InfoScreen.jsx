@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function InfoScreen( ) {
-
+export default function InfoScreen() {
   const [showModal, setShowModal] = useState(false);
   const [fields, setFields] = useState([]);
   const [reloadC, setReloadC] = useState(false);
@@ -42,28 +41,31 @@ export default function InfoScreen( ) {
   const handleSave = () => {
     fields.forEach((field) => {
       db.transaction((tx) => {
-        tx.executeSql(
-          update.VISTA,
-          [field.descripcion, plant.value.id, field.id, date.value.id],
-        );
+        tx.executeSql(update.VISTA, [
+          field.descripcion,
+          plant.value.id,
+          field.id,
+          date.value.id,
+        ]);
       });
     });
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-      >
+      <ScrollView contentContainerStyle={styles.content}>
         {fields.map((field, index) => (
-          <Field key={index} info={field}/>
+          <Field key={index} info={field} />
         ))}
       </ScrollView>
       <InfoButtons
         handleAdd={() => setShowModal(true)}
         handleSave={handleSave}
       />
-      <FieldModal visible={{value: showModal, setter: setShowModal}} reload={{value: reloadC, setter: setReloadC}} />
+      <FieldModal
+        visible={{ value: showModal, setter: setShowModal }}
+        reload={{ value: reloadC, setter: setReloadC }}
+      />
     </View>
   );
 }

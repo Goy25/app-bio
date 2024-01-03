@@ -24,18 +24,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function HomeScreen( ) {
-
+export default function HomeScreen() {
   const [cards, setCards] = useState([]);
   const { db, date } = useContext(context);
   const [reload, setReload] = useState(false);
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        homeLoad,
-        [date.value.id],
-        (_, { rows: { _array } }) => setCards(_array)
+      tx.executeSql(homeLoad, [date.value.id], (_, { rows: { _array } }) =>
+        setCards(_array)
       );
     });
   }, [reload, date]);
@@ -43,13 +40,11 @@ export default function HomeScreen( ) {
   return (
     <View style={styles.container}>
       <Dates />
-      <ScrollView
-        contentContainerStyle={styles.content}
-      >
+      <ScrollView contentContainerStyle={styles.content}>
         {cards.map((card) => (
-          <Card key={card.id} info={card}/>
+          <Card key={card.id} info={card} />
         ))}
-        <AddCard reload={{value: reload, setter: setReload}} />
+        <AddCard reload={{ value: reload, setter: setReload }} />
       </ScrollView>
     </View>
   );
