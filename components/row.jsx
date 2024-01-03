@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import {
   View,
   StyleSheet,
@@ -61,12 +61,14 @@ const styles = StyleSheet.create({
 export default function Row({ row }) {
   const [edit, setEdit] = useState(false);
   const [data, setData] = useState(row.data);
-  const { table } = useContext(tableContext);
+  const { table, reloadDates, setReloadDates } = useContext(tableContext);
   const { db } = useContext(context);
 
   const handleSave = () => {
     db.transaction((tx) => {
-      tx.executeSql(update[table], [data, row.id]);
+      tx.executeSql(update[table], [data, row.id], () =>
+        setReloadDates(!reloadDates)
+      );
     });
     setEdit(false);
   };

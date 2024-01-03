@@ -109,14 +109,8 @@ export default function AddModal({ visible, plants, atributes, reload }) {
           <Text style={styles.modalLabel}>Planta</Text>
           <View style={styles.modalSelect}>
             <RNPickerSelect
-              value={plant}
               onValueChange={(value) => setPlant(value)}
               items={plants}
-              style={{
-                placeholder: {
-                  color: "#DDDDDD",
-                },
-              }}
               placeholder={{
                 label: "Selecciona una planta",
                 value: "",
@@ -126,7 +120,6 @@ export default function AddModal({ visible, plants, atributes, reload }) {
           <Text style={styles.modalLabel}>Caracteristica</Text>
           <View style={styles.modalSelect}>
             <RNPickerSelect
-              value={atribute}
               onValueChange={(value) => setAtribute(value)}
               items={atributes}
               style={{

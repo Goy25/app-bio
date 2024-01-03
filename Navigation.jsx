@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import DataScreen from "./screens/DataScreen";
@@ -95,6 +96,9 @@ export default function Navigation() {
           options={{
             headerShown: false,
             title: "Inicio",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
           }}
         />
         <Tab.Screen
@@ -103,6 +107,9 @@ export default function Navigation() {
           options={{
             title: "Datos",
             headerRight: HeaderAdd,
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="database" color={color} size={size} />
+            ),
           }}
         />
       </Tab.Navigator>
