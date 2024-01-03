@@ -7,7 +7,6 @@ export const createCSV = async (content, name) => {
       const permision =
         await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (!permision.granted) {
-        alert("Se necesitan permisos para exportar datos.");
         return;
       }
       const file = await FileSystem.StorageAccessFramework.createFileAsync(
@@ -27,7 +26,7 @@ export const createCSV = async (content, name) => {
       });
     }
   } catch (error) {
-    alert("Error al crear el archivo CSV");
+    alert("Error al crear el archivo CSV.");
   }
 };
 

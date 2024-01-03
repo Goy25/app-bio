@@ -84,10 +84,10 @@ export default function Navigation() {
           },
           tabBarStyle: {
             backgroundColor: "#00C8E0",
+
           },
-          tabBarLabelStyle: {
-            color: "#FFFFFF",
-          },
+          tabBarActiveTintColor: "#FFFFFF",
+          tabBarInactiveTintColor: "#151E21",
         }}
       >
         <Tab.Screen

@@ -7,7 +7,7 @@ import {
   Image,
   TextInput,
 } from "react-native";
-import check from "../assets/images/check.png";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { context, tableContext } from "../utils/context";
 import { update } from "../utils/query";
 
@@ -83,9 +83,9 @@ export default function Row({ row }) {
           style={styles.data}
         />
         <View style={styles.column}>
-          <Text>Editar</Text>
+          <Text style={{color: "white"}}>Editar</Text>
           <Pressable style={styles.checkBox} onPress={() => setEdit(!edit)}>
-            {edit && <Image source={check} />}
+            {edit && <MaterialCommunityIcons name="check-bold" size={40} color="#00C8E0" />}
           </Pressable>
         </View>
       </View>

@@ -7,26 +7,12 @@ import {
   View,
   TextInput,
 } from "react-native";
+import { Entypo } from '@expo/vector-icons';
 import { insert } from "../utils/query";
 import { context, tableContext } from "../utils/context";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const styles = StyleSheet.create({
-  add: {
-    color: "#00C8E0",
-    fontSize: 30,
-    backgroundColor: "white",
-    textAlign: "center",
-    textAlignVertical: "center",
-    borderRadius: 40,
-    marginRight: 10,
-    width: 30,
-    height: 30,
-    fontWeight: "bold",
-    includeFontPadding: false,
-    backfaceVisibility: "hidden",
-    lineHeight: 32,
-  },
   modalContainer: {
     backgroundColor: "#151E21",
     height: "100%",
@@ -110,24 +96,26 @@ export default function HeaderAdd() {
   };
 
   const handleDateChange = (event, date) => {
-    setValue(`${date.toISOString().slice(0, 10)}`);
+    if (event.type === "set") {
+      setValue(`${date.toISOString().slice(0, 10)}`);
+    }
     setShow(false);
   };
 
   return (
     <>
-      <Pressable onPress={handlePress}>
-        <Text style={styles.add}>+</Text>
+      <Pressable style={{marginRight: 10}} onPress={handlePress}>
+        <Entypo name="circle-with-plus" size={40} color="white" />
       </Pressable>
       <Modal visible={modal}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <Text style={styles.textInput}>{table}{table === "FECHA" ? " AAAA-MM-DD" : ""}</Text>
             <TextInput
               value={value}
               onChangeText={setValue}
               style={styles.textInput}
               onPressIn={table === "FECHA" ? () => setShow(true) : null}
-              placeholder={table === "FECHA" ? "AAAA-MM-DD" : "Nombre"}
             />
             {show && (
               <DateTimePicker
@@ -135,6 +123,15 @@ export default function HeaderAdd() {
                 mode="date"
                 display="default"
                 onChange={handleDateChange}
+                positiveButton={{
+                  label: "Aceptar",
+                  textColor: "#00C8E0",
+                }}
+                negativeButton={{
+                  label: "Salir",
+                  textColor: "#00C8E0",
+                }}
+                                
               />
             )}
             <View style={styles.buttons}>

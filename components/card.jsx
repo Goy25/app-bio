@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import { Entypo } from '@expo/vector-icons';
 import AddModal from "./addModal";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
@@ -59,22 +60,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     minHeight: 200,
-  },
-  plusSign: {
-    backgroundColor: "#151E21",
-    height: 100,
-    width: 100,
-    borderRadius: 50,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textPlusSign: {
-    fontSize: 100,
-    fontWeight: "bold",
-    color: "#00C8E0",
-    lineHeight: 110,
-    includeFontPadding: false,
   },
 });
 
@@ -154,9 +139,7 @@ export function AddCard({ reload }) {
   return (
     <>
       <Pressable style={styles.addCard} onPress={handlePress}>
-        <View style={styles.plusSign}>
-          <Text style={styles.textPlusSign}>+</Text>
-        </View>
+        <Entypo name="circle-with-plus" size={120} color="#151E21" />
       </Pressable>
       <AddModal
         visible={{ value: visible, setter: setVisible }}

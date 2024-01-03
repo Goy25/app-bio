@@ -1,25 +1,9 @@
 import { useContext } from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
+import { Foundation } from '@expo/vector-icons';
 import { context } from "../utils/context";
 import { toCSV } from "../utils/query";
 import { generateContent, createCSV } from "../utils/csv";
-
-export const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#00A8C0",
-    borderRadius: 8,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "white",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  text: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});
 
 export default function SaveToCSV() {
   const { db, plant, date, exportType } = useContext(context);
@@ -54,11 +38,14 @@ export default function SaveToCSV() {
         );
       });
     }
+    else {
+      alert("Debe seleccionar una fecha para exportar");
+    }
   };
 
   return (
-    <Pressable style={styles.button} onPress={handlePress}>
-      <Text style={styles.text}>Exportar</Text>
+    <Pressable style={{marginRight: 10}} onPress={handlePress}>
+      <Foundation name="page-export-csv" size={40} color="white" />
     </Pressable>
   );
 }
