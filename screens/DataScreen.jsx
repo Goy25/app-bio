@@ -4,13 +4,13 @@ import Row from "../components/row";
 import SelectTable from "../components/selectTable";
 import { select } from "../utils/query";
 import { Data, Table } from "../utils/context";
+import PlantState from "../components/plantState";
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#151E21",
     height: "100%",
-    padding: 20,
-    gap: 10,
+    padding: 10,
   },
   scrollContent: {
     gap: 10,
@@ -44,11 +44,9 @@ export default function DataScreen() {
 
   return (
     <View style={styles.container}>
-      <SelectTable table={{ value: table, setter: setTable }} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {elements.map((element) => (
-          <Row row={element} key={element.data} />
-        ))}
+        <PlantState/>
+        <PlantState/>
       </ScrollView>
     </View>
   );

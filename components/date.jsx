@@ -16,12 +16,12 @@ const styles = StyleSheet.create({
   month: {
     backgroundColor: "white",
     borderRadius: 8,
-    width: "45%",
+    width: "49%",
   },
   year: {
     backgroundColor: "white",
     borderRadius: 8,
-    width: "35%",
+    width: "49%",
   },
 });
 
@@ -54,15 +54,16 @@ function Date() {
     <View style={styles.content}>
       <View style={styles.month}>
         <RNPickerSelect
-          placeholder={{ label: "Mes", value: null }}
-          onValueChange={(value) => setMonth(value)}
           items={months}
+          onValueChange={(value) => setMonth(value)}
+          placeholder={{ label: "Mes", value: null }}
         />
       </View>
       <View style={styles.year}>
         <RNPickerSelect
-          onValueChange={handleYearChange}
           items={years}
+          onValueChange={handleYearChange}
+          placeholder={{ label: "Año", value: null }}
         />
       </View>
     </View>
