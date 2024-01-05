@@ -39,6 +39,7 @@ function Search() {
           value={filter}
         />
       )}
+      
     </View>
   );
 }

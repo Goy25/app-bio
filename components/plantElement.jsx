@@ -1,7 +1,9 @@
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import ImagePopUp from "./imagePopUp";
 import { Data, Filter } from "../utils/context";
+import { Card } from "./card";
 
 const styles = StyleSheet.create({
   button: {
@@ -90,8 +92,8 @@ export function NewPlantElement({ reload, setReload, setShow }) {
 }
 
 function PlantElement({ plant }) {
-
   const { setSearch } = useContext(Filter);
+  const [visible, setVisible] = useState(false);
 
   const handlePress = () => {
     setSearch(false);
@@ -99,12 +101,15 @@ function PlantElement({ plant }) {
 
   return (
     <View style={styles.content}>
-      <Pressable style={styles.image}>
+      <Pressable onPress={() => setVisible(true)} style={styles.image}>
         <Entypo name="image" size={30} color="white" />
       </Pressable>
       <Pressable onPress={handlePress} style={styles.button}>
         <Text style={styles.text}>{plant.nombre}</Text>
       </Pressable>
+      {visible && (
+        <ImagePopUp plant={plant} visible={visible} setVisible={setVisible} />
+      )}
     </View>
   );
 }

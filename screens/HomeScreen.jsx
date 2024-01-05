@@ -4,6 +4,7 @@ import Date from "../components/date";
 import PlantElement, { NewPlantElement } from "../components/plantElement";
 import NewPlant from "../components/newPlant";
 import { Data, Filter } from "../utils/context";
+import ImagePopUp from "../components/imagePopUp";
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +43,6 @@ export default function HomeScreen() {
   }, [reload]);
 
   useEffect(() => {
-    console.log("change")
     if (filter === "") {
       setReload(!reload);
       return;
