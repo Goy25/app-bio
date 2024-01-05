@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Date from "../components/date";
 import PlantElement, { NewPlantElement } from "../components/plantElement";
 import NewPlant from "../components/newPlant";
-import { context } from "../utils/context";
+import { Data } from "../utils/context";
 
 const styles = StyleSheet.create({
   container: {
@@ -27,7 +27,7 @@ const query = "SELECT * FROM PLANTA ORDER BY nombre";
 
 export default function HomeScreen() {
 
-  const { db, date } = useContext(context);
+  const { db, date } = useContext(Data);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
   const [reload, setReload] = useState(false);

@@ -1,10 +1,9 @@
-import { useContext } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import SelectTable from "../components/selectTable";
+import { useContext, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Row from "../components/row";
+import SelectTable from "../components/selectTable";
 import { select } from "../utils/query";
-import { useEffect, useState } from "react";
-import { context, tableContext } from "../utils/context";
+import { Data, Table } from "../utils/context";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,9 +18,11 @@ const styles = StyleSheet.create({
 });
 
 export default function DataScreen() {
-  const { db } = useContext(context);
-  const { table, setTable, reloadDS } = useContext(tableContext);
+
+  const { db } = useContext(Data);
+  const { table, setTable, reloadDS } = useContext(Table);
   const [elements, setElements] = useState([]);
+
   const atribute = {
     PLANTA: "nombre",
     CARACTERISTICA: "tipo",

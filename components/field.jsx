@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,15 +13,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
   },
-  name: {
-    color: "#00C8E0",
-    margin: 0,
-    paddingHorizontal: 10,
-    fontSize: 20,
-    fontWeight: "bold",
-    borderRadius: 8,
-    zIndex: 1,
-  },
   input: {
     backgroundColor: "white",
     width: "100%",
@@ -32,10 +23,21 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     color: "#151E21",
   },
+  name: {
+    color: "#00C8E0",
+    margin: 0,
+    paddingHorizontal: 10,
+    fontSize: 20,
+    fontWeight: "bold",
+    borderRadius: 8,
+    zIndex: 1,
+  },
 });
 
 export default function Field({ info }) {
+
   const [text, setText] = useState(info.descripcion);
+
   const handleChange = (value) => {
     setText(value);
     info.descripcion = value;

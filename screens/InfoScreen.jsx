@@ -1,9 +1,9 @@
-import { View, StyleSheet, ScrollView } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Field from "../components/field";
-import InfoButtons from "../components/infoButtons";
 import FieldModal from "../components/fieldModal";
-import { useState, useContext, useEffect } from "react";
-import { context } from "../utils/context";
+import InfoButtons from "../components/infoButtons";
+import { Data } from "../utils/context";
 import { infoLoad, update } from "../utils/query";
 
 const styles = StyleSheet.create({
@@ -21,10 +21,11 @@ const styles = StyleSheet.create({
 });
 
 export default function InfoScreen() {
-  const [showModal, setShowModal] = useState(false);
+
+  const { db, plant, date } = useContext(Data);
   const [fields, setFields] = useState([]);
   const [reloadC, setReloadC] = useState(false);
-  const { db, plant, date } = useContext(context);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     db.transaction((tx) => {

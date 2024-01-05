@@ -3,20 +3,20 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import HomeScreen from "./screens/HomeScreen";
-import InfoScreen from "./screens/InfoScreen";
 import DataScreen from "./screens/DataScreen";
 import HeaderAdd from "./components/headerAdd";
+import HomeScreen from "./screens/HomeScreen";
+import InfoScreen from "./screens/InfoScreen";
 import SaveToCSV from "./components/saveToCSV";
 import { create } from "./utils/query";
-import { context } from "./utils/context";
+import { Data } from "./utils/context";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 export function StackNavigator() {
 
-  const { exportType } = useContext(context);
+  const { exportType } = useContext(Data);
 
   return (
     <Stack.Navigator
@@ -55,7 +55,7 @@ export function StackNavigator() {
 
 export default function Navigation() {
 
-  const { db } = useContext(context);
+  const { db } = useContext(Data);
 
   useEffect(() => {
     db.transaction((tx) => {

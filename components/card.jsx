@@ -1,14 +1,32 @@
-import { useState, useEffect, useContext } from "react";
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { Entypo } from '@expo/vector-icons';
-import AddModal from "./addModal";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import { select, update } from "../utils/query";
+import AddModal from "./addModal";
 import defaultImage from "../assets/images/default.png";
-import { context } from "../utils/context";
+import { Data } from "../utils/context";
+import { select, update } from "../utils/query";
 
 const styles = StyleSheet.create({
+  addCard: {
+    backgroundColor: "#00C8E0",
+    borderRadius: 10,
+    width: 150,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 200,
+  },
+  button: {
+    backgroundColor: "#00C8E0",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
   container: {
     backgroundColor: "#151E21",
     borderRadius: 10,
@@ -31,6 +49,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     gap: 5,
   },
+  textButton: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
   titulo: {
     fontSize: 20,
     fontWeight: "bold",
@@ -38,37 +61,20 @@ const styles = StyleSheet.create({
     width: 140,
     textAlign: "center",
   },
-  button: {
-    backgroundColor: "#00C8E0",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  textButton: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#FFFFFF",
-  },
-  addCard: {
-    backgroundColor: "#00C8E0",
-    borderRadius: 10,
-    width: 150,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: 200,
-  },
 });
 
 export function Card({ info }) {
+
+  const { db, plant } = useContext(Data);
   const [url, setUrl] = useState(
     info.url === "" ? defaultImage : { uri: info.url }
   );
   const navigation = useNavigation();
-  const { db, plant } = useContext(context);
+
+  const handlePress = () => {
+    plant.setter(info);
+    navigation.navigate("Info");
+  };
 
   const selectImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -87,11 +93,6 @@ export function Card({ info }) {
     });
   };
 
-  const handlePress = () => {
-    plant.setter(info);
-    navigation.navigate("Info");
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>{info.nombre}</Text>
@@ -106,18 +107,11 @@ export function Card({ info }) {
 }
 
 export function AddCard({ reload }) {
-  const [visible, setVisible] = useState(false);
-  const { db, date } = useContext(context);
-  const [plants, setPlants] = useState([]);
-  const [atributes, setAtributes] = useState([]);
 
-  const handlePress = () => {
-    if (date.value.id === 0) {
-      alert("Seleccione una fecha");
-      return;
-    }
-    setVisible(true);
-  };
+  const { db, date } = useContext(Data);
+  const [atributes, setAtributes] = useState([]);
+  const [plants, setPlants] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -135,6 +129,14 @@ export function AddCard({ reload }) {
       );
     });
   }, [visible]);
+
+  const handlePress = () => {
+    if (date.value.id === 0) {
+      alert("Seleccione una fecha");
+      return;
+    }
+    setVisible(true);
+  };
 
   return (
     <>

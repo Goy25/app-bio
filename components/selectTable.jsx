@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 
 const styles = StyleSheet.create({

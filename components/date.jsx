@@ -2,45 +2,29 @@ import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { select } from "../utils/query";
-import { context, tableContext } from "../utils/context";
+import { Data, Table } from "../utils/context";
 
 const styles = StyleSheet.create({
   content: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    rowGap: 10,
     width: "100%",
-    backgroundColor: "#00C8E0",
+  },
+  month: {
+    backgroundColor: "white",
     borderRadius: 8,
-  },
-  otherView: {
-    width: "100%",
-    padding: 10,
-    backgroundColor: "red",
-  },
-  inputDate: {
-    backgroundColor: "#FFFFFF",
-    padding: 10,
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-  },
-  acceptButton: {
-    padding: 10,
-    backgroundColor: "#00C8E0",
-    alignItems: "center",
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  acceptText: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "bold",
+    width: "40%",
   },
 });
 
 function Date() {
 
-  const { db, date } = useContext(context);
-  const { reloadDates } = useContext(tableContext);
+  const { db, date } = useContext(Data);
+  const { reloadDates } = useContext(Table);
   const [items, setItems] = useState([]);
-  const [ months ] = useState([
+  const [months] = useState([
     { label: "Enero", value: "01" },
     { label: "Febrero", value: "02" },
     { label: "Marzo", value: "03" },
@@ -54,7 +38,6 @@ function Date() {
     { label: "Noviembre", value: "11" },
     { label: "Diciembre", value: "12" },
   ]);
-
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -70,7 +53,14 @@ function Date() {
 
   return (
     <View style={styles.content}>
-
+      <View style={styles.month}>
+        <RNPickerSelect
+          placeholder={{ label: "Mes", value: null }}
+          onValueChange={(value) => handleChange(value)}
+          items={months}
+          style={{ inputAndroid: { color: "#151E21" } }}
+        />
+      </View>
     </View>
   );
 }

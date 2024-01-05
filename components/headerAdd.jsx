@@ -1,18 +1,38 @@
 import { useContext, useEffect, useState } from "react";
 import {
-  Text,
+  Modal,
   Pressable,
   StyleSheet,
-  Modal,
-  View,
+  Text,
   TextInput,
+  View
 } from "react-native";
 import { Entypo } from '@expo/vector-icons';
-import { insert } from "../utils/query";
-import { context, tableContext } from "../utils/context";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Data, Table } from "../utils/context";
+import { insert } from "../utils/query";
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#00C8E0",
+    padding: 5,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "white",
+  },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    width: 80,
+    textAlign: "center",
+  },
   modalContainer: {
     backgroundColor: "#151E21",
     height: "100%",
@@ -39,47 +59,34 @@ const styles = StyleSheet.create({
     margin: 5,
     textAlign: "center",
   },
-  buttons: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginVertical: 5,
-  },
-  button: {
-    backgroundColor: "#00C8E0",
-    padding: 5,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: "white",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    width: 80,
-    textAlign: "center",
-  },
 });
 
 export default function HeaderAdd() {
-  const { table, reloadDS, setReloadDS } = useContext(tableContext);
-  const { db } = useContext(context);
-  const { reloadDates, setReloadDates } = useContext(tableContext);
+
+  const { db } = useContext(Data);
+  const { table, reloadDS, setReloadDS, reloadDates, setReloadDates } = useContext(Table);
   const [modal, setModal] = useState(false);
-  const [value, setValue] = useState("");
   const [show, setShow] = useState(false);
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     setValue("");
   }, [table]);
 
-  const handlePress = () => {
-    setModal(true);
-  };
-
   const handleCancel = () => {
     setValue("");
     setModal(false);
+  };
+
+  const handleDateChange = (event, date) => {
+    if (event.type === "set") {
+      setValue(`${date.toISOString().slice(0, 10)}`);
+    }
+    setShow(false);
+  };
+
+  const handlePress = () => {
+    setModal(true);
   };
 
   const handleSave = () => {
@@ -93,13 +100,6 @@ export default function HeaderAdd() {
     setValue("");
     setModal(false);
     setReloadDS(!reloadDS);
-  };
-
-  const handleDateChange = (event, date) => {
-    if (event.type === "set") {
-      setValue(`${date.toISOString().slice(0, 10)}`);
-    }
-    setShow(false);
   };
 
   return (

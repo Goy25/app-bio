@@ -1,17 +1,35 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
-  View,
   Modal,
-  StyleSheet,
   Pressable,
+  StyleSheet,
   Text,
   TextInput,
+  View
 } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { context } from "../utils/context";
+import { Data } from "../utils/context";
 import { select, insert } from "../utils/query";
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#00C2CB",
+    padding: 10,
+    width: "30%",
+    borderRadius: 8,
+  },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  buttonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
   container: {
     backgroundColor: "#151E21",
     width: "100%",
@@ -23,11 +41,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
   },
-  selectContent: {
-    backgroundColor: "#fff",
-    width: "100%",
-    borderRadius: 8,
-  },
   input: {
     backgroundColor: "#fff",
     width: "100%",
@@ -35,31 +48,33 @@ const styles = StyleSheet.create({
     padding: 5,
     color: "#151E21",
   },
-  buttons: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around",
+  selectContent: {
+    backgroundColor: "#fff",
     width: "100%",
-  },
-  button: {
-    backgroundColor: "#00C2CB",
-    padding: 10,
-    width: "30%",
     borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 16,
   },
 });
 
 export default function FieldModal({ visible, reload }) {
+
+  const { db, plant, date } = useContext(Data);
   const [fields, setFields] = useState([]);
-  const [text, setText] = useState(`Seleccionados: ${fields.join(", ")}`);
   const [items, setItems] = useState([]);
-  const { db, plant, date } = useContext(context);
+  const [text, setText] = useState(`Seleccionados: ${fields.join(", ")}`);
+
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(select.CARACTERISTICA, [], (_, { rows: { _array } }) =>
+        setItems(
+          _array.map((atribute) => ({ label: atribute.tipo, value: atribute }))
+        )
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    setText(`Seleccionados: ${fields.map((field) => field.tipo).join(", ")}`);
+  }, [fields]);
 
   const handleChange = (value) => {
     setFields([...fields, value]);
@@ -77,20 +92,6 @@ export default function FieldModal({ visible, reload }) {
     });
     visible.setter(false);
   };
-
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(select.CARACTERISTICA, [], (_, { rows: { _array } }) =>
-        setItems(
-          _array.map((atribute) => ({ label: atribute.tipo, value: atribute }))
-        )
-      );
-    });
-  }, []);
-
-  useEffect(() => {
-    setText(`Seleccionados: ${fields.map((field) => field.tipo).join(", ")}`);
-  }, [fields]);
 
   return (
     <Modal visible={visible.value}>

@@ -1,11 +1,6 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 const styles = StyleSheet.create({
-  content: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   addField: {
     padding: 10,
     backgroundColor: "#00C8E0",
@@ -17,6 +12,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
+  },
+  content: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
 

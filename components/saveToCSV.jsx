@@ -1,12 +1,13 @@
 import { useContext } from "react";
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable } from "react-native";
 import { Foundation } from '@expo/vector-icons';
-import { context } from "../utils/context";
-import { toCSV } from "../utils/query";
+import { Data } from "../utils/context";
 import { generateContent, createCSV } from "../utils/csv";
+import { toCSV } from "../utils/query";
 
 export default function SaveToCSV() {
-  const { db, plant, date, exportType } = useContext(context);
+
+  const { db, plant, date, exportType } = useContext(Data);
 
   const handlePress = () => {
     if (exportType.value === "plant") {

@@ -1,10 +1,34 @@
-import { useState, useContext } from "react";
-import { View, StyleSheet, Modal, Pressable, Text } from "react-native";
+import { useContext, useState } from "react";
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
+import { Data } from "../utils/context";
 import { insert } from "../utils/query";
-import { context } from "../utils/context";
 
 const styles = StyleSheet.create({
+  addInfo: {
+    borderColor: "#00C8E0",
+    borderWidth: 1,
+    borderRadius: 8,
+    width: "70%",
+  },
+  modalButton: {
+    backgroundColor: "#00C8E0",
+    width: "35%",
+    alignItems: "center",
+    borderRadius: 8,
+    paddingVertical: 5,
+  },
+  modalButtons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 10,
+  },
+  modalButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
   modalContent: {
     backgroundColor: "#151E21",
     height: "100%",
@@ -12,12 +36,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  addInfo: {
-    borderColor: "#00C8E0",
-    borderWidth: 1,
-    borderRadius: 8,
-    width: "70%",
+  modalInput: {
+    padding: 10,
+    color: "#151E21",
   },
+  modalLabel: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
+    textAlign: "center",
+    marginTop: 10,
+  },
+  modalSelect: {
+    marginTop: 10,
+    marginHorizontal: 10,
+    backgroundColor: "white",
+  },  
   modalType: {
     display: "flex",
     flexDirection: "row",
@@ -36,52 +70,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 4,
     paddingVertical: 5,
   },
-  modalSelect: {
-    marginTop: 10,
-    marginHorizontal: 10,
-    backgroundColor: "white",
-  },
-  modalInput: {
-    padding: 10,
-    color: "#151E21",
-  },
-  modalButtons: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginVertical: 10,
-  },
-  modalButton: {
-    backgroundColor: "#00C8E0",
-    width: "35%",
-    alignItems: "center",
-    borderRadius: 8,
-    paddingVertical: 5,
-  },
-  modalButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 20,
-  },
-  modalLabel: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 20,
-    textAlign: "center",
-    marginTop: 10,
-  },
 });
 
 export default function AddModal({ visible, plants, atributes, reload }) {
-  const [plant, setPlant] = useState("");
-  const [atribute, setAtribute] = useState("");
-  const { db, date } = useContext(context);
 
-  const handleCancel = () => {
-    setPlant("");
-    setAtribute("");
-    visible.setter(false);
-  };
+  const { db, date } = useContext(Data);
+  const [atribute, setAtribute] = useState("");
+  const [plant, setPlant] = useState("");
 
   const handleAdd = () => {
     if (plant === "" || atribute === "") {
@@ -100,6 +95,12 @@ export default function AddModal({ visible, plants, atributes, reload }) {
         }
       );
     });
+  };
+
+  const handleCancel = () => {
+    setPlant("");
+    setAtribute("");
+    visible.setter(false);
   };
 
   return (

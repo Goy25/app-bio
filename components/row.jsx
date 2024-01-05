@@ -1,22 +1,45 @@
 import { useState, useContext } from "react";
 import {
-  View,
+  Pressable,
   StyleSheet,
   Text,
-  Pressable,
   TextInput,
+  View,
 } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { context, tableContext } from "../utils/context";
+import { Data, Table } from "../utils/context";
 import { update } from "../utils/query";
 
 const styles = StyleSheet.create({
+  button: {
+    width: "100%",
+    alignItems: "center",
+  },
+  checkBox: {
+    backgroundColor: "white",
+    height: 40,
+    width: 40,
+    borderRadius: 4,
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   content: {
     width: "100%",
     padding: 10,
     display: "flex",
     flexDirection: "column",
     gap: 10,
+  },
+  data: {
+    backgroundColor: "white",
+    padding: 10,
+    width: "80%",
+    fontSize: 20,
+    borderRadius: 4,
+    color: "#151E21",
   },
   row: {
     display: "flex",
@@ -27,29 +50,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "space-between",
   },
-  data: {
-    backgroundColor: "white",
-    padding: 10,
-    width: "80%",
-    fontSize: 20,
-    borderRadius: 4,
-    color: "#151E21",
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  checkBox: {
-    backgroundColor: "white",
-    height: 40,
-    width: 40,
-    borderRadius: 4,
-  },
-  button: {
-    width: "100%",
-    alignItems: "center",
-  },
   textButton: {
     color: "white",
     fontSize: 20,
@@ -58,10 +58,11 @@ const styles = StyleSheet.create({
 });
 
 export default function Row({ row }) {
-  const [edit, setEdit] = useState(false);
+
+  const { db } = useContext(Data);
+  const { table, reloadDates, setReloadDates } = useContext(Table);
   const [data, setData] = useState(row.data);
-  const { table, reloadDates, setReloadDates } = useContext(tableContext);
-  const { db } = useContext(context);
+  const [edit, setEdit] = useState(false);
 
   const handleSave = () => {
     db.transaction((tx) => {
