@@ -3,6 +3,7 @@ import * as SQLite from "expo-sqlite";
 
 export const Data = createContext();
 export const Table = createContext();
+export const Filter = createContext();
 
 export function DataProvider({ children }) {
 
@@ -22,6 +23,25 @@ export function DataProvider({ children }) {
     >
       {children}
     </Data.Provider>
+  );
+}
+
+export function FilterProvider({ children }) {
+
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState(false);
+
+  return (
+    <Filter.Provider
+      value={{
+        filter,
+        setFilter,
+        search,
+        setSearch
+      }}
+    >
+      {children}
+    </Filter.Provider>
   );
 }
 

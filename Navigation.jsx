@@ -8,6 +8,7 @@ import HeaderAdd from "./components/headerAdd";
 import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import SaveToCSV from "./components/saveToCSV";
+import Search from "./components/search";
 import { create } from "./utils/query";
 import { Data } from "./utils/context";
 
@@ -39,6 +40,7 @@ export function StackNavigator() {
         options={{
           title: "Inicio",
           headerRight: SaveToCSV,
+          headerLeft: Search,
         }}
       />
       <Stack.Screen

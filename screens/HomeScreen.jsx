@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import Date from "../components/date";
 import PlantElement, { NewPlantElement } from "../components/plantElement";
 import NewPlant from "../components/newPlant";
-import { Data } from "../utils/context";
+import { Data, Filter } from "../utils/context";
 
 const styles = StyleSheet.create({
   container: {
@@ -24,10 +24,12 @@ const styles = StyleSheet.create({
 });
 
 const query = "SELECT * FROM PLANTA ORDER BY nombre";
+const filterQuery = "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre"
 
 export default function HomeScreen() {
 
-  const { db, date } = useContext(Data);
+  const { db } = useContext(Data);
+  const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
   const [reload, setReload] = useState(false);
@@ -37,7 +39,18 @@ export default function HomeScreen() {
     db.transaction((tx) => {
       tx.executeSql(query, [], (_, { rows: { _array } }) => setPlants(_array));
     });
-  }, [reload, date]);
+  }, [reload]);
+
+  useEffect(() => {
+    console.log("change")
+    if (filter === "") {
+      setReload(!reload);
+      return;
+    }
+    db.transaction((tx) => {
+      tx.executeSql(filterQuery, [filter+"%"], (_, { rows: { _array } }) => setPlants(_array),);
+    });
+  }, [filter])
 
   const handlePress = () => {
     if (inputPlant.current) {

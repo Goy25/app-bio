@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { select } from "../utils/query";
 import { Data, Table } from "../utils/context";
+import { yearList } from "../utils/getDate";
+import { select } from "../utils/query";
 
 const styles = StyleSheet.create({
   content: {
@@ -15,15 +16,18 @@ const styles = StyleSheet.create({
   month: {
     backgroundColor: "white",
     borderRadius: 8,
-    width: "40%",
+    width: "45%",
+  },
+  year: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    width: "35%",
   },
 });
 
 function Date() {
 
-  const { db, date } = useContext(Data);
-  const { reloadDates } = useContext(Table);
-  const [items, setItems] = useState([]);
+  const [month, setMonth] = useState(null);
   const [months] = useState([
     { label: "Enero", value: "01" },
     { label: "Febrero", value: "02" },
@@ -38,27 +42,27 @@ function Date() {
     { label: "Noviembre", value: "11" },
     { label: "Diciembre", value: "12" },
   ]);
+  const [year, setYear] = useState(null);
+  const [years] = useState(yearList());
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(select.FECHA, [], (_, { rows: { _array } }) =>
-        setItems(_array.map((date) => ({ label: date.fecha, value: date })))
-      );
-    });
-  }, [reloadDates]);
-
-  const handleChange = (value) => {
-    date.setter(value);
-  };
+  const handleYearChange = (value) => {
+    setYear(value);
+    console.log(value);
+  }
 
   return (
     <View style={styles.content}>
       <View style={styles.month}>
         <RNPickerSelect
           placeholder={{ label: "Mes", value: null }}
-          onValueChange={(value) => handleChange(value)}
+          onValueChange={(value) => setMonth(value)}
           items={months}
-          style={{ inputAndroid: { color: "#151E21" } }}
+        />
+      </View>
+      <View style={styles.year}>
+        <RNPickerSelect
+          onValueChange={handleYearChange}
+          items={years}
         />
       </View>
     </View>

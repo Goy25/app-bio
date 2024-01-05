@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { context } from "../utils/context";
+import { Data, Filter } from "../utils/context";
 
 const styles = StyleSheet.create({
   button: {
@@ -44,8 +44,7 @@ const styles = StyleSheet.create({
 const query = "INSERT INTO PLANTA (nombre) VALUES(?);";
 
 export function NewPlantElement({ reload, setReload, setShow }) {
-
-  const { db } = useContext(context);
+  const { db } = useContext(Data);
   const [toInsert, setToInsert] = useState("");
 
   const handleCancel = () => {
@@ -69,7 +68,7 @@ export function NewPlantElement({ reload, setReload, setShow }) {
   return (
     <>
       <View style={styles.content}>
-        <Pressable style={[styles.button, {width: "100%"}]}>
+        <Pressable style={[styles.button, { width: "100%" }]}>
           <TextInput
             onChangeText={(text) => setToInsert(text)}
             multiline={true}
@@ -80,9 +79,7 @@ export function NewPlantElement({ reload, setReload, setShow }) {
       </View>
       <View style={styles.content}>
         <Pressable onPress={handleCancel} style={{ width: "48%" }}>
-          <Text style={styles.NPEButton}>
-            Cancelar
-          </Text>
+          <Text style={styles.NPEButton}>Cancelar</Text>
         </Pressable>
         <Pressable onPress={handleSave} style={{ width: "48%" }}>
           <Text style={styles.NPEButton}>Guardar</Text>
@@ -93,12 +90,19 @@ export function NewPlantElement({ reload, setReload, setShow }) {
 }
 
 function PlantElement({ plant }) {
+
+  const { setSearch } = useContext(Filter);
+
+  const handlePress = () => {
+    setSearch(false);
+  };
+
   return (
     <View style={styles.content}>
       <Pressable style={styles.image}>
         <Entypo name="image" size={30} color="white" />
       </Pressable>
-      <Pressable style={styles.button}>
+      <Pressable onPress={handlePress} style={styles.button}>
         <Text style={styles.text}>{plant.nombre}</Text>
       </Pressable>
     </View>
