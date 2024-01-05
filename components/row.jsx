@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   Pressable,
-  Image,
   TextInput,
 } from "react-native";
 import { MaterialCommunityIcons } from '@expo/vector-icons';

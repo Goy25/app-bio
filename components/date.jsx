@@ -35,10 +35,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Dates() {
-  const [items, setItems] = useState([]);
+function Date() {
+
   const { db, date } = useContext(context);
   const { reloadDates } = useContext(tableContext);
+  const [items, setItems] = useState([]);
+  const [ months ] = useState([
+    { label: "Enero", value: "01" },
+    { label: "Febrero", value: "02" },
+    { label: "Marzo", value: "03" },
+    { label: "Abril", value: "04" },
+    { label: "Mayo", value: "05" },
+    { label: "Junio", value: "06" },
+    { label: "Julio", value: "07" },
+    { label: "Agosto", value: "08" },
+    { label: "Septiembre", value: "09" },
+    { label: "Octubre", value: "10" },
+    { label: "Noviembre", value: "11" },
+    { label: "Diciembre", value: "12" },
+  ]);
+
 
   useEffect(() => {
     db.transaction((tx) => {
@@ -54,25 +70,9 @@ export default function Dates() {
 
   return (
     <View style={styles.content}>
-      <RNPickerSelect
-        onValueChange={handleChange}
-        items={items}
-        style={{
-          placeholder: {
-            color: "#DDDDDD",
-          },
-          inputAndroid: {
-            color: "#FFFFFF",
-          },
-          inputIOS: {
-            color: "#FFFFFF",
-          },
-        }}
-        placeholder={{
-          label: "Selecciona una fecha",
-          value: { id: 0 },
-        }}
-      />
+
     </View>
   );
 }
+
+export default Date;

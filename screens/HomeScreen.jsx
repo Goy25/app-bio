@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import Dates from "../components/dates";
-import { Card, AddCard } from "../components/card";
+import Date from "../components/date";
+import PlantElement, { NewPlantElement } from "../components/plantElement";
+import NewPlant from "../components/newPlant";
 import { context } from "../utils/context";
-import { homeLoad } from "../utils/query";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,41 +11,57 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     display: "flex",
-    gap: 20,
-    padding: 20,
+    gap: 10,
+    padding: 10,
   },
   content: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
-    rowGap: 20,
-    paddingVertical: 20,
+    rowGap: 10,
   },
 });
 
+const query = "SELECT * FROM PLANTA ORDER BY nombre";
+
 export default function HomeScreen() {
-  const [cards, setCards] = useState([]);
+
   const { db, date } = useContext(context);
+  const inputPlant = useRef();
+  const [plants, setPlants] = useState([]);
   const [reload, setReload] = useState(false);
+  const [showNewField, setShowNewField] = useState(false);
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(homeLoad, [date.value.id], (_, { rows: { _array } }) =>
-        setCards(_array)
-      );
+      tx.executeSql(query, [], (_, { rows: { _array } }) => setPlants(_array));
     });
   }, [reload, date]);
 
+  const handlePress = () => {
+    if (inputPlant.current) {
+      inputPlant.current.scrollTo({ y: 0, animated: true });
+    }
+    setShowNewField(true);
+  }
+
   return (
     <View style={styles.container}>
-      <Dates />
-      <ScrollView contentContainerStyle={styles.content}>
-        {cards.map((card) => (
-          <Card key={card.id} info={card} />
+      <Date />
+      <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
+        {showNewField && (
+          <NewPlantElement
+            reload={reload}
+            setReload={setReload}
+            setShow={setShowNewField}
+          />
+        )}
+        {plants.map((plant) => (
+          <PlantElement key={plant.id} plant={plant} />
         ))}
-        <AddCard reload={{ value: reload, setter: setReload }} />
       </ScrollView>
+      <NewPlant handlePress={handlePress} reference={inputPlant}/>
     </View>
   );
 }
