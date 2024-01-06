@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { Entypo } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import AddModal from "./addModal";
 import defaultImage from "../assets/images/default.png";
 import { Data } from "../utils/context";
-import { select, update } from "../utils/query";
+import { update } from "../utils/query";
 
 const styles = StyleSheet.create({
   addCard: {
@@ -103,52 +101,5 @@ export function Card({ info }) {
         <Text style={styles.textButton}>Ver más</Text>
       </Pressable>
     </View>
-  );
-}
-
-export function AddCard({ reload }) {
-
-  const { db, date } = useContext(Data);
-  const [atributes, setAtributes] = useState([]);
-  const [plants, setPlants] = useState([]);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(select.PLANTA, [], (_, { rows: { _array } }) =>
-        setPlants(
-          _array.map((plant) => ({ label: plant.nombre, value: plant }))
-        )
-      );
-    });
-    db.transaction((tx) => {
-      tx.executeSql(select.CARACTERISTICA, [], (_, { rows: { _array } }) =>
-        setAtributes(
-          _array.map((atribute) => ({ label: atribute.tipo, value: atribute }))
-        )
-      );
-    });
-  }, [visible]);
-
-  const handlePress = () => {
-    if (date.value.id === 0) {
-      alert("Seleccione una fecha");
-      return;
-    }
-    setVisible(true);
-  };
-
-  return (
-    <>
-      <Pressable style={styles.addCard} onPress={handlePress}>
-        <Entypo name="circle-with-plus" size={120} color="#151E21" />
-      </Pressable>
-      <AddModal
-        visible={{ value: visible, setter: setVisible }}
-        plants={plants}
-        atributes={atributes}
-        reload={reload}
-      />
-    </>
   );
 }

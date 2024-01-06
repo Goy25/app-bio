@@ -9,11 +9,11 @@ import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import SaveToCSV from "./components/saveToCSV";
 import Search from "./components/search";
-import { create } from "./utils/query";
 import { Data } from "./utils/context";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const query = 'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT"");CREATE TABLE IF NOT EXISTS INDIVIDUO (id INTEGER PRIMARY KEY AUTOINCREMENT,esteril INTEGER DEFAULT 0,brotes INTEGER DEFAULT 0,flores INTEGER DEFAULT 0,frutosInmaduros INTEGER DEFAULT 0,frutosMaduros INTEGER DEFAULT 0,observaciones TEXT DEFAULT "",dia INTEGER);CREATE TABLE IF NOT EXISTS LUGAR (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE);CREATE TABLE IF NOT EXISTS PERIODO (id INTEGER PRIMARY KEY AUTOINCREMENT,dia INTEGER,mes INTEGER,UNIQUE(dia, mes));CREATE TABLE IF NOT EXISTS VISTA (idIndividuo INTEGER,idLugar INTEGER,idPeriodo INTEGER,PRIMARY KEY (idIndividuo, idLugar, idPeriodo),FOREIGN KEY (idIndividuo) REFERENCES INDIVIDUO(id),FOREIGN KEY (idLugar) REFERENCES LUGAR(id),FOREIGN KEY (idPeriodo) REFERENCES PERIODO(id));'
 
 export function StackNavigator() {
 
@@ -61,16 +61,7 @@ export default function Navigation() {
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(create.planta, []);
-    });
-    db.transaction((tx) => {
-      tx.executeSql(create.caracteristica, []);
-    });
-    db.transaction((tx) => {
-      tx.executeSql(create.fecha, []);
-    });
-    db.transaction((tx) => {
-      tx.executeSql(create.vista, []);
+      tx.executeSql(query, []);
     });
   }, []);
 

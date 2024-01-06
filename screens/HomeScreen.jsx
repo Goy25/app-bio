@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import Date from "../components/date";
+import Header from "../components/header";
 import PlantElement, { NewPlantElement } from "../components/plantElement";
 import NewPlant from "../components/newPlant";
 import { Data, Filter } from "../utils/context";
+import { yearList } from "../utils/getDate";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +29,7 @@ const filterQuery = "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre"
 
 export default function HomeScreen() {
 
-  const { db } = useContext(Data);
+  const { db, month, setMonth, year, setYear } = useContext(Data);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
@@ -60,7 +61,29 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Date />
+      <Header
+        firstItems={[
+          { label: "Enero", value: 1 },
+          { label: "Febrero", value: 2 },
+          { label: "Marzo", value: 3 },
+          { label: "Abril", value: 4 },
+          { label: "Mayo", value: 5 },
+          { label: "Junio", value: 6 },
+          { label: "Julio", value: 7 },
+          { label: "Agosto", value: 8 },
+          { label: "Septiembre", value: 9 },
+          { label: "Octubre", value: 10 },
+          { label: "Noviembre", value: 11 },
+          { label: "Diciembre", value: 12 },
+        ]}
+        firstPlacehoder={"Mes"}
+        firstValue={month}
+        setFirstValue={setMonth}
+        secondItems={yearList()}
+        secondPlaceholder={"Año"}
+        secondValue={year}
+        setSecondValue={setYear}
+      />
       <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
         {showNewField && (
           <NewPlantElement

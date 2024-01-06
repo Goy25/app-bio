@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
 import * as SQLite from "expo-sqlite";
+import { getDay, getMonth, getYear } from "./getDate";
 
 export const Data = createContext();
 export const Table = createContext();
@@ -8,16 +9,27 @@ export const Filter = createContext();
 export function DataProvider({ children }) {
 
   const db = SQLite.openDatabase("example.db");
+  const [day, setDay] = useState(getDay());
+  const [month, setMonth] = useState(getMonth());
+  const [place, setPlace] = useState("");
   const [plant, setPlant] = useState("");
-  const [date, setDate] = useState({ id: 0 });
+  const [year, setYear] = useState(getYear());
   const [exportType, setExportType] = useState("date"); // ["date", "plant"]
 
   return (
     <Data.Provider
       value={{
         db,
-        plant: { value: plant, setter: setPlant },
-        date: { value: date, setter: setDate },
+        day,
+        setDay,
+        month,
+        setMonth,
+        place,
+        setPlace,
+        year,
+        setYear,
+        plant,
+        setPlant,
         exportType: { value: exportType, setter: setExportType },
       }}
     >

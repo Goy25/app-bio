@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
+import RNPickerSelect from "react-native-picker-select";
 
 const styles = StyleSheet.create({
   content: {
@@ -38,13 +39,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    width: "18%"
+    width: "18%",
   },
   percentInput: {
     backgroundColor: "white",
     borderRadius: 4,
     color: "#151E21",
-    padding: 1,
+    fontSize: 13,
     textAlign: "center",
     width: "100%",
   },
@@ -75,6 +76,19 @@ const styles = StyleSheet.create({
   },
 });
 
+const percents = [
+  { label: "10%", value: "10" },
+  { label: "20%", value: "20" },
+  { label: "30%", value: "30" },
+  { label: "40%", value: "40" },
+  { label: "50%", value: "50" },
+  { label: "60%", value: "60" },
+  { label: "70%", value: "70" },
+  { label: "80%", value: "80" },
+  { label: "90%", value: "90" },
+  { label: "100%", value: "100" },
+]
+
 function Observations() {
   return (
     <View style={styles.observationContent}>
@@ -88,7 +102,22 @@ function Percent({ tipo }) {
   return (
     <View style={styles.percentContent}>
       <Text  style={styles.percentTitle}>{tipo}</Text>
-      <TextInput placeholder='%' style={styles.percentInput} keyboardType='numeric' />
+      <View style={{width: "100%"}}>
+        <RNPickerSelect
+          items={percents}
+          onValueChange={(value) => console.log(value)}
+          placeholder={{ label: "0%", value: 0 }}
+          style={{
+            inputAndroid: styles.percentInput,
+            placeholder: {
+              color: "#151E21",
+              fontSize: 13,
+              textAlign: "center",
+            },
+          }}
+          useNativeAndroidPickerStyle={false}
+        />
+      </View>
     </View>
   );
 }

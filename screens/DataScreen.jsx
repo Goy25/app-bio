@@ -1,15 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import Row from "../components/row";
-import SelectTable from "../components/selectTable";
-import { select } from "../utils/query";
-import { Data, Table } from "../utils/context";
+import Header from "../components/header";
 import PlantState from "../components/plantState";
+import { Data } from "../utils/context";
+import { dayList } from "../utils/getDate";
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#151E21",
     height: "100%",
+    gap: 10,
     padding: 10,
   },
   scrollContent: {
@@ -19,31 +19,25 @@ const styles = StyleSheet.create({
 
 export default function DataScreen() {
 
-  const { db } = useContext(Data);
-  const { table, setTable, reloadDS } = useContext(Table);
-  const [elements, setElements] = useState([]);
-
-  const atribute = {
-    PLANTA: "nombre",
-    CARACTERISTICA: "tipo",
-    FECHA: "fecha",
-  };
+  const { db, day, setDay, month, place, setPlace, year } = useContext(Data);
+  const [days, setDays] = useState([]);
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(select[table], [], (_, { rows: { _array } }) =>
-        setElements(
-          _array.map((element) => ({
-            id: element.id,
-            data: element[atribute[table]],
-          }))
-        )
-      );
-    });
-  }, [table, reloadDS]);
+    setDays(dayList(month, year));
+  }, [month, year])
 
   return (
     <View style={styles.container}>
+      <Header
+        firstItems={days}
+        firstPlacehoder={"Dia"}
+        firstValue={day}
+        setFirstValue={setDay}
+        secondItems={[]}
+        secondPlaceholder={"Lugar"}
+        secondValue={place}
+        setSecondValue={setPlace}
+      />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <PlantState/>
         <PlantState/>
