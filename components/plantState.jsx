@@ -1,5 +1,7 @@
+import { useContext } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import RNPickerSelect from "react-native-picker-select";
+import { Data } from '../utils/context';
 
 const styles = StyleSheet.create({
   content: {
@@ -123,9 +125,12 @@ function Percent({ tipo }) {
 }
 
 function PlantState() {
+
+  const { plant } = useContext(Data);
+
   return (
     <View style={styles.content}>
-      <Text style={styles.tittle}> - Fenologia</Text>
+      <Text style={styles.tittle}>{plant.nombre} - Fenologia</Text>
       <View style={styles.percentsContainer}>
         <Percent tipo={"Esteril"}/>
         <Percent tipo={"Brotes Florales"}/>

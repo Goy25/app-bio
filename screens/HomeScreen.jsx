@@ -1,12 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Header from "../components/header";
-import PlantElement, { NewPlantElement } from "../components/plantElement";
-import NewPlant from "../components/newPlant";
+import InsertElements from "../components/insertElements";
+import PlantElement from "../components/plantElement";
+import AddButton from "../components/addButton";
 import { Data, Filter } from "../utils/context";
 import { yearList } from "../utils/getDate";
 
 const styles = StyleSheet.create({
+  addButton: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+  },
   container: {
     backgroundColor: "#151E21",
     width: "100%",
@@ -25,10 +31,10 @@ const styles = StyleSheet.create({
 });
 
 const query = "SELECT * FROM PLANTA ORDER BY nombre";
-const filterQuery = "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre"
+const filterQuery =
+  "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre";
 
 export default function HomeScreen() {
-
   const { db, month, setMonth, year, setYear } = useContext(Data);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
@@ -48,16 +54,18 @@ export default function HomeScreen() {
       return;
     }
     db.transaction((tx) => {
-      tx.executeSql(filterQuery, [filter+"%"], (_, { rows: { _array } }) => setPlants(_array),);
+      tx.executeSql(filterQuery, [filter + "%"], (_, { rows: { _array } }) =>
+        setPlants(_array)
+      );
     });
-  }, [filter])
+  }, [filter]);
 
   const handlePress = () => {
     if (inputPlant.current) {
       inputPlant.current.scrollTo({ y: 0, animated: true });
     }
     setShowNewField(true);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -86,7 +94,8 @@ export default function HomeScreen() {
       />
       <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
         {showNewField && (
-          <NewPlantElement
+          <InsertElements
+            query={"INSERT INTO PLANTA (nombre) VALUES (?) "}
             reload={reload}
             setReload={setReload}
             setShow={setShowNewField}
@@ -96,7 +105,12 @@ export default function HomeScreen() {
           <PlantElement key={plant.id} plant={plant} />
         ))}
       </ScrollView>
-      <NewPlant handlePress={handlePress} reference={inputPlant}/>
+      <AddButton
+        color="#00C8E0"
+        handlePress={handlePress}
+        size={50}
+        style={styles.addButton}
+      />
     </View>
   );
 }

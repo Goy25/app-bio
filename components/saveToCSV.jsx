@@ -39,7 +39,7 @@ export default function SaveToCSV() {
   // };
 
   return (
-    <Pressable style={{marginRight: 10}} onPress={handlePress}>
+    <Pressable style={{marginRight: 10}} >
       <Foundation name="page-export-csv" size={40} color="white" />
     </Pressable>
   );

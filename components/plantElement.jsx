@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Entypo } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import AddButton from "./addButton";
 import ImagePopUp from "./imagePopUp";
 import { Data, Filter } from "../utils/context";
-import { Card } from "./card";
 
 const styles = StyleSheet.create({
   button: {
@@ -27,76 +28,38 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: 40,
   },
-  NPEButton: {
-    backgroundColor: "#00C8E0",
-    borderRadius: 8,
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    padding: 10,
-    textAlign: "center",
-    width: "100%",
-  },
   text: {
     fontSize: 16,
     fontWeight: "bold",
   },
 });
 
-const query = "INSERT INTO PLANTA (nombre) VALUES(?);";
-
-export function NewPlantElement({ reload, setReload, setShow }) {
-  const { db } = useContext(Data);
-  const [toInsert, setToInsert] = useState("");
-
-  const handleCancel = () => {
-    setShow(false);
-  };
-
-  const handleSave = () => {
-    if (toInsert === "") {
-      return;
-    }
-    const values = toInsert.split("\n").filter((value) => value !== "");
-    db.transaction((tx) => {
-      values.forEach((value) => {
-        tx.executeSql(query, [value.trim()]);
-      });
-    });
-    setReload(!reload);
-    setShow(false);
-  };
-
-  return (
-    <>
-      <View style={styles.content}>
-        <Pressable style={[styles.button, { width: "100%" }]}>
-          <TextInput
-            onChangeText={(text) => setToInsert(text)}
-            multiline={true}
-            style={styles.text}
-            value={toInsert}
-          />
-        </Pressable>
-      </View>
-      <View style={styles.content}>
-        <Pressable onPress={handleCancel} style={{ width: "48%" }}>
-          <Text style={styles.NPEButton}>Cancelar</Text>
-        </Pressable>
-        <Pressable onPress={handleSave} style={{ width: "48%" }}>
-          <Text style={styles.NPEButton}>Guardar</Text>
-        </Pressable>
-      </View>
-    </>
-  );
+const monthNames = {
+  1: "Enero",
+  2: "Febrero",
+  3: "Marzo",
+  4: "Abril",
+  5: "Mayo",
+  6: "Junio",
+  7: "Julio",
+  8: "Agosto",
+  9: "Septiembre",
+  10: "Octubre",
+  11: "Noviembre",
+  12: "Diciembre",
 }
 
 function PlantElement({ plant }) {
+
+  const { month, year, setPlant } = useContext(Data);
   const { setSearch } = useContext(Filter);
+  const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
 
   const handlePress = () => {
+    setPlant(plant);
     setSearch(false);
+    navigation.navigate("Info", {name: `${monthNames[month]} ${year}`});
   };
 
   return (

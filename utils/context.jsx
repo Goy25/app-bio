@@ -11,8 +11,8 @@ export function DataProvider({ children }) {
   const db = SQLite.openDatabase("example.db");
   const [day, setDay] = useState(getDay());
   const [month, setMonth] = useState(getMonth());
-  const [place, setPlace] = useState("");
-  const [plant, setPlant] = useState("");
+  const [place, setPlace] = useState(null);
+  const [plant, setPlant] = useState({id: 0});
   const [year, setYear] = useState(getYear());
   const [exportType, setExportType] = useState("date"); // ["date", "plant"]
 

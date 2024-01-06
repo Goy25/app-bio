@@ -12,7 +12,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 16,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
     resizeMode: "stretch",
   },
   imageField: {
@@ -23,6 +24,16 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -150 }, { translateY: -150 }],
     width: 300,
   },
+  text: {
+    backgroundColor: "#00C8E0",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+    padding: 5,
+    textAlign: "center",
+  }
 });
 
 function ImagePopUp({ plant, visible, setVisible }) {
@@ -54,7 +65,7 @@ function ImagePopUp({ plant, visible, setVisible }) {
     <Modal transparent={true} visible={visible}>
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
         <Pressable onPress={handleSelectImage} style={styles.imageField}>
-          <Text>{plant.nombre}</Text>
+          <Text style={styles.text}>{plant.nombre}</Text>
           <Image
             source={url}
             style={styles.image}
