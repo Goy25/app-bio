@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import AddButton from "../components/addButton";
 import Header from "../components/header";
+import HideHeader from "../components/hideHeader";
 import InsertElements from "../components/insertElements";
 import PlantState from "../components/plantState";
 import { Data } from "../utils/context";
@@ -15,6 +16,13 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 10,
   },
+  header: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    width: "100%",
+  },
   scrollContent: {
     gap: 10,
   },
@@ -27,6 +35,7 @@ export default function InfoScreen({ navigation }) {
   const [places, setPlaces] = useState([{ label: "Nuevo", value: 0 }]);
   const [reload, setReload] = useState(false);
   const [reloadP, setReloadP] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
 
   const handleAdd = () => {
     if (!place) {
@@ -40,21 +49,33 @@ export default function InfoScreen({ navigation }) {
     insertIndividual(year, month, day, plant.id, place, reload, setReload);
   };
 
+  const setOptions = () => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={styles.header}>
+          <AddButton
+            color="white"
+            handlePress={handleAdd}
+            size={40}
+            style={{ marginRight: 10 }}
+          />
+          <HideHeader
+            up={showHeader}
+            setUp={setShowHeader}
+          />
+        </View>
+      ),
+    });
+  }
+
   useEffect(() => {
     setDays(dayList(month, year));
   }, [month, year]);
 
+  useEffect(setOptions, [showHeader]);
+
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <AddButton
-          color="white"
-          handlePress={handleAdd}
-          size={40}
-          style={{ marginRight: 10 }}
-        />
-      ),
-    });
+    setOptions();
     if (!place) return;
     getIndividuals(plant.id, day, place, month, year, setIndividuals);
   }, [reload, day, place]);
@@ -63,7 +84,7 @@ export default function InfoScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header
+      {showHeader && <Header
         firstItems={days}
         firstPlacehoder={"Dia"}
         firstValue={day}
@@ -72,7 +93,7 @@ export default function InfoScreen({ navigation }) {
         secondPlaceholder={"Lugar"}
         secondValue={place}
         setSecondValue={setPlace}
-      />
+      />}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {place === 0 && (
           <InsertElements

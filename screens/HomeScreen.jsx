@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Header from "../components/header";
+import HideHeader from "../components/hideHeader";
 import InsertElements from "../components/insertElements";
 import PlantElement from "../components/plantElement";
 import AddButton from "../components/addButton";
@@ -31,13 +32,26 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { month, setMonth, year, setYear } = useContext(Data);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
   const [reload, setReload] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
   const [showNewField, setShowNewField] = useState(false);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <HideHeader
+          style={{ marginRight: 10 }}
+          up={showHeader}
+          setUp={setShowHeader}
+        />
+      ),
+    });
+  }, [showHeader]);
 
   useEffect(() => getPlants(setPlants), [reload]);
 
@@ -58,29 +72,31 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Header
-        firstItems={[
-          { label: "Enero", value: 1 },
-          { label: "Febrero", value: 2 },
-          { label: "Marzo", value: 3 },
-          { label: "Abril", value: 4 },
-          { label: "Mayo", value: 5 },
-          { label: "Junio", value: 6 },
-          { label: "Julio", value: 7 },
-          { label: "Agosto", value: 8 },
-          { label: "Septiembre", value: 9 },
-          { label: "Octubre", value: 10 },
-          { label: "Noviembre", value: 11 },
-          { label: "Diciembre", value: 12 },
-        ]}
-        firstPlacehoder={"Mes"}
-        firstValue={month}
-        setFirstValue={setMonth}
-        secondItems={yearList()}
-        secondPlaceholder={"Año"}
-        secondValue={year}
-        setSecondValue={setYear}
-      />
+      {showHeader && (
+        <Header
+          firstItems={[
+            { label: "Enero", value: 1 },
+            { label: "Febrero", value: 2 },
+            { label: "Marzo", value: 3 },
+            { label: "Abril", value: 4 },
+            { label: "Mayo", value: 5 },
+            { label: "Junio", value: 6 },
+            { label: "Julio", value: 7 },
+            { label: "Agosto", value: 8 },
+            { label: "Septiembre", value: 9 },
+            { label: "Octubre", value: 10 },
+            { label: "Noviembre", value: 11 },
+            { label: "Diciembre", value: 12 },
+          ]}
+          firstPlacehoder={"Mes"}
+          firstValue={month}
+          setFirstValue={setMonth}
+          secondItems={yearList()}
+          secondPlaceholder={"Año"}
+          secondValue={year}
+          setSecondValue={setYear}
+        />
+      )}
       <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
         {showNewField && (
           <InsertElements

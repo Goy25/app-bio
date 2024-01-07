@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Data } from "../utils/context";
 import { updatePhenology } from "../utils/querys";
@@ -174,7 +174,7 @@ function PlantState({ phenology }) {
   );
 
   return (
-    <View style={styles.content}>
+    <Pressable style={styles.content} >
       <Text style={styles.tittle}>{plant.nombre} - Fenologia</Text>
       <View style={styles.percentsContainer}>
         <Total.Provider value={{ total, setTotal }}>
@@ -215,7 +215,7 @@ function PlantState({ phenology }) {
         iId={phenology.id}
         iObservations={phenology.observaciones}
       />
-    </View>
+    </Pressable>
   );
 }
 

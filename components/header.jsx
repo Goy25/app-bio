@@ -1,8 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Foundation } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 
 const styles = StyleSheet.create({
   content: {
+    alignItems: "center",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -16,6 +18,14 @@ const styles = StyleSheet.create({
     padding: 5,
     textAlign: "center",
     width: "100%",
+  },
+  exportButton: {
+    alignItems: "center",
+    backgroundColor: "#00C8E0",
+    borderRadius: 5,
+    justifyContent: "center",
+    height: 40,
+    width: 40,
   },
 });
 
@@ -31,7 +41,7 @@ function Header({
 }) {
   return (
     <View style={styles.content}>
-      <View style={{ width: "48%" }}>
+      <View style={{ width: "42%" }}>
         <RNPickerSelect
           items={firstItems}
           onValueChange={(value) => setFirstValue(value)}
@@ -41,7 +51,7 @@ function Header({
           value={firstValue}
         />
       </View>
-      <View style={{ width: "48%" }}>
+      <View style={{ width: "42%" }}>
         <RNPickerSelect
           items={secondItems}
           onValueChange={(value) => setSecondValue(value)}
@@ -51,6 +61,9 @@ function Header({
           value={secondValue}
         />
       </View>
+      <Pressable style={styles.exportButton}>
+        <Foundation name="page-export-csv" size={35} color="white" />
+      </Pressable>
     </View>
   );
 }
