@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
 });
 
 function InsertElements({ query, reload, setReload, setShow }) {
-
   const { db } = useContext(Data);
   const [toInsert, setToInsert] = useState("");
 

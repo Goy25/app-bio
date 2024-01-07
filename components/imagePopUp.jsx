@@ -33,11 +33,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 5,
     textAlign: "center",
-  }
+  },
 });
 
 function ImagePopUp({ plant, visible, setVisible }) {
-
   const { db } = useContext(Data);
   const [url, setUrl] = useState(
     plant.url === "" ? defaultImage : { uri: plant.url }
@@ -50,14 +49,14 @@ function ImagePopUp({ plant, visible, setVisible }) {
       return;
     }
     const picker = await ImagePicker.launchImageLibraryAsync();
-    console.log(picker)
+    console.log(picker);
     if (picker.canceled) {
       return;
     }
     setUrl({ uri: picker.assets[0].uri });
     plant.url = picker.assets[0].uri;
     db.transaction((tx) => {
-      tx.executeSql(update.IMAGE, [picker.assets[0].uri, info.id]);
+      tx.executeSql("UPDATE PLANTA SET url = ? WHERE id = ?;", [picker.assets[0].uri, plant.id]);
     });
   };
 
@@ -66,10 +65,7 @@ function ImagePopUp({ plant, visible, setVisible }) {
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
         <Pressable onPress={handleSelectImage} style={styles.imageField}>
           <Text style={styles.text}>{plant.nombre}</Text>
-          <Image
-            source={url}
-            style={styles.image}
-          />
+          <Image source={url} style={styles.image} />
         </Pressable>
       </Pressable>
     </Modal>

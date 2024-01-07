@@ -29,7 +29,6 @@ function Header({
   secondValue,
   setSecondValue,
 }) {
-
   return (
     <View style={styles.content}>
       <View style={{ width: "48%" }}>

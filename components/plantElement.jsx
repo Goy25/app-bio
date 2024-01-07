@@ -47,10 +47,9 @@ const monthNames = {
   10: "Octubre",
   11: "Noviembre",
   12: "Diciembre",
-}
+};
 
 function PlantElement({ plant }) {
-
   const { month, year, setPlant } = useContext(Data);
   const { setSearch } = useContext(Filter);
   const navigation = useNavigation();
@@ -59,7 +58,7 @@ function PlantElement({ plant }) {
   const handlePress = () => {
     setPlant(plant);
     setSearch(false);
-    navigation.navigate("Info", {name: `${monthNames[month]} ${year}`});
+    navigation.navigate("Info", { name: `${monthNames[month]} ${year}` });
   };
 
   return (

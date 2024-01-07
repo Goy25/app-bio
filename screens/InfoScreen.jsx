@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
 });
 
 export default function InfoScreen({ navigation }) {
-  const { db, day, setDay, month, place, plant, setPlace, year } = useContext(Data);
+  const { db, day, setDay, month, place, plant, setPlace, year } =
+    useContext(Data);
   const [days, setDays] = useState([]);
   const [individuals, setIndividuals] = useState([]);
   const [places, setPlaces] = useState([{ label: "Nuevo", value: 0 }]);
@@ -44,9 +45,9 @@ export default function InfoScreen({ navigation }) {
           tx.executeSql(
             "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?)",
             [resultI.insertId, place, idPeriodo],
-            () => setReload(!reload),
+            () => setReload(!reload)
           );
-        },
+        }
       );
     };
     db.transaction((tx) => {
@@ -61,9 +62,9 @@ export default function InfoScreen({ navigation }) {
           tx.executeSql(
             "INSERT INTO PERIODO (anio, mes) VALUES (?, ?);",
             [year, month],
-            (_, result) => insert(tx, result.insertId),
+            (_, result) => insert(tx, result.insertId)
           );
-        },
+        }
       );
     });
   };
@@ -131,7 +132,7 @@ export default function InfoScreen({ navigation }) {
           />
         )}
         {individuals.map((individual) => (
-          <PlantState key={individual.id} />
+          <PlantState key={individual.id} phenology={individual} />
         ))}
       </ScrollView>
     </View>

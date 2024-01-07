@@ -18,14 +18,13 @@ const styles = StyleSheet.create({
 });
 
 function Search() {
-
   const { filter, setFilter, search, setSearch } = useContext(Filter);
 
   useEffect(() => {
     if (!search) {
       setFilter("");
     }
-  }, [search])
+  }, [search]);
 
   return (
     <View style={styles.content}>
@@ -39,7 +38,6 @@ function Search() {
           value={filter}
         />
       )}
-      
     </View>
   );
 }

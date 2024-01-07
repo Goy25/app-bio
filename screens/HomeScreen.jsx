@@ -30,10 +30,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const query = "SELECT * FROM PLANTA ORDER BY nombre";
-const filterQuery =
-  "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre";
-
 export default function HomeScreen() {
   const { db, month, setMonth, year, setYear } = useContext(Data);
   const { filter } = useContext(Filter);
@@ -44,7 +40,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(query, [], (_, { rows: { _array } }) => setPlants(_array));
+      tx.executeSql(
+        "SELECT * FROM PLANTA ORDER BY nombre",
+        [],
+        (_, { rows: { _array } }) => setPlants(_array)
+      );
     });
   }, [reload]);
 
@@ -54,8 +54,10 @@ export default function HomeScreen() {
       return;
     }
     db.transaction((tx) => {
-      tx.executeSql(filterQuery, [filter + "%"], (_, { rows: { _array } }) =>
-        setPlants(_array)
+      tx.executeSql(
+        "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre",
+        [filter + "%"],
+        (_, { rows: { _array } }) => setPlants(_array)
       );
     });
   }, [filter]);

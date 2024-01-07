@@ -1,7 +1,9 @@
-import { useContext } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { createContext, useContext, useEffect, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Data } from '../utils/context';
+import { Data } from "../utils/context";
+
+const Total = createContext();
 
 const styles = StyleSheet.create({
   content: {
@@ -12,7 +14,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     display: "flex",
     flexDirection: "column",
-    width: "100%"
+    width: "100%",
   },
   observationContent: {
     alignItems: "center",
@@ -48,6 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: "#151E21",
     fontSize: 13,
+    paddingVertical: 5,
     textAlign: "center",
     width: "100%",
   },
@@ -79,35 +82,71 @@ const styles = StyleSheet.create({
 });
 
 const percents = [
-  { label: "10%", value: "10" },
-  { label: "20%", value: "20" },
-  { label: "30%", value: "30" },
-  { label: "40%", value: "40" },
-  { label: "50%", value: "50" },
-  { label: "60%", value: "60" },
-  { label: "70%", value: "70" },
-  { label: "80%", value: "80" },
-  { label: "90%", value: "90" },
-  { label: "100%", value: "100" },
-]
+  { label: "10%", value: 10 },
+  { label: "20%", value: 20 },
+  { label: "30%", value: 30 },
+  { label: "40%", value: 40 },
+  { label: "50%", value: 50 },
+  { label: "60%", value: 60 },
+  { label: "70%", value: 70 },
+  { label: "80%", value: 80 },
+  { label: "90%", value: 90 },
+  { label: "100%", value: 100 },
+];
 
-function Observations() {
+function Observations({ iId, iObservations }) {
+
+  const { db } = useContext(Data);
+  const [observations, setObservations] = useState(iObservations);
+
+  const handelChange = (text) => {
+    setObservations(text);
+    db.transaction((tx) => {
+      tx.executeSql("UPDATE INDIVIDUO SET observaciones = ? WHERE id = ?;", [text, iId]);
+    });
+  }
+
   return (
     <View style={styles.observationContent}>
-      <Text style={styles.observationText}>Observaciones: </Text>
-      <TextInput style={styles.observationInput}/>
+      <Text style={styles.observationText} >Observaciones: </Text>
+      <TextInput onChangeText={handelChange} style={styles.observationInput} value={observations} />
     </View>
   );
 }
 
-function Percent({ tipo }) {
+function Percent({ iId, iPercentage, query, tipo }) {
+
+  const { db } = useContext(Data);
+  const { total, setTotal } = useContext(Total);
+  const [items, setItems] = useState(percents);
+  const [percentage, setPercentage] = useState(iPercentage);
+
+  const handelChange = (value) => {
+    setTotal(total + value - percentage);
+    setPercentage(value);
+  };
+
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(query, [percentage, iId]);
+    })
+  }, [percentage]);
+
+  useEffect(() => {
+    setItems(
+      percents.filter((item) => {
+        return item.value <= 100 - total + percentage;
+      })
+    );
+  }, [total]);
+
   return (
     <View style={styles.percentContent}>
-      <Text  style={styles.percentTitle}>{tipo}</Text>
-      <View style={{width: "100%"}}>
+      <Text style={styles.percentTitle}>{tipo}</Text>
+      <View style={{ width: "100%" }}>
         <RNPickerSelect
-          items={percents}
-          onValueChange={(value) => console.log(value)}
+          items={items}
+          onValueChange={handelChange}
           placeholder={{ label: "0%", value: 0 }}
           style={{
             inputAndroid: styles.percentInput,
@@ -118,27 +157,57 @@ function Percent({ tipo }) {
             },
           }}
           useNativeAndroidPickerStyle={false}
+          value={percentage}
         />
       </View>
     </View>
   );
 }
 
-function PlantState() {
+function PlantState({ phenology }) {
 
   const { plant } = useContext(Data);
+  const [total, setTotal] = useState(phenology.esteril + phenology.brotes + phenology.flores + phenology.frutosInmaduros + phenology.frutosMaduros);
 
   return (
     <View style={styles.content}>
       <Text style={styles.tittle}>{plant.nombre} - Fenologia</Text>
       <View style={styles.percentsContainer}>
-        <Percent tipo={"Esteril"}/>
-        <Percent tipo={"Brotes Florales"}/>
-        <Percent tipo={"Flores"}/>
-        <Percent tipo={"Frutos Inmaduros"}/>
-        <Percent tipo={"Frutos Maduros"}/>
+        <Total.Provider value={{ total, setTotal }}>
+          <Percent
+            iId={phenology.id}
+            iPercentage={phenology.esteril}
+            tipo={"Esteril"}
+            query="UPDATE INDIVIDUO SET esteril = ? WHERE id = ?;"
+          />
+          <Percent
+            iId={phenology.id}
+            iPercentage={phenology.brotes}
+            tipo={"Brotes Florales"}
+            phenology={phenology}
+            query="UPDATE INDIVIDUO SET brotes = ? WHERE id = ?;"
+          />
+          <Percent
+            iId={phenology.id}
+            iPercentage={phenology.flores}
+            tipo="Flores"
+            query="UPDATE INDIVIDUO SET flores = ? WHERE id = ?;"
+          />
+          <Percent
+            iId={phenology.id}
+            iPercentage={phenology.frutosInmaduros}
+            tipo="Frutos Inmaduros"
+            query="UPDATE INDIVIDUO SET frutosInmaduros = ? WHERE id = ?;"
+          />
+          <Percent
+            iId={phenology.id}
+            iPercentage={phenology.frutosMaduros}
+            tipo="Frutos Maduros"
+            query="UPDATE INDIVIDUO SET frutosMaduros = ? WHERE id = ?;"
+          />
+        </Total.Provider>
       </View>
-      <Observations/>
+      <Observations iId={phenology.id} iObservations={phenology.observaciones} />
     </View>
   );
 }

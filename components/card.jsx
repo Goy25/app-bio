@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
 });
 
 export function Card({ info }) {
-
   const { db, plant } = useContext(Data);
   const [url, setUrl] = useState(
     info.url === "" ? defaultImage : { uri: info.url }
