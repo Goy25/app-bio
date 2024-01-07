@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import defaultImage from "../assets/images/default.png";
-import { Data } from "../utils/context";
+import { updateImage } from "../utils/querys";
 
 const styles = StyleSheet.create({
   content: {
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
 });
 
 function ImagePopUp({ plant, visible, setVisible }) {
-  const { db } = useContext(Data);
   const [url, setUrl] = useState(
     plant.url === "" ? defaultImage : { uri: plant.url }
   );
@@ -55,9 +54,7 @@ function ImagePopUp({ plant, visible, setVisible }) {
     }
     setUrl({ uri: picker.assets[0].uri });
     plant.url = picker.assets[0].uri;
-    db.transaction((tx) => {
-      tx.executeSql("UPDATE PLANTA SET url = ? WHERE id = ?;", [picker.assets[0].uri, plant.id]);
-    });
+    updateImage(picker.assets[0].uri, plant.id);
   };
 
   return (

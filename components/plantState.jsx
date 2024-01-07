@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Data } from "../utils/context";
+import { updatePhenology } from "../utils/querys";
 
 const Total = createContext();
 
@@ -95,28 +96,30 @@ const percents = [
 ];
 
 function Observations({ iId, iObservations }) {
-
-  const { db } = useContext(Data);
   const [observations, setObservations] = useState(iObservations);
 
   const handelChange = (text) => {
     setObservations(text);
-    db.transaction((tx) => {
-      tx.executeSql("UPDATE INDIVIDUO SET observaciones = ? WHERE id = ?;", [text, iId]);
-    });
-  }
+    updatePhenology(
+      "UPDATE INDIVIDUO SET observaciones = ? WHERE id = ?;",
+      text,
+      iId
+    );
+  };
 
   return (
     <View style={styles.observationContent}>
-      <Text style={styles.observationText} >Observaciones: </Text>
-      <TextInput onChangeText={handelChange} style={styles.observationInput} value={observations} />
+      <Text style={styles.observationText}>Observaciones: </Text>
+      <TextInput
+        onChangeText={handelChange}
+        style={styles.observationInput}
+        value={observations}
+      />
     </View>
   );
 }
 
 function Percent({ iId, iPercentage, query, tipo }) {
-
-  const { db } = useContext(Data);
   const { total, setTotal } = useContext(Total);
   const [items, setItems] = useState(percents);
   const [percentage, setPercentage] = useState(iPercentage);
@@ -126,11 +129,7 @@ function Percent({ iId, iPercentage, query, tipo }) {
     setPercentage(value);
   };
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(query, [percentage, iId]);
-    })
-  }, [percentage]);
+  useEffect(() => updatePhenology(query, percentage, iId), [percentage]);
 
   useEffect(() => {
     setItems(
@@ -165,9 +164,14 @@ function Percent({ iId, iPercentage, query, tipo }) {
 }
 
 function PlantState({ phenology }) {
-
   const { plant } = useContext(Data);
-  const [total, setTotal] = useState(phenology.esteril + phenology.brotes + phenology.flores + phenology.frutosInmaduros + phenology.frutosMaduros);
+  const [total, setTotal] = useState(
+    phenology.esteril +
+      phenology.brotes +
+      phenology.flores +
+      phenology.frutosInmaduros +
+      phenology.frutosMaduros
+  );
 
   return (
     <View style={styles.content}>
@@ -207,7 +211,10 @@ function PlantState({ phenology }) {
           />
         </Total.Provider>
       </View>
-      <Observations iId={phenology.id} iObservations={phenology.observaciones} />
+      <Observations
+        iId={phenology.id}
+        iObservations={phenology.observaciones}
+      />
     </View>
   );
 }

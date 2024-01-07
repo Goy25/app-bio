@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { Data } from "../utils/context";
+import { insertElements } from "../utils/querys";
 
 const styles = StyleSheet.create({
   button: {
@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
 });
 
 function InsertElements({ query, reload, setReload, setShow }) {
-  const { db } = useContext(Data);
   const [toInsert, setToInsert] = useState("");
 
   const handleCancel = () => {
@@ -45,11 +44,7 @@ function InsertElements({ query, reload, setReload, setShow }) {
       return;
     }
     const values = toInsert.split("\n").filter((value) => value !== "");
-    db.transaction((tx) => {
-      values.forEach((value) => {
-        tx.executeSql(query, [value.trim()]);
-      });
-    });
+    insertElements(values, query);
     setReload(!reload);
     setShow(false);
   };

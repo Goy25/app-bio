@@ -6,6 +6,7 @@ import PlantElement from "../components/plantElement";
 import AddButton from "../components/addButton";
 import { Data, Filter } from "../utils/context";
 import { yearList } from "../utils/getDate";
+import { filterPlants, getPlants } from "../utils/querys";
 
 const styles = StyleSheet.create({
   addButton: {
@@ -31,35 +32,21 @@ const styles = StyleSheet.create({
 });
 
 export default function HomeScreen() {
-  const { db, month, setMonth, year, setYear } = useContext(Data);
+  const { month, setMonth, year, setYear } = useContext(Data);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
   const [reload, setReload] = useState(false);
   const [showNewField, setShowNewField] = useState(false);
 
-  useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM PLANTA ORDER BY nombre",
-        [],
-        (_, { rows: { _array } }) => setPlants(_array)
-      );
-    });
-  }, [reload]);
+  useEffect(() => getPlants(setPlants), [reload]);
 
   useEffect(() => {
     if (filter === "") {
       setReload(!reload);
       return;
     }
-    db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre",
-        [filter + "%"],
-        (_, { rows: { _array } }) => setPlants(_array)
-      );
-    });
+    filterPlants(filter, setPlants);
   }, [filter]);
 
   const handlePress = () => {
@@ -97,7 +84,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
         {showNewField && (
           <InsertElements
-            query={"INSERT INTO PLANTA (nombre) VALUES (?) "}
+            query="INSERT INTO PLANTA (nombre) VALUES (?) "
             reload={reload}
             setReload={setReload}
             setShow={setShowNewField}
