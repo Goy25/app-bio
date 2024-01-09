@@ -32,6 +32,14 @@
       "eas": {
         "projectId": "b4c9f9d2-5b80-4467-aa4b-1283aee23692"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La aplicacion quiere accede a tus fotos."
+        }
+      ]
+    ]
   }
 }

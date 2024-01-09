@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import ExportScreen from "./screens/ExportScreen";
 import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import Search from "./components/search";
@@ -22,10 +23,6 @@ export default function Navigation() {
             backgroundColor: "#00C8E0",
           },
         }}
-        // screenListeners={{
-        //   state: (e) =>
-        //     exportType.setter(e.data.state.index == 0 ? "date" : "plant"),
-        // }}
       >
         <Stack.Screen
           name="Home"
@@ -39,6 +36,11 @@ export default function Navigation() {
           name="Info"
           component={InfoScreen}
           options={({ route }) => ({ title: route.params.name })}
+        />
+        <Stack.Screen
+          name="Export"
+          component={ExportScreen}
+          options={{ title: "Exportar/Importar" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

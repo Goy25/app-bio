@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Foundation } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 
@@ -39,6 +40,7 @@ function Header({
   secondValue,
   setSecondValue,
 }) {
+  const navigation = useNavigation();
   return (
     <View style={styles.content}>
       <View style={{ width: "42%" }}>
@@ -61,7 +63,7 @@ function Header({
           value={secondValue}
         />
       </View>
-      <Pressable style={styles.exportButton}>
+      <Pressable onPress={() => navigation.navigate("Export")} style={styles.exportButton}>
         <Foundation name="page-export-csv" size={35} color="white" />
       </Pressable>
     </View>
