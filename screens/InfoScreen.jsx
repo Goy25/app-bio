@@ -11,7 +11,7 @@ import { getIndividuals, getPlaces, insertIndividual } from "../utils/querys";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#151E21",
+    backgroundColor: "#063646",
     height: "100%",
     gap: 10,
     padding: 10,
@@ -54,7 +54,7 @@ export default function InfoScreen({ navigation }) {
       headerRight: () => (
         <View style={styles.header}>
           <AddButton
-            color="white"
+            color="#063646"
             handlePress={handleAdd}
             size={40}
             style={{ marginRight: 10 }}

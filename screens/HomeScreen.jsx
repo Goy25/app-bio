@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
   container: {
-    backgroundColor: "#151E21",
+    backgroundColor: "#063646",
     width: "100%",
     height: "100%",
     display: "flex",
@@ -111,7 +111,7 @@ export default function HomeScreen({ navigation }) {
         ))}
       </ScrollView>
       <AddButton
-        color="#00C8E0"
+        color="#039BB7"
         handlePress={handlePress}
         size={50}
         style={styles.addButton}

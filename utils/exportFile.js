@@ -25,7 +25,7 @@ async function createFile(content, name, mime) {
       });
     }
   } catch (error) {
-    alert("Error al crear el archivo CSV.");
+    alert("Error al crear el archivo.");
   }
 }
 
@@ -87,19 +87,112 @@ export function placeToCSV(rows, name) {
   createFile(arcContent, name, "text/csv");
 }
 
-
 export function allToJSON(rows) {
-
+  const json = {}
+  rows.forEach(row => {
+    if (!json[row.nombre]) {
+      json[row.nombre] = {}
+    }
+    let act = json[row.nombre]
+    const date = new Date(row.anio, row.mes - 1, row.dia)
+      .toISOString()
+      .slice(0, 10)
+    if (!act[date]) {
+      act[date] = {}
+    }
+    act = act[date]
+    if (!act[row.lugar]) {
+      act[row.lugar] = []
+    }
+    act = act[row.lugar]
+    act.push({
+      esteril: row.esteril,
+      brotes: row.brotes,
+      flores: row.flores,
+      frutosInmaduros: row.frutosInmaduros,
+      frutosMaduros: row.frutosMaduros,
+      observaciones: row.observaciones
+    })
+  })
+  createFile(JSON.stringify(json), "Todo", "application/json")
 }
 
 export function periodToJSON(rows, name) {
-
+  const json = {}
+  rows.forEach(row => {
+    if (!json[row.nombre]) {
+      json[row.nombre] = {}
+    }
+    let act = json[row.nombre]
+    if (!act[row.dia]) {
+      act[row.dia] = {}
+    }
+    act = act[row.dia]
+    if (!json[row.lugar]) {
+      json[row.lugar] = []
+    }
+    act = json[row.lugar]
+    act.push({
+      dia: row.dia,
+      esteril: row.esteril,
+      brotes: row.brotes,
+      flores: row.flores,
+      frutosInmaduros: row.frutosInmaduros,
+      frutosMaduros: row.frutosMaduros,
+      observaciones: row.observaciones
+    })
+  })
+  createFile(JSON.stringify([name, json]), name, "application/json")
 }
 
 export function plantToJSON(rows, name) {
-
+  const json = {}
+  rows.forEach(row => {
+    const date = new Date(row.anio, row.mes - 1, row.dia)
+      .toISOString()
+      .slice(0, 10)
+    if (!json[date]) {
+      json[date] = {}
+    }
+    let act = json[date]
+    if (!act[row.nombre]) {
+      act[row.nombre] = []
+    }
+    act = act[row.nombre]
+    act.push({
+      esteril: row.esteril,
+      brotes: row.brotes,
+      flores: row.flores,
+      frutosInmaduros: row.frutosInmaduros,
+      frutosMaduros: row.frutosMaduros,
+      observaciones: row.observaciones
+    })
+  })
+  createFile(JSON.stringify([name, json]), name, "application/json")
 }
 
 export function placeToJSON(rows, name) {
-
+  const json = {}
+  rows.forEach(row => {
+    if (!json[row.nombre]) {
+      json[row.nombre] = {}
+    }
+    let act = json[row.nombre]
+    const date = new Date(row.anio, row.mes - 1, row.dia)
+      .toISOString()
+      .slice(0, 10)
+    if (!act[date]) {
+      act[date] = []
+    }
+    act = act[date]
+    act.push({
+      esteril: row.esteril,
+      brotes: row.brotes,
+      flores: row.flores,
+      frutosInmaduros: row.frutosInmaduros,
+      frutosMaduros: row.frutosMaduros,
+      observaciones: row.observaciones
+    })
+  })
+  createFile(JSON.stringify([name, json]), name, "application/json")
 }

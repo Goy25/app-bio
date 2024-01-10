@@ -18,7 +18,7 @@ export default function Navigation() {
         initialRouteName="Home"
         screenOptions={{
           headerTitleAlign: "center",
-          headerTintColor: "#FFFFFF",
+          headerTintColor: "#063646",
           headerStyle: {
             backgroundColor: "#00C8E0",
           },

@@ -4,7 +4,7 @@ import { insertElements } from "../utils/querys";
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "white",
+    backgroundColor: "#EBFFFF",
     borderRadius: 8,
     padding: 10,
     width: "85%",
@@ -62,7 +62,7 @@ function InsertElements({ query, reload, setReload, setShow }) {
         </Pressable>
       </View>
       <View style={styles.content}>
-        <Pressable onPress={handleCancel} style={{ width: "48%" }}>
+        <Pressable  onPress={handleCancel} style={{ width: "48%" }}>
           <Text style={styles.NPEButton}>Cancelar</Text>
         </Pressable>
         <Pressable onPress={handleSave} style={{ width: "48%" }}>

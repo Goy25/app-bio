@@ -8,7 +8,7 @@ import { Data, Filter } from "../utils/context";
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "white",
+    backgroundColor: "#EBFFFF",
     borderRadius: 8,
     padding: 10,
     width: "85%",
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   image: {
     alignItems: "center",
-    backgroundColor: "#00C8E0",
+    backgroundColor: "#039BB7",
     borderRadius: 8,
     height: 40,
     justifyContent: "center",
@@ -64,7 +64,7 @@ function PlantElement({ plant }) {
   return (
     <View style={styles.content}>
       <Pressable onPress={() => setVisible(true)} style={styles.image}>
-        <Entypo name="image" size={30} color="white" />
+        <Entypo name="image" size={30} color="#EBFFFF" />
       </Pressable>
       <Pressable onPress={handlePress} style={styles.button}>
         <Text style={styles.text}>{plant.nombre}</Text>

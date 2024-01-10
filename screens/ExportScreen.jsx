@@ -3,7 +3,7 @@ import FieldEI from "../components/fieldEI";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#151E21",
+    backgroundColor: "#063646",
     padding: 20,
     gap: 20,
     height: "100%",

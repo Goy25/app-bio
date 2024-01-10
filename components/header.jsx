@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   dateSelect: {
-    backgroundColor: "white",
+    backgroundColor: "#EBFFFF",
     borderRadius: 8,
     color: "#151E21",
     padding: 5,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   exportButton: {
     alignItems: "center",
-    backgroundColor: "#00C8E0",
+    backgroundColor: "#039BB7",
     borderRadius: 5,
     justifyContent: "center",
     height: 40,
@@ -64,7 +64,7 @@ function Header({
         />
       </View>
       <Pressable onPress={() => navigation.navigate("Export")} style={styles.exportButton}>
-        <Foundation name="page-export-csv" size={35} color="white" />
+        <Foundation name="page-export-csv" size={35} color="#EBFFFF" />
       </Pressable>
     </View>
   );

@@ -105,11 +105,14 @@ function FieldEI({ type }) {
   };
 
   const handleAccept = () => {
-    if (table !== "all" && id === null) {
+    if (table === "all") {
+      exportType[table](csv);
+      return;
+    }
+    if (id === null) {
       alert("Selecciona un tipo");
       return;
     }
-    if (table === "all") exportType[table](csv);
     exportType[table](id, items[index].label, csv);
   };
 

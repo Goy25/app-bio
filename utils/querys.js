@@ -223,7 +223,7 @@ export function exportPlant(id, nombre, mime) {
   });
 }
 
-export function exportPlace(id, nombre) {
+export function exportPlace(id, nombre, mime) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT P.nombre,I.dia,X.mes,X.anio,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN INDIVIDUO I ON V.idLugar=? AND V.idIndividuo=I.id JOIN PLANTA P ON I.idPlanta=P.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,P.nombre;",

@@ -9,8 +9,8 @@ const Total = createContext();
 const styles = StyleSheet.create({
   content: {
     alignItems: "center",
-    backgroundColor: "#00C8E0",
-    borderColor: "white",
+    backgroundColor: "#039BB7",
+    borderColor: "#EBFFFF",
     borderRadius: 8,
     borderWidth: 2,
     display: "flex",
@@ -69,11 +69,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tittle: {
-    borderBottomColor: "white",
+    borderBottomColor: "#EBFFFF",
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     borderBottomWidth: 2,
-    color: "white",
+    color: "#EBFFFF",
     fontWeight: "bold",
     fontSize: 20,
     marginBottom: 5,
