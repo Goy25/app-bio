@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function InsertElements({ query, reload, setReload, setShow }) {
+function InsertElements({ placeholder="Nombre...", query, reload, setReload, setShow }) {
   const [toInsert, setToInsert] = useState("");
 
   const handleCancel = () => {
@@ -43,6 +43,7 @@ function InsertElements({ query, reload, setReload, setShow }) {
       <View style={styles.content}>
         <TextInput
           onChangeText={(text) => setToInsert(text)}
+          placeholder={placeholder}
           multiline={true}
           style={styles.text}
           value={toInsert}

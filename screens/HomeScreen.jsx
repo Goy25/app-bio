@@ -91,6 +91,7 @@ export default function HomeScreen({ navigation }) {
       <ScrollView contentContainerStyle={theme.scrollContent} ref={inputPlant}>
         {showNewField && (
           <InsertElements
+            placeholder="Nombre de la planta..."
             query="INSERT INTO PLANTA (nombre) VALUES (?) "
             reload={reload}
             setReload={setReload}

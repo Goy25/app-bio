@@ -114,7 +114,7 @@ export function allToJSON(rows) {
       observaciones: row.observaciones
     })
   })
-  createFile(JSON.stringify(json), "Todo", "application/json")
+  createFile(JSON.stringify(["all", json]), "Todo", "application/json")
 }
 
 export function periodToJSON(rows, name) {
@@ -142,7 +142,7 @@ export function periodToJSON(rows, name) {
       observaciones: row.observaciones
     })
   })
-  createFile(JSON.stringify([name, json]), name, "application/json")
+  createFile(JSON.stringify(["period", name, json]), name, "application/json")
 }
 
 export function plantToJSON(rows, name) {
@@ -168,7 +168,7 @@ export function plantToJSON(rows, name) {
       observaciones: row.observaciones
     })
   })
-  createFile(JSON.stringify([name, json]), name, "application/json")
+  createFile(JSON.stringify(["plant", name, json]), name, "application/json")
 }
 
 export function placeToJSON(rows, name) {
@@ -194,5 +194,5 @@ export function placeToJSON(rows, name) {
       observaciones: row.observaciones
     })
   })
-  createFile(JSON.stringify([name, json]), name, "application/json")
+  createFile(JSON.stringify(["place", name, json]), name, "application/json")
 }

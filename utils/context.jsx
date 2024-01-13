@@ -9,10 +9,9 @@ export function DataProvider({ children }) {
 
   const [day, setDay] = useState(getDay());
   const [month, setMonth] = useState(getMonth());
-  const [place, setPlace] = useState(null);
+  const [place, setPlace] = useState(-1);
   const [plant, setPlant] = useState({id: 0});
   const [year, setYear] = useState(getYear());
-  const [exportType, setExportType] = useState("date"); // ["date", "plant"]
 
   return (
     <Data.Provider
@@ -27,7 +26,6 @@ export function DataProvider({ children }) {
         setYear,
         plant,
         setPlant,
-        exportType: { value: exportType, setter: setExportType },
       }}
     >
       {children}

@@ -16,6 +16,28 @@ const theme = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
+  label: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  row: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  select: {
+    backgroundColor: "white",
+    borderColor: "#003721",
+    borderRadius: 4,
+    borderWidth: 2,
+    color: "#151E21",
+    padding: 5,
+    textAlign: "center",
+    width: 150,
+  },
   scrollContent: {
     display: "flex",
     flexDirection: "column",

@@ -51,12 +51,16 @@ const monthNames = {
 };
 
 function PlantElement({ plant }) {
-  const { month, year, setPlant } = useContext(Data);
+  const { month, place, year, setPlant } = useContext(Data);
   const { setSearch } = useContext(Filter);
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
 
   const handlePress = () => {
+    if (place < 1) {
+      alert("Seleccione un lugar");
+      return;
+    }
     setPlant(plant);
     setSearch(false);
     navigation.navigate("Info", { name: `${monthNames[month]} ${year}` });

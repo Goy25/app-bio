@@ -1,9 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
-import { Data } from "../utils/context";
-import { updatePhenology } from "../utils/querys";
-import theme from "../utils/theme";
+import { update } from "../utils/querys";
 
 const Total = createContext();
 
@@ -47,6 +44,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    marginTop: 5,
     width: "18%",
   },
   percentInput: {
@@ -73,36 +71,14 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: "center",
   },
-  tittle: {
-    borderBottomColor: "#003721",
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    borderBottomWidth: 2,
-    marginBottom: 5,
-    textAlign: "center",
-    width: "100%",
-  },
 });
-
-const percents = [
-  { label: "10%", value: 10 },
-  { label: "20%", value: 20 },
-  { label: "30%", value: 30 },
-  { label: "40%", value: 40 },
-  { label: "50%", value: 50 },
-  { label: "60%", value: 60 },
-  { label: "70%", value: 70 },
-  { label: "80%", value: 80 },
-  { label: "90%", value: 90 },
-  { label: "100%", value: 100 },
-];
 
 function Observations({ iId, iObservations }) {
   const [observations, setObservations] = useState(iObservations);
 
   const handelChange = (text) => {
     setObservations(text);
-    updatePhenology(
+    update(
       "UPDATE INDIVIDUO SET observaciones = ? WHERE id = ?;",
       text,
       iId
@@ -123,41 +99,21 @@ function Observations({ iId, iObservations }) {
 
 function Percent({ iId, iPercentage, query, tipo }) {
   const { total, setTotal } = useContext(Total);
-  const [items, setItems] = useState(percents);
-  const [percentage, setPercentage] = useState(iPercentage);
+  const [percentage, setPercentage] = useState(iPercentage.toString());
 
-  const handelChange = (value) => {
-    setTotal(total + value - percentage);
+  const handleChange = (value) => {
     setPercentage(value);
+    update(query, value, iId);
   };
-
-  useEffect(() => updatePhenology(query, percentage, iId), [percentage]);
-
-  useEffect(() => {
-    setItems(
-      percents.filter((item) => {
-        return item.value <= 100 - total + percentage;
-      })
-    );
-  }, [total]);
 
   return (
     <View style={styles.percentContent}>
       <Text style={styles.percentTitle}>{tipo}</Text>
       <View style={{ width: "100%" }}>
-        <RNPickerSelect
-          items={items}
-          onValueChange={handelChange}
-          placeholder={{ label: "0%", value: 0 }}
-          style={{
-            inputAndroid: styles.percentInput,
-            placeholder: {
-              color: "#151E21",
-              fontSize: 13,
-              textAlign: "center",
-            },
-          }}
-          useNativeAndroidPickerStyle={false}
+        <TextInput
+          keyboardType="number-pad"
+          onChangeText={handleChange}
+          style={styles.percentInput}
           value={percentage}
         />
       </View>
@@ -166,7 +122,6 @@ function Percent({ iId, iPercentage, query, tipo }) {
 }
 
 function PlantState({ phenology }) {
-  const { plant } = useContext(Data);
   const [total, setTotal] = useState(
     phenology.esteril +
       phenology.brotes +
@@ -176,8 +131,7 @@ function PlantState({ phenology }) {
   );
 
   return (
-    <Pressable style={styles.content} >
-      <Text style={[theme.title, styles.tittle]}>{plant.nombre} - Fenologia</Text>
+    <Pressable style={styles.content}>
       <View style={styles.percentsContainer}>
         <Total.Provider value={{ total, setTotal }}>
           <Percent

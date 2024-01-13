@@ -10,12 +10,12 @@ import {
   plantToJSON,
 } from "./exportFile";
 
-const db = SQLite.openDatabase("example.db");
+const db = SQLite.openDatabase("example2.db");
 // Navigations
 export function createTables() {
   db.transaction((tx) => {
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "");',
+      'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "",familia TEXT DEFAULT "",idB TEXT DEFAULT "",colecta TEXT DEFAULT "");',
       []
     );
     tx.executeSql(
@@ -37,6 +37,20 @@ export function createTables() {
   });
 }
 // HomeScreen
+export function getPlaces(setPlaces) {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM LUGAR ORDER BY nombre",
+      [],
+      (_, { rows: { _array } }) =>
+        setPlaces([
+          ..._array.map((row) => ({ label: row.nombre, value: row.id })),
+          { label: "Nuevo Lugar", value: 0 },
+        ])
+    );
+  });
+}
+
 export function getPlants(setPlants) {
   db.transaction((tx) => {
     tx.executeSql(
@@ -51,7 +65,7 @@ export function filterPlants(filter, setPlants) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre",
-      [filter + "%"],
+      [`%${filter}%`],
       (_, { rows: { _array } }) => setPlants(_array)
     );
   });
@@ -60,7 +74,7 @@ export function filterPlants(filter, setPlants) {
 export function insertElements(values, query) {
   db.transaction((tx) => {
     values.forEach((value) => {
-      tx.executeSql(query, [value.trim()]);
+      tx.executeSql(query, [value.trim().toUpperCase()]);
     });
   });
 }
@@ -71,19 +85,6 @@ export function updateImage(uri, plantId) {
   });
 }
 // InfoScreen
-export function getPlaces(setPlaces) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT * FROM LUGAR ORDER BY nombre",
-      [],
-      (_, { rows: { _array } }) =>
-        setPlaces([
-          ..._array.map((row) => ({ label: row.nombre, value: row.id })),
-          { label: "Nuevo", value: 0 },
-        ])
-    );
-  });
-}
 
 export function getIndividuals(
   plantId,
@@ -143,11 +144,12 @@ export function insertIndividual(
   });
 }
 
-export function updatePhenology(query, percentage, id) {
+export function update(query, content, id) {
   db.transaction((tx) => {
-    tx.executeSql(query, [percentage, id]);
+    tx.executeSql(query, [content, id]);
   });
 }
+
 //ExportScreen
 export function plantItems(setItems) {
   db.transaction((tx) => {
