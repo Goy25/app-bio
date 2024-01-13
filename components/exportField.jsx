@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import Select from "./select";
 import {
   exportAll,
   exportPlace,
@@ -10,51 +10,21 @@ import {
   plantItems,
   periodItems,
 } from "../utils/querys";
+import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
-  buttonText: {
-    backgroundColor: "#00C8E0",
-    borderRadius: 8,
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    paddingHorizontal: 20,
-    paddingVertical: 5,
+  button: {
+    backgroundColor: "#0ed97f",
+    borderRadius: 4,
   },
   content: {
-    alignItems: "center",
-    backgroundColor: "#192225",
-    borderColor: "#00C8E0",
-    borderRadius: 16,
-    borderWidth: 3,
-    gap: 10,
-    padding: 10,
-  },
-  row: {
-    alignItems: "center",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  label: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  select: {
-    backgroundColor: "white",
+    backgroundColor: "#009658",
+    borderColor: "#003721",
     borderRadius: 8,
-    color: "#151E21",
-    padding: 5,
-    textAlign: "center",
-    width: 150,
-  },
-  title: {
-    color: "white",
-    includeFontPadding: false,
-    fontSize: 20,
-    fontWeight: "bold",
+    borderWidth: 2,
+    gap: 20,
+    padding: 20,
+    width: "85%",
   },
 });
 
@@ -71,23 +41,7 @@ const getItems = {
   time: periodItems,
 };
 
-function Select({ label, items, handleChange, placeholder, style, value }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.label}>{label}</Text>
-      <RNPickerSelect
-        items={items}
-        onValueChange={handleChange}
-        placeholder={placeholder}
-        style={{ inputAndroid: styles.select, placeholder: style }}
-        useNativeAndroidPickerStyle={false}
-        value={value}
-      />
-    </View>
-  );
-}
-
-function FieldEI({ type }) {
+function ExportField() {
   const [id, setId] = useState(null);
   const [index, setIndex] = useState(null);
   const [csv, setCSV] = useState(true);
@@ -122,17 +76,16 @@ function FieldEI({ type }) {
 
   return (
     <View style={styles.content}>
-      {type === "Exportar" && (
-        <Select
-          label="Exportar a:"
-          items={[{ label: "Otro Dispositivo", value: false }]}
-          handleChange={setCSV}
-          placeholder={{ label: "Excel", value: true }}
-          style={{ color: "#151E21" }}
-        />
-      )}
+      <Text style={theme.title}>Exportar</Text>
       <Select
-        label={type}
+        label="Exportar a:"
+        items={[{ label: "Otro Dispositivo", value: false }]}
+        handleChange={setCSV}
+        placeholder={{ label: "Excel", value: true }}
+        style={{ color: "#151E21" }}
+      />
+      <Select
+        label="Exportar"
         items={[
           { label: "por Lugar", value: "place" },
           { label: "por Periodo", value: "time" },
@@ -142,7 +95,7 @@ function FieldEI({ type }) {
         placeholder={{ label: "Todo", value: "all" }}
         style={{ color: "#151E21" }}
       />
-      {table !== "all" && (
+      {table != "all" && (
         <Select
           label="Tipo:"
           items={items}
@@ -153,10 +106,10 @@ function FieldEI({ type }) {
         />
       )}
       <Pressable onPress={handleAccept}>
-        <Text style={styles.buttonText}>Aceptar</Text>
+        <Text style={[theme.button, styles.button]}>Aceptar</Text>
       </Pressable>
     </View>
   );
 }
 
-export default FieldEI;
+export default ExportField;

@@ -1,14 +1,9 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { insertElements } from "../utils/querys";
+import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#EBFFFF",
-    borderRadius: 8,
-    padding: 10,
-    width: "85%",
-  },
   content: {
     alignItems: "center",
     display: "flex",
@@ -16,19 +11,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  NPEButton: {
-    backgroundColor: "#00C8E0",
-    borderRadius: 8,
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-    padding: 10,
-    textAlign: "center",
-    width: "100%",
-  },
   text: {
-    fontSize: 16,
-    fontWeight: "bold",
+    backgroundColor: "white",
+    borderColor: "#003721",
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 10,
+    width: "100%",
   },
 });
 
@@ -52,21 +41,19 @@ function InsertElements({ query, reload, setReload, setShow }) {
   return (
     <>
       <View style={styles.content}>
-        <Pressable style={[styles.button, { width: "100%" }]}>
-          <TextInput
-            onChangeText={(text) => setToInsert(text)}
-            multiline={true}
-            style={styles.text}
-            value={toInsert}
-          />
-        </Pressable>
+        <TextInput
+          onChangeText={(text) => setToInsert(text)}
+          multiline={true}
+          style={styles.text}
+          value={toInsert}
+        />
       </View>
       <View style={styles.content}>
         <Pressable  onPress={handleCancel} style={{ width: "48%" }}>
-          <Text style={styles.NPEButton}>Cancelar</Text>
+          <Text style={theme.button}>Cancelar</Text>
         </Pressable>
         <Pressable onPress={handleSave} style={{ width: "48%" }}>
-          <Text style={styles.NPEButton}>Guardar</Text>
+          <Text style={theme.button}>Guardar</Text>
         </Pressable>
       </View>
     </>

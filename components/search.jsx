@@ -29,7 +29,7 @@ function Search() {
   return (
     <View style={styles.content}>
       <Pressable onPress={() => setSearch(!search)}>
-        <Ionicons name="search-circle" size={40} color="#063646" />
+        <Ionicons name="search-circle" size={40} color="white" />
       </Pressable>
       {search && (
         <TextInput

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -150 }, { translateY: -150 }],
   },
   text: {
-    backgroundColor: "#00C8E0",
+    backgroundColor: "#009658",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     color: "white",

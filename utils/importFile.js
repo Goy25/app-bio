@@ -13,3 +13,7 @@ export async function pickFile() {
     alert("Error al importar el archivo.")
   }
 }
+
+export function importAll() {
+  
+}

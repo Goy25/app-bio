@@ -8,11 +8,10 @@ import PlantState from "../components/plantState";
 import { Data } from "../utils/context";
 import { dayList } from "../utils/getDate";
 import { getIndividuals, getPlaces, insertIndividual } from "../utils/querys";
+import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#063646",
-    height: "100%",
     gap: 10,
     padding: 10,
   },
@@ -22,9 +21,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 10,
     width: "100%",
-  },
-  scrollContent: {
-    gap: 10,
   },
 });
 
@@ -54,7 +50,7 @@ export default function InfoScreen({ navigation }) {
       headerRight: () => (
         <View style={styles.header}>
           <AddButton
-            color="#063646"
+            color="white"
             handlePress={handleAdd}
             size={40}
             style={{ marginRight: 10 }}
@@ -83,7 +79,7 @@ export default function InfoScreen({ navigation }) {
   useEffect(() => getPlaces(setPlaces), [reloadP]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, theme.container]}>
       {showHeader && <Header
         firstItems={days}
         firstPlacehoder={"Dia"}
@@ -94,7 +90,7 @@ export default function InfoScreen({ navigation }) {
         secondValue={place}
         setSecondValue={setPlace}
       />}
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerStyle={theme.scrollContent}>
         {place === 0 && (
           <InsertElements
             query={"INSERT INTO LUGAR (nombre) VALUES (?) "}

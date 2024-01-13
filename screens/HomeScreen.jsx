@@ -8,6 +8,7 @@ import AddButton from "../components/addButton";
 import { Data, Filter } from "../utils/context";
 import { yearList } from "../utils/getDate";
 import { filterPlants, getPlants } from "../utils/querys";
+import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
   addButton: {
@@ -16,19 +17,9 @@ const styles = StyleSheet.create({
     right: 10,
   },
   container: {
-    backgroundColor: "#063646",
-    width: "100%",
-    height: "100%",
     display: "flex",
     gap: 10,
     padding: 10,
-  },
-  content: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-evenly",
-    rowGap: 10,
   },
 });
 
@@ -71,7 +62,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, theme.container]}>
       {showHeader && (
         <Header
           firstItems={[
@@ -97,7 +88,7 @@ export default function HomeScreen({ navigation }) {
           setSecondValue={setYear}
         />
       )}
-      <ScrollView contentContainerStyle={styles.content} ref={inputPlant}>
+      <ScrollView contentContainerStyle={theme.scrollContent} ref={inputPlant}>
         {showNewField && (
           <InsertElements
             query="INSERT INTO PLANTA (nombre) VALUES (?) "
@@ -111,7 +102,7 @@ export default function HomeScreen({ navigation }) {
         ))}
       </ScrollView>
       <AddButton
-        color="#039BB7"
+        color="#009658"
         handlePress={handlePress}
         size={50}
         style={styles.addButton}

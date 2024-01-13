@@ -3,14 +3,15 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Data } from "../utils/context";
 import { updatePhenology } from "../utils/querys";
+import theme from "../utils/theme";
 
 const Total = createContext();
 
 const styles = StyleSheet.create({
   content: {
     alignItems: "center",
-    backgroundColor: "#039BB7",
-    borderColor: "#EBFFFF",
+    backgroundColor: "#009658",
+    borderColor: "#003721",
     borderRadius: 8,
     borderWidth: 2,
     display: "flex",
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   observationContent: {
     alignItems: "center",
     borderTopWidth: 2,
-    borderColor: "white",
+    borderColor: "#003721",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -29,7 +30,9 @@ const styles = StyleSheet.create({
   },
   observationInput: {
     backgroundColor: "white",
+    borderColor: "#003721",
     borderRadius: 4,
+    borderWidth: 1,
     color: "#151E21",
     paddingHorizontal: 5,
     width: "65%",
@@ -48,7 +51,9 @@ const styles = StyleSheet.create({
   },
   percentInput: {
     backgroundColor: "white",
+    borderColor: "#003721",
     borderRadius: 4,
+    borderWidth: 1,
     color: "#151E21",
     fontSize: 13,
     paddingVertical: 5,
@@ -69,13 +74,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   tittle: {
-    borderBottomColor: "#EBFFFF",
+    borderBottomColor: "#003721",
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     borderBottomWidth: 2,
-    color: "#EBFFFF",
-    fontWeight: "bold",
-    fontSize: 20,
     marginBottom: 5,
     textAlign: "center",
     width: "100%",
@@ -175,7 +177,7 @@ function PlantState({ phenology }) {
 
   return (
     <Pressable style={styles.content} >
-      <Text style={styles.tittle}>{plant.nombre} - Fenologia</Text>
+      <Text style={[theme.title, styles.tittle]}>{plant.nombre} - Fenologia</Text>
       <View style={styles.percentsContainer}>
         <Total.Provider value={{ total, setTotal }}>
           <Percent
