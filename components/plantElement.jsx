@@ -35,23 +35,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const monthNames = {
-  1: "Enero",
-  2: "Febrero",
-  3: "Marzo",
-  4: "Abril",
-  5: "Mayo",
-  6: "Junio",
-  7: "Julio",
-  8: "Agosto",
-  9: "Septiembre",
-  10: "Octubre",
-  11: "Noviembre",
-  12: "Diciembre",
-};
-
 function PlantElement({ plant }) {
-  const { month, place, year, setPlant } = useContext(Data);
+  const { day, month, place, year, setPlant } = useContext(Data);
   const { setSearch } = useContext(Filter);
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
@@ -63,7 +48,7 @@ function PlantElement({ plant }) {
     }
     setPlant(plant);
     setSearch(false);
-    navigation.navigate("Info", { name: `${monthNames[month]} ${year}` });
+    navigation.navigate("Info", { name: `${year}-${month}-${day}`});
   };
 
   return (

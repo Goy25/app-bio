@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Select from "./select";
 import {
   exportAll,
-  exportPlace,
-  exportPlant,
   exportPeriod,
-  placeItems,
-  plantItems,
   periodItems,
 } from "../utils/querys";
 import theme from "../utils/theme";
@@ -30,44 +26,49 @@ const styles = StyleSheet.create({
 
 const exportType = {
   all: exportAll,
-  place: exportPlace,
-  plant: exportPlant,
   time: exportPeriod,
 };
 
 const getItems = {
-  place: placeItems,
-  plant: plantItems,
   time: periodItems,
 };
 
 function ExportField() {
   const [id, setId] = useState(null);
-  const [index, setIndex] = useState(null);
+  const [index, setIndex] = useState(0);
   const [csv, setCSV] = useState(true);
   const [items, setItems] = useState([]);
   const [table, setTable] = useState("all");
+  const [title, setTitle] = useState("Todo");
 
   const handleChangeTable = (value) => {
     setTable(value);
     setId(null);
+    setTitle(value === "all" ? "Todo" : "")
   };
 
   const handleChangeItem = (value, i) => {
     setId(value);
-    setIndex(i - 1);
+    if (i > 0) {
+      setTitle(items[i - 1].label);
+      setIndex(i - 1);
+    }
   };
 
   const handleAccept = () => {
     if (table === "all") {
-      exportType[table](csv);
+      exportType[table](title, csv);
       return;
     }
     if (id === null) {
-      alert("Selecciona un tipo");
+      alert("Selecciona un periodo");
       return;
     }
-    exportType[table](id, items[index].label, csv);
+    if (title === "") {
+      alert("Ingresa un nombre para el archivo");
+      return;
+    }
+    exportType[table](id, title, items[index].label, csv);
   };
 
   useEffect(() => {
@@ -87,9 +88,7 @@ function ExportField() {
       <Select
         label="Exportar"
         items={[
-          { label: "por Lugar", value: "place" },
           { label: "por Periodo", value: "time" },
-          { label: "por Planta", value: "plant" },
         ]}
         handleChange={handleChangeTable}
         placeholder={{ label: "Todo", value: "all" }}
@@ -97,7 +96,7 @@ function ExportField() {
       />
       {table != "all" && (
         <Select
-          label="Tipo:"
+          label="Periodo:"
           items={items}
           handleChange={handleChangeItem}
           placeholder={{ label: "Seleccionar", value: null }}
@@ -105,6 +104,10 @@ function ExportField() {
           value={id}
         />
       )}
+      <View style={theme.row}>
+        <Text style={theme.label}>Nombre Archivo:</Text>
+        <TextInput onChangeText={setTitle} style={theme.select} value={title}/>
+      </View>
       <Pressable onPress={handleAccept}>
         <Text style={[theme.button, styles.button]}>Aceptar</Text>
       </Pressable>

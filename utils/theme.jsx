@@ -21,6 +21,12 @@ const theme = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  flexColumnCenter: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
   row: {
     alignItems: "center",
     display: "flex",

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "app-bio",
-    "slug": "app-bio",
+    "name": "Fenologia",
+    "slug": "Fenologia",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -23,7 +23,7 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["android.permission.WRITE_EXTERNAL_STORAGE"],
-      "package": "com.appbio"
+      "package": "com.fenologia"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 function EditButton({ editable, setEditable }) {
   return (
     <Pressable
-      style={[styles.button, editable ? {} : { backgroundColor: "#0ed97f" }]}
+      style={[styles.button, editable ? {} : { backgroundColor: "#0ED97F" }]}
       onPress={() => setEditable(!editable)}
     >
       <MaterialIcons name="edit" size={40} color="white" />

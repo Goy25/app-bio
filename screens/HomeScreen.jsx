@@ -6,7 +6,6 @@ import InsertElements from "../components/insertElements";
 import PlantElement from "../components/plantElement";
 import AddButton from "../components/addButton";
 import { Data, Filter } from "../utils/context";
-import { yearList } from "../utils/getDate";
 import { filterPlants, getPlants } from "../utils/querys";
 import theme from "../utils/theme";
 
@@ -24,7 +23,7 @@ const styles = StyleSheet.create({
 });
 
 export default function HomeScreen({ navigation }) {
-  const { month, setMonth, year, setYear } = useContext(Data);
+  const { month, setMonth } = useContext(Data);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
@@ -82,10 +81,6 @@ export default function HomeScreen({ navigation }) {
           firstPlacehoder={"Mes"}
           firstValue={month}
           setFirstValue={setMonth}
-          secondItems={yearList()}
-          secondPlaceholder={"Año"}
-          secondValue={year}
-          setSecondValue={setYear}
         />
       )}
       <ScrollView contentContainerStyle={theme.scrollContent} ref={inputPlant}>

@@ -2,12 +2,8 @@ import * as SQLite from "expo-sqlite";
 import {
   allToCSV,
   periodToCSV,
-  placeToCSV,
-  plantToCSV,
   allToJSON,
   periodToJSON,
-  placeToJSON,
-  plantToJSON,
 } from "./exportFile";
 
 const db = SQLite.openDatabase("example2.db");
@@ -151,32 +147,6 @@ export function update(query, content, id) {
 }
 
 //ExportScreen
-export function plantItems(setItems) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT id,nombre FROM PLANTA ORDER BY nombre;",
-      [],
-      (_, { rows: { _array } }) =>
-        setItems(
-          _array.map((plant) => ({ label: plant.nombre, value: plant.id }))
-        )
-    );
-  });
-}
-
-export function placeItems(setItems) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT id,nombre FROM LUGAR ORDER BY nombre;",
-      [],
-      (_, { rows: { _array } }) =>
-        setItems(
-          _array.map((place) => ({ label: place.nombre, value: place.id }))
-        )
-    );
-  });
-}
-
 export function periodItems(setItems) {
   db.transaction((tx) => {
     tx.executeSql(
@@ -193,45 +163,23 @@ export function periodItems(setItems) {
   });
 }
 // export
-export function exportAll(mime) {
+export function exportAll(nombre, mime) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT P.nombre,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
       [],
-      (_, { rows: { _array } }) => (mime ? allToCSV(_array) : allToJSON(_array))
+      (_, { rows: { _array } }) => (mime ? allToCSV(_array, nombre) : allToJSON(_array, nombre))
     );
   });
 }
 
-export function exportPeriod(id, nombre, mime) {
+export function exportPeriod(id, nombre, period, mime) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT P.nombre,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
       [id],
       (_, { rows: { _array } }) =>
-        mime ? periodToCSV(_array, nombre) : periodToJSON(_array, nombre)
-    );
-  });
-}
-
-export function exportPlant(id, nombre, mime) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT I.dia,X.mes,X.anio,L.nombre,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM INDIVIDUO I JOIN VISTA V ON I.idPlanta=? AND I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre;",
-      [id],
-      (_, { rows: { _array } }) =>
-        mime ? plantToCSV(_array, nombre) : plantToJSON(_array, nombre)
-    );
-  });
-}
-
-export function exportPlace(id, nombre, mime) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT P.nombre,I.dia,X.mes,X.anio,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN INDIVIDUO I ON V.idLugar=? AND V.idIndividuo=I.id JOIN PLANTA P ON I.idPlanta=P.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,P.nombre;",
-      [id],
-      (_, { rows: { _array } }) =>
-        mime ? placeToCSV(_array, nombre) : placeToJSON(_array, nombre)
+        mime ? periodToCSV(_array, nombre) : periodToJSON(_array, nombre, period)
     );
   });
 }

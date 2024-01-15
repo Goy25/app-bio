@@ -1,14 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import AddButton from "../components/addButton";
-import Header from "../components/header";
-import HideHeader from "../components/hideHeader";
-import InsertElements from "../components/insertElements";
 import PlantInfo from "../components/plantInfo";
 import PlantState from "../components/plantState";
 import { Data } from "../utils/context";
-import { dayList } from "../utils/getDate";
-import { getIndividuals, getPlaces, insertIndividual } from "../utils/querys";
+import { getIndividuals, insertIndividual } from "../utils/querys";
 import theme from "../utils/theme";
 
 const styles = StyleSheet.create({

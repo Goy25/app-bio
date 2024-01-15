@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Foundation } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
+import DateModal from "./dateModal";
 import InsertElements from "./insertElements";
 import { Data } from "../utils/context";
 import { getPlaces } from "../utils/querys";
@@ -22,8 +23,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     color: "#151E21",
-    padding: 5,
+    height: 40,
     textAlign: "center",
+    textAlignVertical: "center",
     width: "100%",
   },
   exportButton: {
@@ -36,26 +38,23 @@ const styles = StyleSheet.create({
   },
 });
 
-function Header({ firstItems, firstPlacehoder, firstValue, setFirstValue }) {
+function Header() {
   const { day, month, year, place, setPlace } = useContext(Data);
   const navigation = useNavigation();
   const [places, setPlaces] = useState([{ label: "Nuevo Lugar", value: 0 }]);
   const [reloadPlaces, setReloadPlaces] = useState(false);
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => getPlaces(setPlaces), [reloadPlaces]);
 
   return (
     <>
+      <DateModal visible={visible} setVisible={setVisible}/>
       <View style={styles.content}>
         <View style={{ width: "42%" }}>
-          <RNPickerSelect
-            items={firstItems}
-            onValueChange={(value) => setFirstValue(value)}
-            placeholder={{ label: firstPlacehoder, value: -1 }}
-            style={{ inputAndroid: styles.dateSelect }}
-            useNativeAndroidPickerStyle={false}
-            value={firstValue}
-          />
+          <Pressable onPress={() => setVisible(true)}>
+            <Text style={styles.dateSelect}>{year}-{month}-{day}</Text>
+          </Pressable>
         </View>
         <View style={{ width: "42%" }}>
           <RNPickerSelect
