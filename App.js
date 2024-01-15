@@ -1,14 +1,14 @@
 import Navigation from "./Navigation"
-import { DataProvider, FilterProvider, TableProvider } from "./utils/context"
+import { DataProvider, FilterProvider, ReloadProvider } from "./utils/context"
 
 export default function App () {
   return (
     <DataProvider>
-      <TableProvider>
+      <ReloadProvider>
         <FilterProvider>
           <Navigation />
         </FilterProvider>
-      </TableProvider>
+      </ReloadProvider>
     </DataProvider>
   )
 }

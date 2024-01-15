@@ -1,6 +1,7 @@
 import * as FileSystem from "expo-file-system";
+import { importAll, importPeriod } from "./querys";
 
-export async function pickFile(setter) {
+export async function pickFile(setter, setName) {
   try {
     if (Platform.OS === "android") {
       const permision =
@@ -11,6 +12,7 @@ export async function pickFile(setter) {
       const files = await FileSystem.StorageAccessFramework.readDirectoryAsync(
         permision.directoryUri
       );
+      setName("");
       setter(
         files
           .filter((file) => file.endsWith(".json"))
@@ -25,9 +27,34 @@ export async function pickFile(setter) {
   }
 }
 
-export async function readFile(uri) {
-  const content = await FileSystem.StorageAccessFramework.readAsStringAsync(uri);
-  console.log(content);
+export async function readFile(
+  uri,
+  setReloadPlants,
+  setReloadPlaces,
+  reloadPlants,
+  reloadPlaces,
+  setVisibility
+) {
+  const content = await FileSystem.StorageAccessFramework.readAsStringAsync(
+    uri
+  );
+  const data = JSON.parse(content);
+  Array.isArray(data)
+    ? importPeriod(
+        data[0].split("-"),
+        data[1],
+        setReloadPlants,
+        setReloadPlaces,
+        reloadPlants,
+        reloadPlaces,
+        setVisibility
+      )
+    : importAll(
+        data,
+        setReloadPlants,
+        setReloadPlaces,
+        reloadPlants,
+        reloadPlaces,
+        setVisibility
+      );
 }
-
-export function importAll() {}

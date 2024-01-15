@@ -2,8 +2,8 @@ import { useState, createContext } from "react";
 import { getDay, getMonth, getYear } from "./getDate";
 
 export const Data = createContext();
-export const Table = createContext();
 export const Filter = createContext();
+export const Reload = createContext();
 
 export function DataProvider({ children }) {
 
@@ -52,24 +52,20 @@ export function FilterProvider({ children }) {
   );
 }
 
-export function TableProvider({ children }) {
-
-  const [reloadDS, setReloadDS] = useState(false);
-  const [reloadDates, setReloadDates] = useState(false);
-  const [table, setTable] = useState("PLANTA");
+export function ReloadProvider({ children }) {
+  const [reloadPlants, setReloadPlants] = useState(false);
+  const [reloadPlaces, setReloadPlaces] = useState(false);
 
   return (
-    <Table.Provider
+    <Reload.Provider
       value={{
-        table,
-        setTable,
-        reloadDS,
-        setReloadDS,
-        reloadDates,
-        setReloadDates,
+        reloadPlants,
+        setReloadPlants,
+        reloadPlaces,
+        setReloadPlaces
       }}
     >
       {children}
-    </Table.Provider>
+    </Reload.Provider>
   );
 }

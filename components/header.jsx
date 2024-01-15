@@ -5,7 +5,7 @@ import { Foundation } from "@expo/vector-icons";
 import RNPickerSelect from "react-native-picker-select";
 import DateModal from "./dateModal";
 import InsertElements from "./insertElements";
-import { Data } from "../utils/context";
+import { Data, Reload } from "../utils/context";
 import { getPlaces } from "../utils/querys";
 
 const styles = StyleSheet.create({
@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
 
 function Header() {
   const { day, month, year, place, setPlace } = useContext(Data);
+  const { reloadPlaces, setReloadPlaces } = useContext(Reload);
   const navigation = useNavigation();
   const [places, setPlaces] = useState([{ label: "Nuevo Lugar", value: 0 }]);
-  const [reloadPlaces, setReloadPlaces] = useState(false);
   const [visible, setVisible] = useState(false)
 
   useEffect(() => getPlaces(setPlaces), [reloadPlaces]);

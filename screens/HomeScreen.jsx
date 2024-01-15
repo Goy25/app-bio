@@ -5,7 +5,7 @@ import HideHeader from "../components/hideHeader";
 import InsertElements from "../components/insertElements";
 import PlantElement from "../components/plantElement";
 import AddButton from "../components/addButton";
-import { Data, Filter } from "../utils/context";
+import { Data, Filter, Reload } from "../utils/context";
 import { filterPlants, getPlants } from "../utils/querys";
 import theme from "../utils/theme";
 
@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
 
 export default function HomeScreen({ navigation }) {
   const { month, setMonth } = useContext(Data);
+  const { reloadPlants, setReloadPlants } = useContext(Reload);
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
-  const [reload, setReload] = useState(false);
   const [showHeader, setShowHeader] = useState(true);
   const [showNewField, setShowNewField] = useState(false);
 
@@ -43,11 +43,11 @@ export default function HomeScreen({ navigation }) {
     });
   }, [showHeader]);
 
-  useEffect(() => getPlants(setPlants), [reload]);
+  useEffect(() => getPlants(setPlants), [reloadPlants]);
 
   useEffect(() => {
     if (filter === "") {
-      setReload(!reload);
+      setReloadPlants(!reloadPlants);
       return;
     }
     filterPlants(filter, setPlants);
@@ -88,8 +88,8 @@ export default function HomeScreen({ navigation }) {
           <InsertElements
             placeholder="Nombre de la planta..."
             query="INSERT INTO PLANTA (nombre) VALUES (?) "
-            reload={reload}
-            setReload={setReload}
+            reload={reloadPlants}
+            setReload={setReloadPlants}
             setShow={setShowNewField}
           />
         )}

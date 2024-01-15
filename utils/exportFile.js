@@ -49,57 +49,61 @@ export function periodToCSV(rows, name) {
   const arcContent = `Dia,Lugar,Planta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
-      `${row.dia},${row.lugar},${row.nombre},${row.esteril},${row.brotes},${row.flores},${row.frutosInmaduros},${row.frutosMaduros},${row.observaciones}`
+        `${row.dia},${row.lugar},${row.nombre},${row.esteril},${row.brotes},${row.flores},${row.frutosInmaduros},${row.frutosMaduros},${row.observaciones}`
     )
     .join("\n")}`;
   createFile(arcContent, name, "text/csv");
 }
 
 export function allToJSON(rows, name) {
-  const json = {}
-  rows.forEach(row => {
+  const json = {};
+  rows.forEach((row) => {
     if (!json[row.nombre]) {
-      json[row.nombre] = {}
+      json[row.nombre] = {};
     }
-    let act = json[row.nombre]
-    const date = new Date(row.anio, row.mes - 1, row.dia)
-      .toISOString()
-      .slice(0, 10)
-    if (!act[date]) {
-      act[date] = {}
+    let act = json[row.nombre];
+    act.caracteristicas = [row.familia, row.idB, row.colecta];
+    const period = `${row.anio}-${row.mes}`
+    if (!act[period]) {
+      act[period] = {};
     }
-    act = act[date]
+    act = act[period];
     if (!act[row.lugar]) {
-      act[row.lugar] = []
+      act[row.lugar] = {};
     }
-    act = act[row.lugar]
+    act = act[row.lugar];
+    if (!act[row.dia]) {
+      act[row.dia] = [];
+    }
+    act = act[row.dia];
     act.push({
       esteril: row.esteril,
       brotes: row.brotes,
       flores: row.flores,
       frutosInmaduros: row.frutosInmaduros,
       frutosMaduros: row.frutosMaduros,
-      observaciones: row.observaciones
-    })
-  })
-  createFile(JSON.stringify(json), name, "application/json")
+      observaciones: row.observaciones,
+    });
+  });
+  createFile(JSON.stringify(json), name, "application/json");
 }
 
 export function periodToJSON(rows, name, period) {
-  const json = {}
-  rows.forEach(row => {
+  const json = {};
+  rows.forEach((row) => {
     if (!json[row.nombre]) {
-      json[row.nombre] = {}
+      json[row.nombre] = {};
     }
-    let act = json[row.nombre]
+    let act = json[row.nombre];
+    act.caracteristicas = [row.familia, row.idB, row.colecta];
+    if (!act[row.lugar]) {
+      act[row.lugar] = {};
+    }
+    act = act[row.lugar];
     if (!act[row.dia]) {
-      act[row.dia] = {}
+      act[row.dia] = [];
     }
-    act = act[row.dia]
-    if (!json[row.lugar]) {
-      json[row.lugar] = []
-    }
-    act = json[row.lugar]
+    act = act[row.dia];
     act.push({
       dia: row.dia,
       esteril: row.esteril,
@@ -107,8 +111,8 @@ export function periodToJSON(rows, name, period) {
       flores: row.flores,
       frutosInmaduros: row.frutosInmaduros,
       frutosMaduros: row.frutosMaduros,
-      observaciones: row.observaciones
-    })
-  })
-  createFile(JSON.stringify([period, json]), name, "application/json")
+      observaciones: row.observaciones,
+    });
+  });
+  createFile(JSON.stringify([period, json]), name, "application/json");
 }
