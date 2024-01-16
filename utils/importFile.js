@@ -29,10 +29,6 @@ export async function pickFile(setter, setName) {
 
 export async function readFile(
   uri,
-  setReloadPlants,
-  setReloadPlaces,
-  reloadPlants,
-  reloadPlaces,
   setVisibility
 ) {
   const content = await FileSystem.StorageAccessFramework.readAsStringAsync(
@@ -43,18 +39,10 @@ export async function readFile(
     ? importPeriod(
         data[0].split("-"),
         data[1],
-        setReloadPlants,
-        setReloadPlaces,
-        reloadPlants,
-        reloadPlaces,
         setVisibility
       )
     : importAll(
         data,
-        setReloadPlants,
-        setReloadPlaces,
-        reloadPlants,
-        reloadPlaces,
         setVisibility
       );
 }

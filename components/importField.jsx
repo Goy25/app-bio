@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Loading from "./loading";
 import Select from "./select";
-import { Reload } from "../utils/context";
 import { pickFile, readFile } from "../utils/importFile";
 import theme from "../utils/theme";
 
@@ -23,8 +22,6 @@ const styles = StyleSheet.create({
 });
 
 function ImportField() {
-  const { reloadPlants, setReloadPlants, reloadPlaces, setReloadPlaces } =
-    useContext(Reload);
   const [arc, setArc] = useState("");
   const [items, setItems] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -36,10 +33,6 @@ function ImportField() {
     }
     readFile(
       arc,
-      setReloadPlants,
-      setReloadPlaces,
-      reloadPlants,
-      reloadPlaces,
       setVisible
     )
     setVisible(true);
@@ -61,6 +54,7 @@ function ImportField() {
         handleChange={setArc}
         placeholder={{ label: "Selecione archivo", value: "" }}
         style={{}}
+        value={arc}
       />
       <Pressable
         onPress={handleAccept}

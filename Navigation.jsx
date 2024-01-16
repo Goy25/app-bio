@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ExportScreen from "./screens/ExportScreen";
@@ -6,11 +6,19 @@ import HomeScreen from "./screens/HomeScreen";
 import InfoScreen from "./screens/InfoScreen";
 import Search from "./components/search";
 import { createTables } from "./utils/querys";
+import { Reload } from "./utils/context";
 
 const Stack = createStackNavigator();
 
 export default function Navigation() {
+  const { reloadPlants, reloadPlaces, setReloadPlants, setReloadPlaces } =
+    useContext(Reload);
   useEffect(createTables, []);
+
+  const handleFocusHome = () => {
+    setReloadPlants(!reloadPlants);
+    setReloadPlaces(!reloadPlaces);
+  };
 
   return (
     <NavigationContainer>
@@ -31,6 +39,7 @@ export default function Navigation() {
             title: "Inicio",
             headerLeft: Search,
           }}
+          listeners={{ focus: handleFocusHome }}
         />
         <Stack.Screen
           name="Info"

@@ -248,10 +248,6 @@ function finalPartImport(idPlant, idPeriod, content) {
 
 export function importAll(
   content,
-  setReloadPlants,
-  setReloadPlaces,
-  reloadPlants,
-  reloadPlaces,
   setVisibility
 ) {
   const periodsId = {};
@@ -318,8 +314,6 @@ export function importAll(
       setVisibility(false);
     },
     () => {
-      setReloadPlants(!reloadPlants);
-      setReloadPlaces(!reloadPlaces);
       setVisibility(false);
     }
   );
@@ -328,10 +322,6 @@ export function importAll(
 export function importPeriod(
   period,
   content,
-  setReloadPlants,
-  setReloadPlaces,
-  reloadPlants,
-  reloadPlaces,
   setVisibility
 ) {
   const insertPlant = (tx, id, content) => {
@@ -383,8 +373,6 @@ export function importPeriod(
       setVisibility(false);
     },
     () => {
-      setReloadPlants(!reloadPlants);
-      setReloadPlaces(!reloadPlaces);
       setVisibility(false);
     }
   );

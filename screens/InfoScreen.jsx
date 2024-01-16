@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import AddButton from "../components/addButton";
 import PlantInfo from "../components/plantInfo";
 import PlantState from "../components/plantState";
-import { Data, Reload } from "../utils/context";
+import { Data } from "../utils/context";
 import { getIndividuals, insertIndividual } from "../utils/querys";
 import theme from "../utils/theme";
 
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
 
 export default function InfoScreen({ navigation }) {
   const { day, month, place, plant, year } = useContext(Data);
-  const { reloadPlants, setReloadPlants } = useContext(Reload);
   const [individuals, setIndividuals] = useState([]);
   const [reload, setReload] = useState(false);
 
@@ -36,10 +35,6 @@ export default function InfoScreen({ navigation }) {
       ),
     });
   };
-
-  useEffect(() => {
-    return setReloadPlants(!reloadPlants);
-  }, []);
 
   useEffect(() => {
     setOptions();
