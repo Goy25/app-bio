@@ -188,11 +188,9 @@ export function exportPeriod(id, nombre, period, mime) {
 }
 
 function finalPartImport(idPlant, idPeriod, content) {
-  console.log(content);
   const placesId = {};
 
   const insertInd = (tx, idPlant, idPeriod, idPlace, content) => {
-    console.log(content);
     for (const [k, v] of Object.entries(content)) {
       v.forEach((ind) => {
         tx.executeSql(
@@ -210,16 +208,9 @@ function finalPartImport(idPlant, idPeriod, content) {
           (_, { insertId }) => {
             tx.executeSql(
               "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?);",
-              [insertId, idPlace, idPeriod],
-              () => {
-                console.log("Insertado individuo");
-              },
-              (_, error) =>
-                console.log(`Error al insertar vista ${ind}:`, error)
+              [insertId, idPlace, idPeriod]
             );
           },
-          (_, error) =>
-            console.log(`Error al insertar individuo ${ind}:`, error)
         );
       });
     }
@@ -248,10 +239,8 @@ function finalPartImport(idPlant, idPeriod, content) {
               placesId[k] = insertId;
               insertInd(tx, idPlant, idPeriod, insertId, v);
             },
-            (_, error) => console.log(`Error al insertar lugar ${k}:`, error)
           );
         },
-        (_, error) => console.log(`Error al buscar lugar ${k}:`, error)
       );
     }
   });
@@ -267,34 +256,36 @@ export function importAll(
 ) {
   const periodsId = {};
 
-  const insertPeriod = (tx, idPlant, content) => {
-    for (const [k, v] of Object.entries(content)) {
-      if (k === "caracteristicas") continue;
-      if (periodsId[k]) {
-        finalPartImport(tx, idPlant, periodsId[k], v);
-        return;
-      }
-      const period = k.split("-");
-      tx.executeSql(
-        "SELECT id FROM PERIODO WHERE anio = ? AND mes = ?;",
-        [parseInt(period[0]), parseInt(period[1])],
-        (_, { rows }) => {
-          if (rows.length > 0) {
-            periodsId[k] = rows._array[0].id;
-            finalPartImport(tx, idPlant, rows._array[0].id, v);
-            return;
-          }
-          tx.executeSql(
-            "INSERT INTO PERIODO (anio, mes) VALUES (?, ?);",
-            [parseInt(period[0]), parseInt(period[1])],
-            (_, { insertId }) => {
-              periodsId[k] = insertId;
-              finalPartImport(tx, idPlant, insertId, v);
-            }
-          );
+  const insertPeriod = (idPlant, content) => {
+    db.transaction((tx) => {
+      for (const [k, v] of Object.entries(content)) {
+        if (k === "caracteristicas") continue;
+        if (periodsId[k]) {
+          finalPartImport(idPlant, periodsId[k], v);
+          return;
         }
-      );
-    }
+        const period = k.split("-");
+        tx.executeSql(
+          "SELECT id FROM PERIODO WHERE anio = ? AND mes = ?;",
+          [parseInt(period[0]), parseInt(period[1])],
+          (_, { rows }) => {
+            if (rows.length > 0) {
+              periodsId[k] = rows._array[0].id;
+              finalPartImport(idPlant, rows._array[0].id, v);
+              return;
+            }
+            tx.executeSql(
+              "INSERT INTO PERIODO (anio, mes) VALUES (?, ?);",
+              [parseInt(period[0]), parseInt(period[1])],
+              (_, { insertId }) => {
+                periodsId[k] = insertId;
+                finalPartImport(idPlant, insertId, v);
+              },
+            );
+          },
+        );
+      }
+    });
   };
 
   db.transaction(
@@ -305,7 +296,7 @@ export function importAll(
           [k],
           (_, { rows }) => {
             if (rows.length > 0) {
-              insertPeriod(tx, rows._array[0].id, v);
+              insertPeriod(rows._array[0].id, v);
               return;
             }
             tx.executeSql(
@@ -316,13 +307,16 @@ export function importAll(
                 v.caracteristicas[1],
                 v.caracteristicas[2],
               ],
-              (_, { insertId }) => insertPeriod(tx, insertId, v)
+              (_, { insertId }) => insertPeriod(insertId, v),
             );
-          }
+          },
         );
       }
     },
-    undefined,
+    () => {
+      alert("Error al importar.");
+      setVisibility(false);
+    },
     () => {
       setReloadPlants(!reloadPlants);
       setReloadPlaces(!reloadPlaces);
@@ -341,7 +335,6 @@ export function importPeriod(
   setVisibility
 ) {
   const insertPlant = (tx, id, content) => {
-    console.log(content);
     for (const [k, v] of Object.entries(content)) {
       tx.executeSql(
         "SELECT id FROM PLANTA WHERE nombre = ?;",
@@ -385,7 +378,10 @@ export function importPeriod(
         }
       );
     },
-    undefined,
+    () => {
+      alert("Error al importar el periodo.");
+      setVisibility(false);
+    },
     () => {
       setReloadPlants(!reloadPlants);
       setReloadPlaces(!reloadPlaces);
