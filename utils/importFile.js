@@ -31,5 +31,9 @@ export async function readFile(uri, setVisibility) {
   const content = await FileSystem.StorageAccessFramework.readAsStringAsync(
     uri
   );
-  importData(JSON.parse(content), setVisibility);
+  try {
+    importData(JSON.parse(content), setVisibility);
+  } catch (error) {
+    alert("Error al importar el archivo.");
+  }
 }

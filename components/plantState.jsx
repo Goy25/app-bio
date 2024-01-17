@@ -118,7 +118,7 @@ function Percent({ iId, iPercentage, query, tipo }) {
     }
     setTotal(total - percentage + number);
     setPercentage(number.toString());
-    update(query, value, iId);
+    update(query, number, iId);
   };
 
   return (

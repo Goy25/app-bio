@@ -169,7 +169,9 @@ export function exportAll(nombre, mime, setVisibility) {
       "SELECT P.nombre,P.familia,P.idB,P.colecta,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
       [],
       (_, { rows: { _array } }) =>
-        mime ? allToCSV(_array, nombre, setVisibility) : allToJSON(_array, nombre, setVisibility)
+        mime
+          ? allToCSV(_array, nombre, setVisibility)
+          : allToJSON(_array, nombre, setVisibility)
     );
   });
 }

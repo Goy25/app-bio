@@ -1,11 +1,13 @@
 import * as FileSystem from "expo-file-system";
 
 async function createFile(content, name, mime, setVisibility) {
+  console.log(content);
   try {
     if (Platform.OS === "android") {
       const permision =
         await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (!permision.granted) {
+        setVisibility(false);
         return;
       }
       const file = await FileSystem.StorageAccessFramework.createFileAsync(
@@ -32,26 +34,34 @@ async function createFile(content, name, mime, setVisibility) {
 }
 
 export function allToCSV(rows, name, setVisibility) {
-  const arcContent = `Fecha,Lugar,Planta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
+  const arcContent = `Fecha,Lugar,Planta,Familia,ID,Colecta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
         `${new Date(row.anio, row.mes - 1, row.dia)
           .toISOString()
-          .slice(0, 10)},${row.lugar},${row.nombre},${row.esteril},${
-          row.brotes
-        },${row.flores},${row.frutosInmaduros},${row.frutosMaduros},${
-          row.observaciones
-        }`
+          .slice(0, 10)},${row.lugar},${row.nombre},${
+          row.familia === null ? "" : row.familia
+        },${row.idB},${row.colecta === null ? "" : row.colecta},${
+          row.esteril
+        },${row.brotes},${row.flores},${row.frutosInmaduros},${
+          row.frutosMaduros
+        },${row.observaciones}`
     )
     .join("\n")}`;
   createFile(arcContent, name, "text/csv", setVisibility);
 }
 
 export function periodToCSV(rows, name, setVisibility) {
-  const arcContent = `Dia,Lugar,Planta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
+  const arcContent = `Dia,Lugar,Planta,Familia,ID,Colecta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
-        `${row.dia},${row.lugar},${row.nombre},${row.esteril},${row.brotes},${row.flores},${row.frutosInmaduros},${row.frutosMaduros},${row.observaciones}`
+        `${row.dia},${row.lugar},${row.nombre},${
+          row.familia === null ? "" : row.familia
+        },${row.idB},${row.colecta === null ? "" : row.colecta},${
+          row.esteril
+        },${row.brotes},${row.flores},${row.frutosInmaduros},${
+          row.frutosMaduros
+        },${row.observaciones}`
     )
     .join("\n")}`;
   createFile(arcContent, name, "text/csv", setVisibility);
@@ -77,7 +87,12 @@ export function allToJSON(rows, name, setVisibility) {
   };
   rows.forEach((row) => {
     if (!json.plants[row.nombre]) {
-      json.plants[row.nombre] = {id: 0, familia: row.familia, idB: row.idB, colecta: row.colecta};
+      json.plants[row.nombre] = {
+        id: 0,
+        familia: row.familia,
+        idB: row.idB,
+        colecta: row.colecta,
+      };
     }
     if (!json.places[row.lugar]) {
       json.places[row.lugar] = 0;
@@ -93,7 +108,7 @@ export function periodToJSON(rows, name, period, setVisibility) {
   const json = {
     plants: {},
     places: {},
-    periods: {[period]: 0},
+    periods: { [period]: 0 },
     individuals: rows.map((row) => ({
       plant: row.nombre,
       place: row.lugar,
@@ -109,11 +124,16 @@ export function periodToJSON(rows, name, period, setVisibility) {
   };
   rows.forEach((row) => {
     if (!json.plants[row.nombre]) {
-      json.plants[row.nombre] = {id: 0, familia: row.familia, idB: row.idB, colecta: row.colecta};
+      json.plants[row.nombre] = {
+        id: 0,
+        familia: row.familia,
+        idB: row.idB,
+        colecta: row.colecta,
+      };
     }
     if (!json.places[row.lugar]) {
       json.places[row.lugar] = 0;
-    }    
+    }
   });
   createFile(JSON.stringify(json), name, "application/json", setVisibility);
 }
