@@ -102,7 +102,6 @@ function Percent({ iId, iPercentage, query, tipo }) {
   const [percentage, setPercentage] = useState(iPercentage.toString());
 
   const handleChange = (value) => {
-    console.log("change", value);
     if ([" ", ".", ",", "-"].some((e) => value.includes(e))) {
       return;
     }

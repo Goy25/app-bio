@@ -5,6 +5,11 @@ import { Data } from "../utils/context";
 import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
+  button: {
+    borderColor: "#003721",
+    borderWidth: 2,
+    width: 150,
+  },
   container: {
     gap: 20,
     padding: 20,
@@ -50,7 +55,7 @@ function DateModal({ visible, setVisible }) {
           />
         </View>
         <Pressable onPress={() => setVisible(false)}>
-          <Text style={theme.button}>Cerrar</Text>
+          <Text style={[theme.button, styles.button]}>Cerrar</Text>
         </Pressable>
       </View>
     </Modal>

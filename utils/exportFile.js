@@ -1,6 +1,6 @@
 import * as FileSystem from "expo-file-system";
 
-async function createFile(content, name, mime) {
+async function createFile(content, name, mime, setVisibility) {
   try {
     if (Platform.OS === "android") {
       const permision =
@@ -18,18 +18,20 @@ async function createFile(content, name, mime) {
         content,
         { encoding: FileSystem.EncodingType.UTF8 }
       );
+      setVisibility(false);
     } else {
       const file = `${FileSystem.documentDirectory}${name}`;
       await FileSystem.writeAsStringAsync(file, content, {
         encoding: FileSystem.EncodingType.UTF8,
       });
+      setVisibility(false);
     }
   } catch (error) {
     alert("Error al crear el archivo.");
   }
 }
 
-export function allToCSV(rows, name) {
+export function allToCSV(rows, name, setVisibility) {
   const arcContent = `Fecha,Lugar,Planta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
@@ -42,69 +44,28 @@ export function allToCSV(rows, name) {
         }`
     )
     .join("\n")}`;
-  createFile(arcContent, name, "text/csv");
+  createFile(arcContent, name, "text/csv", setVisibility);
 }
 
-export function periodToCSV(rows, name) {
+export function periodToCSV(rows, name, setVisibility) {
   const arcContent = `Dia,Lugar,Planta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
         `${row.dia},${row.lugar},${row.nombre},${row.esteril},${row.brotes},${row.flores},${row.frutosInmaduros},${row.frutosMaduros},${row.observaciones}`
     )
     .join("\n")}`;
-  createFile(arcContent, name, "text/csv");
+  createFile(arcContent, name, "text/csv", setVisibility);
 }
 
-export function allToJSON(rows, name) {
-  const json = {};
-  rows.forEach((row) => {
-    if (!json[row.nombre]) {
-      json[row.nombre] = {};
-    }
-    let act = json[row.nombre];
-    act.caracteristicas = [row.familia, row.idB, row.colecta];
-    const period = `${row.anio}-${row.mes}`;
-    if (!act[period]) {
-      act[period] = {};
-    }
-    act = act[period];
-    if (!act[row.lugar]) {
-      act[row.lugar] = {};
-    }
-    act = act[row.lugar];
-    if (!act[row.dia]) {
-      act[row.dia] = [];
-    }
-    act = act[row.dia];
-    act.push({
-      esteril: row.esteril,
-      brotes: row.brotes,
-      flores: row.flores,
-      frutosInmaduros: row.frutosInmaduros,
-      frutosMaduros: row.frutosMaduros,
-      observaciones: row.observaciones,
-    });
-  });
-  createFile(JSON.stringify(json), name, "application/json");
-}
-
-export function periodToJSON(rows, name, period) {
-  const json = {};
-  rows.forEach((row) => {
-    if (!json[row.nombre]) {
-      json[row.nombre] = {};
-    }
-    let act = json[row.nombre];
-    act.caracteristicas = [row.familia, row.idB, row.colecta];
-    if (!act[row.lugar]) {
-      act[row.lugar] = {};
-    }
-    act = act[row.lugar];
-    if (!act[row.dia]) {
-      act[row.dia] = [];
-    }
-    act = act[row.dia];
-    act.push({
+export function allToJSON(rows, name, setVisibility) {
+  const json = {
+    plants: {},
+    places: {},
+    periods: {},
+    individuals: rows.map((row) => ({
+      plant: row.nombre,
+      place: row.lugar,
+      period: `${row.anio}-${row.mes}`,
       dia: row.dia,
       esteril: row.esteril,
       brotes: row.brotes,
@@ -112,7 +73,47 @@ export function periodToJSON(rows, name, period) {
       frutosInmaduros: row.frutosInmaduros,
       frutosMaduros: row.frutosMaduros,
       observaciones: row.observaciones,
-    });
+    })),
+  };
+  rows.forEach((row) => {
+    if (!json.plants[row.nombre]) {
+      json.plants[row.nombre] = {id: 0, familia: row.familia, idB: row.idB, colecta: row.colecta};
+    }
+    if (!json.places[row.lugar]) {
+      json.places[row.lugar] = 0;
+    }
+    if (!json.periods[`${row.anio}-${row.mes}`]) {
+      json.periods[`${row.anio}-${row.mes}`] = 0;
+    }
   });
-  createFile(JSON.stringify([period, json]), name, "application/json");
+  createFile(JSON.stringify(json), name, "application/json", setVisibility);
+}
+
+export function periodToJSON(rows, name, period, setVisibility) {
+  const json = {
+    plants: {},
+    places: {},
+    periods: {[period]: 0},
+    individuals: rows.map((row) => ({
+      plant: row.nombre,
+      place: row.lugar,
+      period: period,
+      dia: row.dia,
+      esteril: row.esteril,
+      brotes: row.brotes,
+      flores: row.flores,
+      frutosInmaduros: row.frutosInmaduros,
+      frutosMaduros: row.frutosMaduros,
+      observaciones: row.observaciones,
+    })),
+  };
+  rows.forEach((row) => {
+    if (!json.plants[row.nombre]) {
+      json.plants[row.nombre] = {id: 0, familia: row.familia, idB: row.idB, colecta: row.colecta};
+    }
+    if (!json.places[row.lugar]) {
+      json.places[row.lugar] = 0;
+    }    
+  });
+  createFile(JSON.stringify(json), name, "application/json", setVisibility);
 }

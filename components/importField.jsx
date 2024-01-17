@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import Loading from "./loading";
 import Select from "./select";
 import { pickFile, readFile } from "../utils/importFile";
 import theme from "../utils/theme";
@@ -21,10 +20,9 @@ const styles = StyleSheet.create({
   },
 });
 
-function ImportField() {
+function ImportField({ setVisible, setText }) {
   const [arc, setArc] = useState("");
   const [items, setItems] = useState([]);
-  const [visible, setVisible] = useState(false);
 
   const handleAccept = () => {
     if (arc === "") {
@@ -32,33 +30,31 @@ function ImportField() {
       return;
     }
     readFile(arc, setVisible);
+    setText("Importando...");
     setVisible(true);
   };
 
   return (
-    <>
-      <View style={styles.content}>
-        <Text style={theme.title}>Importar</Text>
-        <View style={theme.row}>
-          <Text style={theme.label}>Directorio:</Text>
-          <Pressable onPress={() => pickFile(setItems, setArc)}>
-            <Text style={[theme.select, { padding: 10 }]}>Seleccionar</Text>
-          </Pressable>
-        </View>
-        <Select
-          label="Archivo:"
-          items={items}
-          handleChange={setArc}
-          placeholder={{ label: "Selecione archivo", value: "" }}
-          style={{}}
-          value={arc}
-        />
-        <Pressable onPress={handleAccept}>
-          <Text style={[theme.button, styles.button]}>Aceptar</Text>
+    <View style={styles.content}>
+      <Text style={theme.title}>Importar</Text>
+      <View style={theme.row}>
+        <Text style={theme.label}>Directorio:</Text>
+        <Pressable onPress={() => pickFile(setItems, setArc)}>
+          <Text style={[theme.select, { padding: 10 }]}>Seleccionar</Text>
         </Pressable>
       </View>
-      <Loading visible={visible} />
-    </>
+      <Select
+        label="Archivo:"
+        items={items}
+        handleChange={setArc}
+        placeholder={{ label: "Selecione archivo", value: "" }}
+        style={{}}
+        value={arc}
+      />
+      <Pressable onPress={handleAccept}>
+        <Text style={[theme.button, styles.button]}>Importar</Text>
+      </Pressable>
+    </View>
   );
 }
 

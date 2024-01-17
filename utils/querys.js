@@ -163,216 +163,153 @@ export function periodItems(setItems) {
   });
 }
 // export
-export function exportAll(nombre, mime) {
+export function exportAll(nombre, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT P.nombre,P.familia,P.idB,P.colecta,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
       [],
       (_, { rows: { _array } }) =>
-        mime ? allToCSV(_array, nombre) : allToJSON(_array, nombre)
+        mime ? allToCSV(_array, nombre, setVisibility) : allToJSON(_array, nombre, setVisibility)
     );
   });
 }
 
-export function exportPeriod(id, nombre, period, mime) {
+export function exportPeriod(id, nombre, period, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
       "SELECT P.nombre,P.familia,P.idB,P.colecta,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
       [id],
       (_, { rows: { _array } }) =>
         mime
-          ? periodToCSV(_array, nombre)
-          : periodToJSON(_array, nombre, period)
+          ? periodToCSV(_array, nombre, setVisibility)
+          : periodToJSON(_array, nombre, period, setVisibility)
     );
   });
 }
-
-function insertIndividualComplete(tx, idPlant, idPeriod, idPlace, content) {
-  for (const [k, v] of Object.entries(content)) {
-    v.forEach((ind) => {
-      tx.executeSql(
-        "INSERT INTO INDIVIDUO (esteril, brotes, flores, frutosInmaduros, frutosMaduros, observaciones, dia, idPlanta) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
-        [
-          ind.esteril,
-          ind.brotes,
-          ind.flores,
-          ind.frutosInmaduros,
-          ind.frutosMaduros,
-          ind.observaciones,
-          parseInt(k),
-          idPlant,
-        ],
-        (_, { insertId }) => {
-          tx.executeSql(
-            "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?);",
-            [insertId, idPlace, idPeriod]
-          );
-        }
-      );
-    });
-  }
-}
-
-function finalPartImport(idPlant, idPeriod, content) {
-  const placesId = {};
-
-  db.transaction((tx) => {
-    for (const [k, v] of Object.entries(content)) {
-      if (k === "caracteristicas") continue;
-      if (placesId[k]) {
-        insertIndividualComplete(tx, idPlant, idPeriod, placesId[k], v);
-        return;
-      }
-      tx.executeSql(
-        "SELECT id FROM LUGAR WHERE nombre = ?;",
-        [k],
-        (_, { rows }) => {
-          if (rows.length > 0) {
-            placesId[k] = rows._array[0].id;
-            insertIndividualComplete(
-              tx,
-              idPlant,
-              idPeriod,
-              rows._array[0].id,
-              v
-            );
-            return;
-          }
-          tx.executeSql(
-            "INSERT INTO LUGAR (nombre) VALUES (?);",
-            [k],
-            (_, { insertId }) => {
-              placesId[k] = insertId;
-              insertIndividualComplete(tx, idPlant, idPeriod, insertId, v);
-            }
-          );
-        }
-      );
-    }
-  });
-}
-
-export function importAll(content, setVisibility) {
-  const periodsId = {};
-
-  const insertPeriod = (idPlant, content) => {
-    db.transaction((tx) => {
-      for (const [k, v] of Object.entries(content)) {
-        if (k === "caracteristicas") continue;
-        if (periodsId[k]) {
-          finalPartImport(idPlant, periodsId[k], v);
-          return;
-        }
-        const period = k.split("-");
+// import
+function importIndividuals(data, setVisibility) {
+  db.transaction(
+    (tx) => {
+      data.individuals.forEach((ind) => {
         tx.executeSql(
-          "SELECT id FROM PERIODO WHERE anio = ? AND mes = ?;",
-          [parseInt(period[0]), parseInt(period[1])],
+          "INSERT INTO INDIVIDUO (dia,idPlanta,esteril,brotes,flores,frutosInmaduros,frutosMaduros,observaciones) VALUES (?,?,?,?,?,?,?,?);",
+          [
+            ind.dia,
+            data.plants[ind.plant].id,
+            ind.esteril,
+            ind.brotes,
+            ind.flores,
+            ind.frutosInmaduros,
+            ind.frutosMaduros,
+            ind.observaciones,
+          ],
+          (_, { insertId }) => {
+            tx.executeSql(
+              "INSERT INTO VISTA (idIndividuo,idLugar,idPeriodo) VALUES (?,?,?);",
+              [insertId, data.places[ind.place], data.periods[ind.period]]
+            );
+          }
+        );
+      });
+    },
+    () => {
+      setVisibility(false);
+      alert("Error al importar los individuos");
+    },
+    () => setVisibility(false)
+  );
+}
+
+function importPeriods(data, setVisibility) {
+  db.transaction(
+    (tx) => {
+      for (const period in data.periods) {
+        const [year, month] = period.split("-").map((x) => parseInt(x));
+        tx.executeSql(
+          "SELECT * FROM PERIODO WHERE anio = ? AND mes = ?;",
+          [year, month],
           (_, { rows }) => {
             if (rows.length > 0) {
-              periodsId[k] = rows._array[0].id;
-              finalPartImport(idPlant, rows._array[0].id, v);
+              data.periods[period] = rows._array[0].id;
               return;
             }
             tx.executeSql(
-              "INSERT INTO PERIODO (anio, mes) VALUES (?, ?);",
-              [parseInt(period[0]), parseInt(period[1])],
+              "INSERT INTO PERIODO (anio,mes) VALUES (?,?);",
+              [year, month],
               (_, { insertId }) => {
-                periodsId[k] = insertId;
-                finalPartImport(idPlant, insertId, v);
+                data.periods[period] = insertId;
               }
             );
           }
         );
       }
-    });
-  };
+    },
+    () => {
+      setVisibility(false);
+      alert("Error al importar periodo.");
+    },
+    () => importIndividuals(data, setVisibility)
+  );
+}
 
+function importPlaces(data, setVisibility) {
   db.transaction(
     (tx) => {
-      for (const [k, v] of Object.entries(content)) {
+      for (const place in data.places) {
         tx.executeSql(
-          "SELECT id FROM PLANTA WHERE nombre = ?;",
-          [k],
+          "SELECT * FROM LUGAR WHERE nombre = ?;",
+          [place],
           (_, { rows }) => {
             if (rows.length > 0) {
-              insertPeriod(rows._array[0].id, v);
+              data.places[place] = rows._array[0].id;
               return;
             }
             tx.executeSql(
-              "INSERT INTO PLANTA (nombre, familia, idB, colecta) VALUES (?, ?, ?, ?);",
-              [
-                k,
-                v.caracteristicas[0],
-                v.caracteristicas[1],
-                v.caracteristicas[2],
-              ],
-              (_, { insertId }) => insertPeriod(insertId, v)
+              "INSERT INTO LUGAR (nombre) VALUES (?);",
+              [place],
+              (_, { insertId }) => {
+                data.places[place] = insertId;
+              }
             );
           }
         );
       }
     },
     () => {
-      alert("Error al importar.");
       setVisibility(false);
+      alert("Error al importar lugares.");
     },
-    () => {
-      setVisibility(false);
-    }
+    () => importPeriods(data, setVisibility)
   );
 }
 
-export function importPeriod(period, content, setVisibility) {
-  const insertPlant = (tx, id, content) => {
-    for (const [k, v] of Object.entries(content)) {
-      tx.executeSql(
-        "SELECT id FROM PLANTA WHERE nombre = ?;",
-        [k],
-        (_, { rows }) => {
-          if (rows.length > 0) {
-            finalPartImport(rows._array[0].id, id, v);
-            return;
-          }
-          tx.executeSql(
-            "INSERT INTO PLANTA (nombre, familia, idB, colecta) VALUES (?, ?, ?, ?);",
-            [
-              k,
-              v.caracteristicas[0],
-              v.caracteristicas[1],
-              v.caracteristicas[2],
-            ],
-            (_, { insertId }) => finalPartImport(insertId, id, v)
-          );
-        }
-      );
-    }
-  };
-
+export function importData(data, setVisibility) {
   db.transaction(
     (tx) => {
-      tx.executeSql(
-        "SELECT id FROM PERIODO WHERE anio = ? AND mes = ?;",
-        [parseInt(period[0]), parseInt(period[1])],
-        (_, { rows }) => {
-          if (rows.length > 0) {
-            console.log("existe period");
-            insertPlant(tx, rows._array[0].id, content);
-            return;
+      for (const [plant, info] of Object.entries(data.plants)) {
+        tx.executeSql(
+          "SELECT * FROM PLANTA WHERE nombre = ?;",
+          [plant],
+          (_, { rows }) => {
+            if (rows.length > 0) {
+              data.plants[plant].id = rows._array[0].id;
+              return;
+            }
+            tx.executeSql(
+              "INSERT INTO PLANTA (nombre,familia,idB,colecta) VALUES (?,?,?,?);",
+              [plant, info.family, info.idB, info.collect],
+              (_, { insertId }) => {
+                data.plants[plant].id = insertId;
+              }
+            );
           }
-          tx.executeSql(
-            "INSERT INTO PERIODO (anio, mes) VALUES (?, ?);",
-            [parseInt(period[0]), parseInt(period[1])],
-            (_, { insertId }) => insertPlant(tx, insertId, content)
-          );
-        }
-      );
-    },
-    () => {
-      alert("Error al importar el periodo.");
-      setVisibility(false);
+        );
+      }
     },
     () => {
       setVisibility(false);
-    }
+      alert("Error al importar plantas.");
+    },
+    () => importPlaces(data, setVisibility)
   );
 }

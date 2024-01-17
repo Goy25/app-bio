@@ -29,7 +29,7 @@ const getItems = {
   time: periodItems,
 };
 
-function ExportField() {
+function ExportField({ setVisible, setText }) {
   const [id, setId] = useState(null);
   const [index, setIndex] = useState(0);
   const [csv, setCSV] = useState(true);
@@ -52,8 +52,10 @@ function ExportField() {
   };
 
   const handleAccept = () => {
+    setText("Exportando...")
+    setVisible(true);
     if (table === "all") {
-      exportType[table](title, csv);
+      exportType[table](title, csv, setVisible);
       return;
     }
     if (id === null) {
@@ -64,7 +66,7 @@ function ExportField() {
       alert("Ingresa un nombre para el archivo");
       return;
     }
-    exportType[table](id, title, items[index].label, csv);
+    exportType[table](id, title, items[index].label, csv, setVisible);
   };
 
   useEffect(() => {
@@ -103,7 +105,7 @@ function ExportField() {
         <TextInput onChangeText={setTitle} style={theme.select} value={title} />
       </View>
       <Pressable onPress={handleAccept}>
-        <Text style={[theme.button, styles.button]}>Aceptar</Text>
+        <Text style={[theme.button, styles.button]}>Exportar</Text>
       </Pressable>
     </View>
   );
