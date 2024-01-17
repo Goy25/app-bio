@@ -187,40 +187,40 @@ export function exportPeriod(id, nombre, period, mime) {
   });
 }
 
+function insertIndividualComplete(tx, idPlant, idPeriod, idPlace, content) {
+  for (const [k, v] of Object.entries(content)) {
+    v.forEach((ind) => {
+      tx.executeSql(
+        "INSERT INTO INDIVIDUO (esteril, brotes, flores, frutosInmaduros, frutosMaduros, observaciones, dia, idPlanta) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+        [
+          ind.esteril,
+          ind.brotes,
+          ind.flores,
+          ind.frutosInmaduros,
+          ind.frutosMaduros,
+          ind.observaciones,
+          parseInt(k),
+          idPlant,
+        ],
+        (_, { insertId }) => {
+          tx.executeSql(
+            "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?);",
+            [insertId, idPlace, idPeriod]
+          );
+        },
+      );
+    });
+  }
+}
+
 function finalPartImport(idPlant, idPeriod, content) {
   const placesId = {};
-
-  const insertInd = (tx, idPlant, idPeriod, idPlace, content) => {
-    for (const [k, v] of Object.entries(content)) {
-      v.forEach((ind) => {
-        tx.executeSql(
-          "INSERT INTO INDIVIDUO (esteril, brotes, flores, frutosInmaduros, frutosMaduros, observaciones, dia, idPlanta) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
-          [
-            ind.esteril,
-            ind.brotes,
-            ind.flores,
-            ind.frutosInmaduros,
-            ind.frutosMaduros,
-            ind.observaciones,
-            parseInt(k),
-            idPlant,
-          ],
-          (_, { insertId }) => {
-            tx.executeSql(
-              "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?);",
-              [insertId, idPlace, idPeriod]
-            );
-          },
-        );
-      });
-    }
-  };
 
   db.transaction((tx) => {
     for (const [k, v] of Object.entries(content)) {
       if (k === "caracteristicas") continue;
       if (placesId[k]) {
-        insertInd(tx, idPlant, idPeriod, placesId[k], v);
+        insertIndividualComplete(tx, idPlant, idPeriod, placesId[k], v);
         return;
       }
       tx.executeSql(
@@ -229,7 +229,7 @@ function finalPartImport(idPlant, idPeriod, content) {
         (_, { rows }) => {
           if (rows.length > 0) {
             placesId[k] = rows._array[0].id;
-            insertInd(tx, idPlant, idPeriod, rows._array[0].id, v);
+            insertIndividualComplete(tx, idPlant, idPeriod, rows._array[0].id, v);
             return;
           }
           tx.executeSql(
@@ -237,7 +237,7 @@ function finalPartImport(idPlant, idPeriod, content) {
             [k],
             (_, { insertId }) => {
               placesId[k] = insertId;
-              insertInd(tx, idPlant, idPeriod, insertId, v);
+              insertIndividualComplete(tx, idPlant, idPeriod, insertId, v);
             },
           );
         },
