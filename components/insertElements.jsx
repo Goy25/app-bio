@@ -21,7 +21,13 @@ const styles = StyleSheet.create({
   },
 });
 
-function InsertElements({ placeholder="Nombre...", query, reload, setReload, setShow }) {
+function InsertElements({
+  placeholder = "Nombre...",
+  query,
+  reload,
+  setReload,
+  setShow,
+}) {
   const [toInsert, setToInsert] = useState("");
 
   const handleCancel = () => {
@@ -50,7 +56,7 @@ function InsertElements({ placeholder="Nombre...", query, reload, setReload, set
         />
       </View>
       <View style={styles.content}>
-        <Pressable  onPress={handleCancel} style={{ width: "48%" }}>
+        <Pressable onPress={handleCancel} style={{ width: "48%" }}>
           <Text style={theme.button}>Cancelar</Text>
         </Pressable>
         <Pressable onPress={handleSave} style={{ width: "48%" }}>

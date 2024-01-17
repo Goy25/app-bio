@@ -48,13 +48,13 @@ const theme = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-evenly",
-    gap: 10
+    gap: 10,
   },
   title: {
     color: "white",
     fontSize: 20,
     fontWeight: "bold",
-  }
+  },
 });
 
 export default theme;

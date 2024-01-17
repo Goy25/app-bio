@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Loading from "./loading";
 import Select from "./select";
@@ -31,36 +31,31 @@ function ImportField() {
       alert("Seleccione un archivo");
       return;
     }
-    readFile(
-      arc,
-      setVisible
-    )
+    readFile(arc, setVisible);
     setVisible(true);
-  }
+  };
 
   return (
     <>
-    <View style={styles.content}>
-      <Text style={theme.title}>Importar</Text>
-      <View style={theme.row}>
-        <Text style={theme.label}>Directorio:</Text>
-        <Pressable onPress={() => pickFile(setItems, setArc)}>
-          <Text style={[theme.select, { padding: 10 }]}>Seleccionar</Text>
+      <View style={styles.content}>
+        <Text style={theme.title}>Importar</Text>
+        <View style={theme.row}>
+          <Text style={theme.label}>Directorio:</Text>
+          <Pressable onPress={() => pickFile(setItems, setArc)}>
+            <Text style={[theme.select, { padding: 10 }]}>Seleccionar</Text>
+          </Pressable>
+        </View>
+        <Select
+          label="Archivo:"
+          items={items}
+          handleChange={setArc}
+          placeholder={{ label: "Selecione archivo", value: "" }}
+          style={{}}
+          value={arc}
+        />
+        <Pressable onPress={handleAccept}>
+          <Text style={[theme.button, styles.button]}>Aceptar</Text>
         </Pressable>
-      </View>
-      <Select
-        label="Archivo:"
-        items={items}
-        handleChange={setArc}
-        placeholder={{ label: "Selecione archivo", value: "" }}
-        style={{}}
-        value={arc}
-      />
-      <Pressable
-        onPress={handleAccept}
-      >
-        <Text style={[theme.button, styles.button]}>Aceptar</Text>
-      </Pressable>
       </View>
       <Loading visible={visible} />
     </>

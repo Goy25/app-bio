@@ -43,17 +43,19 @@ function Header() {
   const { reloadPlaces, setReloadPlaces } = useContext(Reload);
   const navigation = useNavigation();
   const [places, setPlaces] = useState([{ label: "Nuevo Lugar", value: 0 }]);
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => getPlaces(setPlaces), [reloadPlaces]);
 
   return (
     <>
-      <DateModal visible={visible} setVisible={setVisible}/>
+      <DateModal visible={visible} setVisible={setVisible} />
       <View style={styles.content}>
         <View style={{ width: "42%" }}>
           <Pressable onPress={() => setVisible(true)}>
-            <Text style={styles.dateSelect}>{year}-{month}-{day}</Text>
+            <Text style={styles.dateSelect}>
+              {year}-{month}-{day}
+            </Text>
           </Pressable>
         </View>
         <View style={{ width: "42%" }}>

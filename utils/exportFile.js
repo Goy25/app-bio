@@ -63,7 +63,7 @@ export function allToJSON(rows, name) {
     }
     let act = json[row.nombre];
     act.caracteristicas = [row.familia, row.idB, row.colecta];
-    const period = `${row.anio}-${row.mes}`
+    const period = `${row.anio}-${row.mes}`;
     if (!act[period]) {
       act[period] = {};
     }

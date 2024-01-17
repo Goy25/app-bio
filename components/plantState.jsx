@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { update } from "../utils/querys";
 
@@ -102,13 +102,31 @@ function Percent({ iId, iPercentage, query, tipo }) {
   const [percentage, setPercentage] = useState(iPercentage.toString());
 
   const handleChange = (value) => {
-    setPercentage(value);
+    console.log("change", value);
+    if ([" ", ".", ",", "-"].some((e) => value.includes(e))) {
+      return;
+    }
+    if (value === "") {
+      update(query, 0, iId);
+      setTotal(total - percentage);
+      setPercentage("");
+      return
+    }
+    let number = parseInt(value);
+    const np = percentage === "" ? 0 : parseInt(percentage);
+    if (number > 100 - total + np) {
+      number = 100 - total + np;
+    }
+    setTotal(total - percentage + number);
+    setPercentage(number.toString());
     update(query, value, iId);
   };
 
   return (
     <View style={styles.percentContent}>
-      <Text style={styles.percentTitle}>{tipo}</Text>
+      <Pressable onLongPress={() => handleChange((100 - total + parseInt(percentage)).toString())}>
+        <Text style={styles.percentTitle}>{tipo}</Text>
+      </Pressable>
       <View style={{ width: "100%" }}>
         <TextInput
           keyboardType="number-pad"

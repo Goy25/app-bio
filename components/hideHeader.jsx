@@ -1,5 +1,5 @@
-import { Pressable } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { Pressable } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
 
 function HideHeader({ style, up, setUp }) {
   return (

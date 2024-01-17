@@ -6,11 +6,10 @@ export const Filter = createContext();
 export const Reload = createContext();
 
 export function DataProvider({ children }) {
-
   const [day, setDay] = useState(getDay());
   const [month, setMonth] = useState(getMonth());
   const [place, setPlace] = useState(-1);
-  const [plant, setPlant] = useState({id: 0});
+  const [plant, setPlant] = useState({ id: 0 });
   const [year, setYear] = useState(getYear());
 
   return (
@@ -34,7 +33,6 @@ export function DataProvider({ children }) {
 }
 
 export function FilterProvider({ children }) {
-
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState(false);
 
@@ -44,7 +42,7 @@ export function FilterProvider({ children }) {
         filter,
         setFilter,
         search,
-        setSearch
+        setSearch,
       }}
     >
       {children}
@@ -62,7 +60,7 @@ export function ReloadProvider({ children }) {
         reloadPlants,
         setReloadPlants,
         reloadPlaces,
-        setReloadPlaces
+        setReloadPlaces,
       }}
     >
       {children}

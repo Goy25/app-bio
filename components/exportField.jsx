@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import Select from "./select";
-import {
-  exportAll,
-  exportPeriod,
-  periodItems,
-} from "../utils/querys";
+import { exportAll, exportPeriod, periodItems } from "../utils/querys";
 import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
@@ -44,7 +40,7 @@ function ExportField() {
   const handleChangeTable = (value) => {
     setTable(value);
     setId(null);
-    setTitle(value === "all" ? "Todo" : "")
+    setTitle(value === "all" ? "Todo" : "");
   };
 
   const handleChangeItem = (value, i) => {
@@ -87,9 +83,7 @@ function ExportField() {
       />
       <Select
         label="Exportar"
-        items={[
-          { label: "por Periodo", value: "time" },
-        ]}
+        items={[{ label: "por Periodo", value: "time" }]}
         handleChange={handleChangeTable}
         placeholder={{ label: "Todo", value: "all" }}
         style={{ color: "#151E21" }}
@@ -106,7 +100,7 @@ function ExportField() {
       )}
       <View style={theme.row}>
         <Text style={theme.label}>Nombre Archivo:</Text>
-        <TextInput onChangeText={setTitle} style={theme.select} value={title}/>
+        <TextInput onChangeText={setTitle} style={theme.select} value={title} />
       </View>
       <Pressable onPress={handleAccept}>
         <Text style={[theme.button, styles.button]}>Aceptar</Text>

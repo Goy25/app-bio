@@ -47,7 +47,9 @@ function ImagePopUp({ plant, visible, setVisible }) {
       alert("Se requiere acceso a la galería");
       return;
     }
-    const picker = await ImagePicker.launchImageLibraryAsync({mediaTypes: ImagePicker.MediaTypeOptions.Images})
+    const picker = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
     if (picker.canceled) {
       return;
     }

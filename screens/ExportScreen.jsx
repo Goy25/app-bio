@@ -9,13 +9,15 @@ const styles = StyleSheet.create({
     gap: 20,
     minHeight: "100%",
     paddingVertical: 20,
-  }
+  },
 });
 
 function ExportScreen() {
   return (
     <View style={[theme.container]}>
-      <ScrollView  contentContainerStyle={[styles.container, theme.flexColumnCenter]}>
+      <ScrollView
+        contentContainerStyle={[styles.container, theme.flexColumnCenter]}
+      >
         <ExportField />
         <ImportField />
       </ScrollView>

@@ -207,7 +207,7 @@ function insertIndividualComplete(tx, idPlant, idPeriod, idPlace, content) {
             "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?);",
             [insertId, idPlace, idPeriod]
           );
-        },
+        }
       );
     });
   }
@@ -229,7 +229,13 @@ function finalPartImport(idPlant, idPeriod, content) {
         (_, { rows }) => {
           if (rows.length > 0) {
             placesId[k] = rows._array[0].id;
-            insertIndividualComplete(tx, idPlant, idPeriod, rows._array[0].id, v);
+            insertIndividualComplete(
+              tx,
+              idPlant,
+              idPeriod,
+              rows._array[0].id,
+              v
+            );
             return;
           }
           tx.executeSql(
@@ -238,18 +244,15 @@ function finalPartImport(idPlant, idPeriod, content) {
             (_, { insertId }) => {
               placesId[k] = insertId;
               insertIndividualComplete(tx, idPlant, idPeriod, insertId, v);
-            },
+            }
           );
-        },
+        }
       );
     }
   });
 }
 
-export function importAll(
-  content,
-  setVisibility
-) {
+export function importAll(content, setVisibility) {
   const periodsId = {};
 
   const insertPeriod = (idPlant, content) => {
@@ -276,9 +279,9 @@ export function importAll(
               (_, { insertId }) => {
                 periodsId[k] = insertId;
                 finalPartImport(idPlant, insertId, v);
-              },
+              }
             );
-          },
+          }
         );
       }
     });
@@ -303,9 +306,9 @@ export function importAll(
                 v.caracteristicas[1],
                 v.caracteristicas[2],
               ],
-              (_, { insertId }) => insertPeriod(insertId, v),
+              (_, { insertId }) => insertPeriod(insertId, v)
             );
-          },
+          }
         );
       }
     },
@@ -319,11 +322,7 @@ export function importAll(
   );
 }
 
-export function importPeriod(
-  period,
-  content,
-  setVisibility
-) {
+export function importPeriod(period, content, setVisibility) {
   const insertPlant = (tx, id, content) => {
     for (const [k, v] of Object.entries(content)) {
       tx.executeSql(

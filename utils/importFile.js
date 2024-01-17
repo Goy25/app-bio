@@ -27,22 +27,12 @@ export async function pickFile(setter, setName) {
   }
 }
 
-export async function readFile(
-  uri,
-  setVisibility
-) {
+export async function readFile(uri, setVisibility) {
   const content = await FileSystem.StorageAccessFramework.readAsStringAsync(
     uri
   );
   const data = JSON.parse(content);
   Array.isArray(data)
-    ? importPeriod(
-        data[0].split("-"),
-        data[1],
-        setVisibility
-      )
-    : importAll(
-        data,
-        setVisibility
-      );
+    ? importPeriod(data[0].split("-"), data[1], setVisibility)
+    : importAll(data, setVisibility);
 }
