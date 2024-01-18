@@ -1,7 +1,6 @@
 import * as FileSystem from "expo-file-system";
 
 async function createFile(content, name, mime, setVisibility) {
-  console.log(content);
   try {
     if (Platform.OS === "android") {
       const permision =
@@ -92,6 +91,7 @@ export function allToJSON(rows, name, setVisibility) {
         familia: row.familia,
         idB: row.idB,
         colecta: row.colecta,
+        url: row.url,
       };
     }
     if (!json.places[row.lugar]) {
@@ -129,6 +129,7 @@ export function periodToJSON(rows, name, period, setVisibility) {
         familia: row.familia,
         idB: row.idB,
         colecta: row.colecta,
+        url: row.url,
       };
     }
     if (!json.places[row.lugar]) {

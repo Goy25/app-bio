@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 
 function ImagePopUp({ plant, visible, setVisible }) {
   const [url, setUrl] = useState(
-    plant.url === "" ? defaultImage : { uri: plant.url }
+    plant.url === "" ? defaultImage : {uri: `data:imagejpeg;base64,${plant.url}`}
   );
 
   const handleSelectImage = async () => {
@@ -47,15 +47,20 @@ function ImagePopUp({ plant, visible, setVisible }) {
       alert("Se requiere acceso a la galería");
       return;
     }
-    const picker = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-    if (picker.canceled) {
-      return;
+    try {
+      const picker = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        base64: true,
+      });
+      if (picker.canceled) {
+        return;
+      }
+      setUrl({uri: `data:imagejpeg;base64,${picker.base64}`});
+      plant.url = picker.base64;
+      updateImage(picker.base64, plant.id);
+    } catch (error) {
+      alert("Error al seleccionar la imagen");
     }
-    setUrl({ uri: picker.assets[0].uri });
-    plant.url = picker.assets[0].uri;
-    updateImage(picker.assets[0].uri, plant.id);
   };
 
   return (

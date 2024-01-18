@@ -5,11 +5,11 @@ const db = SQLite.openDatabase("db.db");
 // Navigations
 export function createTables() {
   db.transaction((tx) => {
-    // tx.executeSql("DROP TABLE IF EXISTS PLANTA;", []);
-    // tx.executeSql("DROP TABLE IF EXISTS INDIVIDUO;", []);
-    // tx.executeSql("DROP TABLE IF EXISTS LUGAR;", []);
-    // tx.executeSql("DROP TABLE IF EXISTS PERIODO;", []);
-    // tx.executeSql("DROP TABLE IF EXISTS VISTA;", []);
+    tx.executeSql("DROP TABLE IF EXISTS PLANTA;", []);
+    tx.executeSql("DROP TABLE IF EXISTS INDIVIDUO;", []);
+    tx.executeSql("DROP TABLE IF EXISTS LUGAR;", []);
+    tx.executeSql("DROP TABLE IF EXISTS PERIODO;", []);
+    tx.executeSql("DROP TABLE IF EXISTS VISTA;", []);
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "",familia TEXT DEFAULT "",idB TEXT DEFAULT "",colecta TEXT DEFAULT "");',
       []
@@ -166,7 +166,7 @@ export function periodItems(setItems) {
 export function exportAll(nombre, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT P.nombre,P.familia,P.idB,P.colecta,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
+      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.url,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
       [],
       (_, { rows: { _array } }) =>
         mime
@@ -179,7 +179,7 @@ export function exportAll(nombre, mime, setVisibility) {
 export function exportPeriod(id, nombre, period, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT P.nombre,P.familia,P.idB,P.colecta,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
+      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.url,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
       [id],
       (_, { rows: { _array } }) =>
         mime
@@ -295,11 +295,14 @@ export function importData(data, setVisibility) {
           (_, { rows }) => {
             if (rows.length > 0) {
               data.plants[plant].id = rows._array[0].id;
+              if (rows._array[0].url === "" && info.url !== "") {
+                updateImage(info.url, rows._array[0].id);
+              }
               return;
             }
             tx.executeSql(
-              "INSERT INTO PLANTA (nombre,familia,idB,colecta) VALUES (?,?,?,?);",
-              [plant, info.family, info.idB, info.collect],
+              "INSERT INTO PLANTA (nombre,familia,idB,colecta,url) VALUES (?,?,?,?,?);",
+              [plant, info.family, info.idB, info.collect,info.url],
               (_, { insertId }) => {
                 data.plants[plant].id = insertId;
               }
