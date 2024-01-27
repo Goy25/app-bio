@@ -38,7 +38,7 @@ function DateModal({ visible, setVisible }) {
   };
 
   return (
-    <Modal visible={visible}>
+    <Modal visible={visible} onRequestClose={() => setVisible(false)}>
       <View style={[styles.container, theme.container, theme.flexColumnCenter]}>
         <View style={styles.dateContent}>
           <DateTimePicker

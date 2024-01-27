@@ -25,10 +25,6 @@ const exportType = {
   time: exportPeriod,
 };
 
-const getItems = {
-  time: periodItems,
-};
-
 function ExportField({ setVisible, setText }) {
   const [id, setId] = useState(null);
   const [index, setIndex] = useState(0);
@@ -40,7 +36,6 @@ function ExportField({ setVisible, setText }) {
   const handleChangeTable = (value) => {
     setTable(value);
     setId(null);
-    setTitle(value === "all" ? "Todo" : "");
   };
 
   const handleChangeItem = (value, i) => {
@@ -52,10 +47,10 @@ function ExportField({ setVisible, setText }) {
   };
 
   const handleAccept = () => {
-    setText("Exportando...")
-    setVisible(true);
     if (table === "all") {
       exportType[table](title, csv, setVisible);
+      setText("Exportando...");
+      setVisible(true);
       return;
     }
     if (id === null) {
@@ -66,11 +61,17 @@ function ExportField({ setVisible, setText }) {
       alert("Ingresa un nombre para el archivo");
       return;
     }
+    setVisible(true);
+
     exportType[table](id, title, items[index].label, csv, setVisible);
   };
 
   useEffect(() => {
-    if (table !== "all") getItems[table](setItems);
+    periodItems(setItems);
+  }, []);
+
+  useEffect(() => {
+    setTitle(table === "all" ? "Todo" : "");
   }, [table]);
 
   return (
@@ -78,17 +79,25 @@ function ExportField({ setVisible, setText }) {
       <Text style={theme.title}>Exportar</Text>
       <Select
         label="Exportar a:"
-        items={[{ label: "Otro Dispositivo", value: false }]}
+        items={[
+          {
+            label: "Otro Dispositivo",
+            value: false,
+            filter: "otro dispositivo",
+          },
+        ]}
         handleChange={setCSV}
         placeholder={{ label: "Excel", value: true }}
         style={{ color: "#151E21" }}
+        value={csv}
       />
       <Select
         label="Exportar"
-        items={[{ label: "por Periodo", value: "time" }]}
+        items={[{ label: "por Periodo", value: "time", filter: "por periodo" }]}
         handleChange={handleChangeTable}
         placeholder={{ label: "Todo", value: "all" }}
         style={{ color: "#151E21" }}
+        value={table}
       />
       {table != "all" && (
         <Select

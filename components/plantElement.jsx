@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import ImagePopUp from "./imagePopUp";
 import { Data, Filter } from "../utils/context";
@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    alignItems: "center",
     backgroundColor: "#009658",
     borderRadius: 8,
     height: 40,
-    justifyContent: "center",
+    textAlign: "center",
+    textAlignVertical: "center",
     width: 40,
   },
   text: {
@@ -48,14 +48,18 @@ function PlantElement({ plant }) {
     }
     setPlant(plant);
     setSearch(false);
-    navigation.navigate("Info", { name: `${year}-${month}-${day}`});
+    navigation.navigate("Info", { name: `${year}-${month}-${day}` });
   };
 
   return (
     <View style={styles.content}>
-      <Pressable onPress={() => setVisible(true)} style={styles.image}>
-        <MaterialIcons name={plant.url === "" ? "image-not-supported" : "image"} size={30} color="#EDFFF7" />
-      </Pressable>
+      <MaterialIcons
+        onPress={() => setVisible(true)}
+        style={styles.image}
+        name={plant.url === "" ? "image-not-supported" : "image"}
+        size={30}
+        color="#EDFFF7"
+      />
       <Pressable onPress={handlePress} style={styles.button}>
         <Text style={styles.text}>{plant.nombre}</Text>
       </Pressable>

@@ -40,8 +40,10 @@ const theme = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     color: "#151E21",
-    padding: 5,
+    height: 40,
+    paddingHorizontal: 5,
     textAlign: "center",
+    textAlignVertical: "center",
     width: 150,
   },
   scrollContent: {

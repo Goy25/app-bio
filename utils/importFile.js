@@ -1,5 +1,6 @@
 import * as FileSystem from "expo-file-system";
 import { importData } from "./querys";
+import { filterString } from "./strings";
 
 export async function pickFile(setter, setName) {
   try {
@@ -16,10 +17,14 @@ export async function pickFile(setter, setName) {
       setter(
         files
           .filter((file) => file.endsWith(".json"))
-          .map((file) => ({
-            label: file.split("%2F")[1].replace("%20", " "),
-            value: file,
-          }))
+          .map((file) => {
+            const label = file.split("%2F")[1].replace("%20", " ");
+            return {
+              label,
+              value: file,
+              filter: filterString(label),
+            };
+          })
       );
     }
   } catch (error) {

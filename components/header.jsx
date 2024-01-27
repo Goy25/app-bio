@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Foundation } from "@expo/vector-icons";
-import RNPickerSelect from "react-native-picker-select";
 import DateModal from "./dateModal";
 import InsertElements from "./insertElements";
+import Picker from "./picker";
 import { Data, Reload } from "../utils/context";
 import { getPlaces } from "../utils/querys";
 
@@ -29,11 +29,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   exportButton: {
-    alignItems: "center",
     backgroundColor: "#009658",
     borderRadius: 5,
-    justifyContent: "center",
     height: 40,
+    textAlign: "center",
+    textAlignVertical: "center",
     width: 40,
   },
 });
@@ -59,21 +59,22 @@ function Header() {
           </Pressable>
         </View>
         <View style={{ width: "42%" }}>
-          <RNPickerSelect
+          <Picker
+            handleChange={setPlace}
             items={places}
-            onValueChange={(value) => setPlace(value)}
-            placeholder={{ label: "Lugar", value: -1 }}
-            style={{ inputAndroid: styles.dateSelect }}
-            useNativeAndroidPickerStyle={false}
+            placeholder="Lugar"
+            placeholderValue={-1}
+            style={styles.dateSelect}
             value={place}
           />
         </View>
-        <Pressable
+        <Foundation
           onPress={() => navigation.navigate("Export")}
           style={styles.exportButton}
-        >
-          <Foundation name="page-export-csv" size={35} color="#EDFFF7" />
-        </Pressable>
+          name="page-export-csv"
+          size={35}
+          color="#EDFFF7"
+        />
       </View>
       {place === 0 && (
         <InsertElements

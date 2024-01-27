@@ -1,17 +1,17 @@
 import { Text, View } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import Picker from "./picker";
 import theme from "../utils/theme";
 
-function Select({ label, items, handleChange, placeholder, style, value }) {
+function Select({ label, items, handleChange, placeholder, value }) {
   return (
     <View style={theme.row}>
       <Text style={theme.label}>{label}</Text>
-      <RNPickerSelect
+      <Picker
+        handleChange={handleChange}
         items={items}
-        onValueChange={handleChange}
-        placeholder={placeholder}
-        style={{ inputAndroid: theme.select, placeholder: style }}
-        useNativeAndroidPickerStyle={false}
+        placeholder={placeholder.label}
+        placeholderValue={placeholder.value}
+        style={theme.select}
         value={value}
       />
     </View>

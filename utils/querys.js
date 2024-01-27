@@ -1,15 +1,16 @@
 import * as SQLite from "expo-sqlite";
 import { allToCSV, periodToCSV, allToJSON, periodToJSON } from "./exportFile";
+import { filterString } from "./strings";
 
 const db = SQLite.openDatabase("db.db");
 // Navigations
 export function createTables() {
   db.transaction((tx) => {
-    tx.executeSql("DROP TABLE IF EXISTS PLANTA;", []);
-    tx.executeSql("DROP TABLE IF EXISTS INDIVIDUO;", []);
-    tx.executeSql("DROP TABLE IF EXISTS LUGAR;", []);
-    tx.executeSql("DROP TABLE IF EXISTS PERIODO;", []);
-    tx.executeSql("DROP TABLE IF EXISTS VISTA;", []);
+    // tx.executeSql("DROP TABLE IF EXISTS PLANTA;", []);
+    // tx.executeSql("DROP TABLE IF EXISTS INDIVIDUO;", []);
+    // tx.executeSql("DROP TABLE IF EXISTS LUGAR;", []);
+    // tx.executeSql("DROP TABLE IF EXISTS PERIODO;", []);
+    // tx.executeSql("DROP TABLE IF EXISTS VISTA;", []);
     tx.executeSql(
       'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "",familia TEXT DEFAULT "",idB TEXT DEFAULT "",colecta TEXT DEFAULT "");',
       []
@@ -40,8 +41,12 @@ export function getPlaces(setPlaces) {
       [],
       (_, { rows: { _array } }) =>
         setPlaces([
-          ..._array.map((row) => ({ label: row.nombre, value: row.id })),
-          { label: "Nuevo Lugar", value: 0 },
+          ..._array.map((row) => ({
+            label: row.nombre,
+            value: row.id,
+            filter: filterString(row.nombre),
+          })),
+          { label: "Nuevo Lugar", value: 0, filter: "nuevo lugar" },
         ])
     );
   });
@@ -154,10 +159,14 @@ export function periodItems(setItems) {
       [],
       (_, { rows: { _array } }) =>
         setItems(
-          _array.map((period) => ({
-            label: `${period.anio}-${`${period.mes}`.padStart(2, 0)}`,
-            value: period.id,
-          }))
+          _array.map((period) => {
+            const date = `${period.anio}-${`${period.mes}`.padStart(2, 0)}`;
+            return {
+              label: date,
+              value: period.id,
+              filter: date,
+            };
+          })
         )
     );
   });
@@ -302,7 +311,7 @@ export function importData(data, setVisibility) {
             }
             tx.executeSql(
               "INSERT INTO PLANTA (nombre,familia,idB,colecta,url) VALUES (?,?,?,?,?);",
-              [plant, info.family, info.idB, info.collect,info.url],
+              [plant, info.family, info.idB, info.collect, info.url],
               (_, { insertId }) => {
                 data.plants[plant].id = insertId;
               }

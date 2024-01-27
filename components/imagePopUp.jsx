@@ -64,7 +64,7 @@ function ImagePopUp({ plant, visible, setVisible }) {
   };
 
   return (
-    <Modal transparent={true} visible={visible}>
+    <Modal transparent={true} visible={visible} onRequestClose={() => setVisible(false)}>
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
         <Pressable onPress={handleSelectImage} style={styles.imageField}>
           <Text style={styles.text}>{plant.nombre}</Text>
