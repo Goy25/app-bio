@@ -32,12 +32,12 @@ export async function pickFile(setter, setName) {
   }
 }
 
-export async function readFile(uri, setVisibility) {
+export async function readFile(uri, setVisibility, setArc) {
   const content = await FileSystem.StorageAccessFramework.readAsStringAsync(
     uri
   );
   try {
-    importData(JSON.parse(content), setVisibility);
+    importData(JSON.parse(content), setVisibility, setArc);
   } catch (error) {
     alert("Error al importar el archivo.");
   }

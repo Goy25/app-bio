@@ -1,6 +1,6 @@
 import * as SQLite from "expo-sqlite";
 import { allToCSV, periodToCSV, allToJSON, periodToJSON } from "./exportFile";
-import { filterString } from "./strings";
+import { capitalize, filterString } from "./strings";
 
 const db = SQLite.openDatabase("db.db");
 // Navigations
@@ -12,7 +12,7 @@ export function createTables() {
     // tx.executeSql("DROP TABLE IF EXISTS PERIODO;", []);
     // tx.executeSql("DROP TABLE IF EXISTS VISTA;", []);
     tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "",familia TEXT DEFAULT "",idB TEXT DEFAULT "",colecta TEXT DEFAULT "");',
+      'CREATE TABLE IF NOT EXISTS PLANTA (id INTEGER PRIMARY KEY AUTOINCREMENT,nombre VARCHAR(100) UNIQUE,url TEXT DEFAULT "",familia TEXT DEFAULT "",idB TEXT DEFAULT "",colecta TEXT DEFAULT "", obs TEXT DEFAULT "");',
       []
     );
     tx.executeSql(
@@ -55,19 +55,12 @@ export function getPlaces(setPlaces) {
 export function getPlants(setPlants) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT * FROM PLANTA ORDER BY nombre",
+      "SELECT * FROM PLANTA ORDER BY nombre COLLATE UNICODE",
       [],
-      (_, { rows: { _array } }) => setPlants(_array)
-    );
-  });
-}
-
-export function filterPlants(filter, setPlants) {
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT * FROM PLANTA WHERE nombre LIKE (?) ORDER BY nombre",
-      [`%${filter}%`],
-      (_, { rows: { _array } }) => setPlants(_array)
+      (_, { rows: { _array } }) =>
+        setPlants(
+          _array.map((row) => ({ ...row, filter: filterString(row.nombre) }))
+        )
     );
   });
 }
@@ -75,7 +68,7 @@ export function filterPlants(filter, setPlants) {
 export function insertElements(values, query) {
   db.transaction((tx) => {
     values.forEach((value) => {
-      tx.executeSql(query, [value.trim().toUpperCase()]);
+      tx.executeSql(query, [capitalize(value.trim())]);
     });
   });
 }
@@ -86,7 +79,6 @@ export function updateImage(uri, plantId) {
   });
 }
 // InfoScreen
-
 export function getIndividuals(
   plantId,
   day,
@@ -175,7 +167,7 @@ export function periodItems(setItems) {
 export function exportAll(nombre, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.url,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
+      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,P.url,X.anio,X.mes,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM PLANTA P JOIN INDIVIDUO I ON P.id=I.idPlanta JOIN VISTA V ON I.id=V.idIndividuo JOIN LUGAR L ON V.idLugar=L.id JOIN PERIODO X ON V.idPeriodo=X.id ORDER BY X.anio DESC,X.mes DESC,I.dia DESC,L.nombre,P.nombre;",
       [],
       (_, { rows: { _array } }) =>
         mime
@@ -188,7 +180,7 @@ export function exportAll(nombre, mime, setVisibility) {
 export function exportPeriod(id, nombre, period, mime, setVisibility) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.url,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
+      "SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,P.url,I.dia,L.nombre as lugar,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones FROM VISTA V JOIN LUGAR L ON V.idPeriodo=? AND V.idLugar=L.id JOIN INDIVIDUO I ON I.id=V.idIndividuo JOIN PLANTA P ON P.id=I.idPlanta ORDER BY I.dia DESC,L.nombre,P.nombre;",
       [id],
       (_, { rows: { _array } }) =>
         mime
@@ -294,7 +286,7 @@ function importPlaces(data, setVisibility) {
   );
 }
 
-export function importData(data, setVisibility) {
+export function importData(data, setVisibility, setArc) {
   db.transaction(
     (tx) => {
       for (const [plant, info] of Object.entries(data.plants)) {
@@ -310,8 +302,8 @@ export function importData(data, setVisibility) {
               return;
             }
             tx.executeSql(
-              "INSERT INTO PLANTA (nombre,familia,idB,colecta,url) VALUES (?,?,?,?,?);",
-              [plant, info.family, info.idB, info.collect, info.url],
+              "INSERT INTO PLANTA (nombre,familia,idB,colecta,obs,url) VALUES (?,?,?,?,?,?);",
+              [plant, info.familia, info.idB, info.colecta, info.obs, info.url],
               (_, { insertId }) => {
                 data.plants[plant].id = insertId;
               }
@@ -324,6 +316,9 @@ export function importData(data, setVisibility) {
       setVisibility(false);
       alert("Error al importar plantas.");
     },
-    () => importPlaces(data, setVisibility)
+    () => {
+      importPlaces(data, setVisibility);
+      setArc("");
+    }
   );
 }

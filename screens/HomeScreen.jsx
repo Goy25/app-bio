@@ -6,7 +6,8 @@ import InsertElements from "../components/insertElements";
 import PlantElement from "../components/plantElement";
 import AddButton from "../components/addButton";
 import { Data, Filter, Reload } from "../utils/context";
-import { filterPlants, getPlants } from "../utils/querys";
+import { getPlants } from "../utils/querys";
+import { filterString } from "../utils/strings";
 import theme from "../utils/theme";
 
 const styles = StyleSheet.create({
@@ -28,6 +29,7 @@ export default function HomeScreen({ navigation }) {
   const { filter } = useContext(Filter);
   const inputPlant = useRef();
   const [plants, setPlants] = useState([]);
+  const [filterPlants, setFilterPlants] = useState([]);
   const [showHeader, setShowHeader] = useState(true);
   const [showNewField, setShowNewField] = useState(false);
 
@@ -45,12 +47,15 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => getPlants(setPlants), [reloadPlants]);
 
+  useEffect(() => setFilterPlants(plants), [plants]);
+
   useEffect(() => {
     if (filter === "") {
-      setReloadPlants(!reloadPlants);
+      setFilterPlants(plants);
       return;
     }
-    filterPlants(filter, setPlants);
+    const filterName = filterString(filter);
+    setFilterPlants(plants.filter((plant) => plant.filter.includes(filterName)));
   }, [filter]);
 
   const handlePress = () => {
@@ -93,7 +98,7 @@ export default function HomeScreen({ navigation }) {
             setShow={setShowNewField}
           />
         )}
-        {plants.map((plant) => (
+        {filterPlants.map((plant) => (
           <PlantElement key={plant.id} plant={plant} />
         ))}
       </ScrollView>

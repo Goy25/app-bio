@@ -29,7 +29,7 @@ function ImportField({ setVisible, setText }) {
       alert("Seleccione un archivo");
       return;
     }
-    readFile(arc, setVisible);
+    readFile(arc, setVisible, setArc);
     setText("Importando...");
     setVisible(true);
   };

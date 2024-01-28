@@ -33,14 +33,14 @@ async function createFile(content, name, mime, setVisibility) {
 }
 
 export function allToCSV(rows, name, setVisibility) {
-  const arcContent = `Fecha,Lugar,Planta,Familia,ID,Colecta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
+  const arcContent = `Fecha,Lugar,Planta,Familia,ID,Colecta,Obs.,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
         `${new Date(row.anio, row.mes - 1, row.dia)
           .toISOString()
           .slice(0, 10)},${row.lugar},${row.nombre},${
           row.familia === null ? "" : row.familia
-        },${row.idB},${row.colecta === null ? "" : row.colecta},${
+        },${row.idB},${row.colecta === null ? "" : row.colecta},${row.obs},${
           row.esteril
         },${row.brotes},${row.flores},${row.frutosInmaduros},${
           row.frutosMaduros
@@ -51,12 +51,12 @@ export function allToCSV(rows, name, setVisibility) {
 }
 
 export function periodToCSV(rows, name, setVisibility) {
-  const arcContent = `Dia,Lugar,Planta,Familia,ID,Colecta,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
+  const arcContent = `Dia,Lugar,Planta,Familia,ID,Colecta,Obs,,Esteril,Brotes Florales,Flores,Frutos Inmaduros,Frutos Maduros,Observaciones\n${rows
     .map(
       (row) =>
         `${row.dia},${row.lugar},${row.nombre},${
           row.familia === null ? "" : row.familia
-        },${row.idB},${row.colecta === null ? "" : row.colecta},${
+        },${row.idB},${row.colecta === null ? "" : row.colecta},${row.obs},${
           row.esteril
         },${row.brotes},${row.flores},${row.frutosInmaduros},${
           row.frutosMaduros
@@ -91,6 +91,7 @@ export function allToJSON(rows, name, setVisibility) {
         familia: row.familia,
         idB: row.idB,
         colecta: row.colecta,
+        obs: row.obs,
         url: row.url,
       };
     }
@@ -129,6 +130,7 @@ export function periodToJSON(rows, name, period, setVisibility) {
         familia: row.familia,
         idB: row.idB,
         colecta: row.colecta,
+        obs: row.obs,
         url: row.url,
       };
     }

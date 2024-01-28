@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Data } from "../utils/context";
 import { update } from "../utils/querys";
 import theme from "../utils/theme";
+import { capitalize } from "../utils/strings";
 
 const styles = StyleSheet.create({
   button: {
@@ -34,7 +35,10 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   title: {
-    height: 40,
+    backgroundColor: "green",
+    flex: 1,
+    fontSize: 16,
+    minHeight: 40,
     textAlign: "center",
     textAlignVertical: "center",
   },
@@ -89,16 +93,17 @@ function PlantInfo() {
   const [family, setFamily] = useState(plant.familia);
   const [id, setId] = useState(plant.idB);
   const [name, setName] = useState(plant.nombre);
+  const [obs, setObs] = useState(plant.obs);
   const [show, setShow] = useState(false);
 
   const handleChange = (text) => {
-    const upper = text.toUpperCase();
-    setName(upper);
-    if (upper === "") {
+    const cap = capitalize(text);
+    setName(cap);
+    if (text === "") {
       return;
     }
-    plant.nombre = upper;
-    update("UPDATE PLANTA SET nombre = ? WHERE id = ?", upper, plant.id);
+    plant.nombre = cap;
+    update("UPDATE PLANTA SET nombre = ? WHERE id = ?", cap, plant.id);
   };
 
   return (
@@ -106,9 +111,9 @@ function PlantInfo() {
       <View style={theme.row}>
         <EditButton editable={editable} setEditable={setEditable} />
         <TextInput
-          autoCapitalize="characters"
           editable={editable}
           onChangeText={handleChange}
+          multiline={true}
           style={[theme.title, styles.title]}
           value={name}
         />
@@ -142,6 +147,15 @@ function PlantInfo() {
             label="Colecta:"
             value={collect}
             setValue={setCollect}
+          />
+          <Row
+            atribute="obs"
+            editable={editable}
+            id={plant.id}
+            query={"UPDATE PLANTA SET obs = ? WHERE id = ?"}
+            label="Obs:"
+            value={obs}
+            setValue={setObs}
           />
         </>
       )}
