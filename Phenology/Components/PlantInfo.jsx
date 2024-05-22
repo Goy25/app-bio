@@ -1,47 +1,10 @@
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Data } from "../utils/context";
-import { update } from "../utils/querys";
-import theme from "../utils/theme";
-import { capitalize } from "../utils/strings";
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 4,
-    height: 40,
-    width: 40,
-  },
-  buttonText: {
-    backgroundColor: "#0ed97f",
-    borderRadius: 4,
-  },
-  container: {
-    backgroundColor: "#009658",
-    borderColor: "#003721",
-    borderRadius: 8,
-    borderWidth: 2,
-    padding: 5,
-    width: "100%",
-  },
-  input: {
-    backgroundColor: "white",
-    borderColor: "#003721",
-    borderRadius: 8,
-    borderWidth: 2,
-    color: "black",
-    fontWeight: "600",
-    padding: 5,
-    width: "80%",
-  },
-  title: {
-    flex: 1,
-    fontSize: 16,
-    minHeight: 40,
-    textAlign: "center",
-    textAlignVertical: "center",
-  },
-});
+import { DataContext } from "../../General/Context/DataProvider";
+// import { update } from "../utils/querys";
+import theme from "../../General/theme";
+// import { capitalize } from "../utils/strings";
 
 function EditButton({ editable, setEditable }) {
   return (
@@ -85,8 +48,8 @@ function Row({ atribute, editable, id, query, label, value, setValue }) {
   );
 }
 
-function PlantInfo() {
-  const { plant } = useContext(Data);
+export default function PlantInfo() {
+  const { plant } = useContext(DataContext);
   const [collect, setCollect] = useState(plant.colecta);
   const [editable, setEditable] = useState(false);
   const [family, setFamily] = useState(plant.familia);
@@ -96,13 +59,13 @@ function PlantInfo() {
   const [show, setShow] = useState(false);
 
   const handleChange = (text) => {
-    const cap = capitalize(text);
-    setName(cap);
-    if (text === "") {
-      return;
-    }
-    plant.nombre = cap;
-    update("UPDATE PLANTA SET nombre = ? WHERE id = ?", cap, plant.id);
+    // const cap = capitalize(text);
+    // setName(cap);
+    // if (text === "") {
+    //   return;
+    // }
+    // plant.nombre = cap;
+    // update("UPDATE PLANTA SET nombre = ? WHERE id = ?", cap, plant.id);
   };
 
   return (
@@ -162,4 +125,39 @@ function PlantInfo() {
   );
 }
 
-export default PlantInfo;
+const styles = StyleSheet.create({
+  button: {
+    borderRadius: 4,
+    height: 40,
+    width: 40,
+  },
+  buttonText: {
+    backgroundColor: "#0ed97f",
+    borderRadius: 4,
+  },
+  container: {
+    backgroundColor: "#009658",
+    borderColor: "#003721",
+    borderRadius: 8,
+    borderWidth: 2,
+    padding: 5,
+    width: "100%",
+  },
+  input: {
+    backgroundColor: "white",
+    borderColor: "#003721",
+    borderRadius: 8,
+    borderWidth: 2,
+    color: "black",
+    fontWeight: "600",
+    padding: 5,
+    width: "80%",
+  },
+  title: {
+    flex: 1,
+    fontSize: 16,
+    minHeight: 40,
+    textAlign: "center",
+    textAlignVertical: "center",
+  },
+});

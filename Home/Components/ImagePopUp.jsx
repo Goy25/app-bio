@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, Text } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import defaultImage from "../assets/default.png";
-import { updateImage } from "../utils/querys";
+import { handleSelectImage } from "../Functions/handler";
+import defaultImage from "../../assets/default.png";
+
 
 
 export default function ImagePopUp({ plant, visible, setVisible }) {
@@ -10,32 +10,10 @@ export default function ImagePopUp({ plant, visible, setVisible }) {
     plant.url === "" ? defaultImage : {uri: `data:imagejpeg;base64,${plant.url}`}
   );
 
-  const handleSelectImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      alert("Se requiere acceso a la galería");
-      return;
-    }
-    try {
-      const picker = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        base64: true,
-      });
-      if (picker.canceled) {
-        return;
-      }
-      setUrl({uri: `data:imagejpeg;base64,${picker.base64}`});
-      plant.url = picker.base64;
-      updateImage(picker.base64, plant.id);
-    } catch (error) {
-      alert("Error al seleccionar la imagen");
-    }
-  };
-
   return (
     <Modal transparent={true} visible={visible} onRequestClose={() => setVisible(false)}>
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
-        <Pressable onPress={handleSelectImage} style={styles.imageField}>
+        <Pressable onPress={() => handleSelectImage(setUrl)} style={styles.imageField}>
           <Text style={styles.text}>{plant.nombre}</Text>
           <Image source={url} style={styles.image} />
         </Pressable>

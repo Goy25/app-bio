@@ -2,12 +2,13 @@ import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import ImagePopUp from "./imagePopUp";
-import { Data, Filter } from "../utils/context";
+import ImagePopUp from "./ImagePopUp";
+import { DataContext } from "../../General/Context/DataProvider";
+import { FilterContext } from "../../General/Context/FilterProvider";
 
-function PlantElement({ plant }) {
-  const { day, month, place, year, setPlant } = useContext(Data);
-  const { setSearch } = useContext(Filter);
+export default function PlantElement({ plant }) {
+  const { day, month, place, year, setPlant } = useContext(DataContext);
+  const { setSearch } = useContext(FilterContext);
   const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
 
@@ -39,8 +40,6 @@ function PlantElement({ plant }) {
     </View>
   );
 }
-
-export default PlantElement;
 
 const styles = StyleSheet.create({
   button: {
