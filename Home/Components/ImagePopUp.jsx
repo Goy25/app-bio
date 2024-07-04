@@ -1,46 +1,92 @@
-import { useState } from "react";
-import { Image, Modal, Pressable, StyleSheet, Text } from "react-native";
-import { handleSelectImage } from "../Functions/handler";
-import defaultImage from "../../assets/default.png";
+import { useEffect, useState } from "react";
+import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
+import {
+  handleNextImage,
+  handlePreviousImage,
+  handleUpdatePhoto,
+  handleAddPhoto,
+  handleSelectImage,
+} from "../Utils/handler";
+import { Entypo } from "@expo/vector-icons";
+import theme from "../../General/theme";
 
+export default function ImagePopUp({
+  plant,
+  photos,
+  setPhotos,
+  visible,
+  setVisible,
+}) {
+  const db = useSQLiteContext();
+  const [index, setIndex] = useState(0);
+  const [url, setUrl] = useState(photos[0]);
 
+  useEffect(() => {
+    setUrl(photos[index]);
+  }, [index, photos]);
 
-export default function ImagePopUp({ plant, visible, setVisible }) {
-  const [url, setUrl] = useState(
-    plant.url === "" ? defaultImage : {uri: `data:imagejpeg;base64,${plant.url}`}
-  );
+  const handlePressImage = () => {
+    handleSelectImage((uri) =>
+      index !== photos.length - 1
+        ? handleUpdatePhoto(db, setUrl, uri)
+        : handleAddPhoto(db, uri, plant.id, setPhotos, setIndex)
+    );
+  };
 
   return (
-    <Modal transparent={true} visible={visible} onRequestClose={() => setVisible(false)}>
+    <Modal
+      transparent={true}
+      visible={visible}
+      onRequestClose={() => setVisible(false)}
+    >
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
-        <Pressable onPress={() => handleSelectImage(setUrl)} style={styles.imageField}>
+        <Pressable onPress={() => handlePressImage()} style={styles.imageField}>
           <Text style={styles.text}>{plant.nombre}</Text>
           <Image source={url} style={styles.image} />
         </Pressable>
+        <View style={[theme.row, { justifyContent: "center" }]}>
+          <Entypo
+            name="arrow-with-circle-left"
+            size={40}
+            color="white"
+            onPress={() => handlePreviousImage(photos.length, setIndex)}
+            style={[styles.button, { borderBottomLeftRadius: 16 }]}
+          />
+          <Entypo
+            name="arrow-with-circle-right"
+            size={40}
+            color="white"
+            onPress={() => handleNextImage(photos.length, setIndex)}
+            style={[styles.button, { borderBottomRightRadius: 16 }]}
+          />
+        </View>
       </Pressable>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#009658",
+    textAlign: "center",
+    padding: 5,
+    width: 150,
+  },
   content: {
+    alignItems: "center",
     height: "100%",
+    justifyContent: "center",
     width: "100%",
   },
   image: {
-    width: 300,
     height: 300,
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
     resizeMode: "stretch",
+    width: 300,
   },
   imageField: {
     backgroundColor: "white",
     borderRadius: 16,
-    left: "50%",
-    position: "absolute",
-    top: "50%",
-    transform: [{ translateX: -150 }, { translateY: -150 }],
   },
   text: {
     backgroundColor: "#009658",

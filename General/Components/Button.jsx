@@ -10,11 +10,11 @@ export default function Button({
   width = "100%",
 }) {
   return (
-    <Pressable onLongPress={onLongPress} onPress={onPress}>
+    <Pressable style={{width}} onLongPress={onLongPress} onPress={onPress}>
       <Text
         style={[
           styles.button,
-          { backgroundColor: bgColor, color: textColor, width },
+          { backgroundColor: bgColor, color: textColor },
           style,
         ]}
       >

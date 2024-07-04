@@ -1,29 +1,26 @@
 import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
-// import { insertElements } from "../utils/querys";
-import Button from "./Button";
+import { useSQLiteContext } from "expo-sqlite";
+import Button from "../../General/Components/Button";
+import { insertElements } from "../Utils/database";
 
 export default function InsertElements({
   placeholder = "Nombre...",
   query,
-  reload,
   setReload,
   setShow,
 }) {
+  const db = useSQLiteContext();
   const [toInsert, setToInsert] = useState("");
 
-  const handleCancel = () => {
+  const handleSave = async () => {
+    if (toInsert === "") {
+      return;
+    }
+    const values = toInsert.split("\n").filter((value) => value !== "");
+    await insertElements(db, values, query);
+    setReload((prev) => !prev);
     setShow(false);
-  };
-
-  const handleSave = () => {
-  //   if (toInsert === "") {
-  //     return;
-  //   }
-  //   const values = toInsert.split("\n").filter((value) => value !== "");
-  //   insertElements(values, query);
-  //   setReload(!reload);
-  //   setShow(false);
   };
 
   return (
@@ -38,8 +35,8 @@ export default function InsertElements({
         />
       </View>
       <View style={styles.content}>
-        <Button onPress={handleCancel} text="Cancelar" style={{ width: "48%" }} />
-        <Button onPress={handleSave} text="Guardar" style={{ width: "48%" }} />
+        <Button onPress={() => setShow(false)} text="Cancelar" width="48%" />
+        <Button onPress={handleSave} text="Guardar" width="48%" />
       </View>
     </>
   );

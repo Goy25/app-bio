@@ -1,24 +1,19 @@
 import { useState } from "react";
+import { useSQLiteContext } from "expo-sqlite";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-// import { update } from "../utils/querys";
+import { handleUpdateIndividualObservations } from "../Utils/handler";
 
 export default function Observations({ iId, iObservations }) {
+  const db = useSQLiteContext();
   const [observations, setObservations] = useState(iObservations);
-
-  const handelChange = (text) => {
-    setObservations(text);
-    // update(
-    //   "UPDATE INDIVIDUO SET observaciones = ? WHERE id = ?;",
-    //   text,
-    //   iId
-    // );
-  };
 
   return (
     <View style={styles.observationContent}>
       <Text style={styles.observationText}>Observaciones: </Text>
       <TextInput
-        onChangeText={handelChange}
+        onChangeText={(text) =>
+          handleUpdateIndividualObservations(db, iId, text, setObservations)
+        }
         style={styles.observationInput}
         value={observations}
       />

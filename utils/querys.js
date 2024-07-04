@@ -139,7 +139,6 @@ export function insertIndividual(
   day,
   plantId,
   place,
-  reload,
   setReload
 ) {
   const insert = (tx, idPeriodo) => {
@@ -150,7 +149,7 @@ export function insertIndividual(
         tx.executeSql(
           "INSERT INTO VISTA (idIndividuo, idLugar, idPeriodo) VALUES (?, ?, ?)",
           [resultI.insertId, place, idPeriodo],
-          () => setReload(!reload)
+          () => setReload((prev) => !prev)
         );
       }
     );
@@ -184,7 +183,7 @@ export function update(query, content, id) {
 export function periodItems(setItems) {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT id,anio,mes FROM PERIODO ORDER BY anio DESC,mes DESC;",
+      "SELECT id, anio,mes FROM PERIODO ORDER BY anio DESC, mes DESC;",
       [],
       (_, { rows: { _array } }) =>
         setItems(

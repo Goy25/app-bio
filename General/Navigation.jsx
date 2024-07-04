@@ -1,23 +1,22 @@
 import { useContext, useEffect } from "react";
+import { useSQLiteContext } from "expo-sqlite";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-// import ExportScreen from "./screens/ExportScreen";
+import ExportScreen from "../Export/ExportScreen";
 import HomeScreen from "../Home/HomeScreen";
-// import InfoScreen from "./screens/InfoScreen";
+import PhenologyScreen from "../Phenology/PhenologyScreen";
 import Search from "./Components/Search";
-// import { createTables } from "./utils/querys";
 import { ReloadContext } from "./Context/ReloadProvider";
 
 const Stack = createStackNavigator();
 
 export default function Navigation() {
-  const { reloadPlants, reloadPlaces, setReloadPlants, setReloadPlaces } =
-    useContext(ReloadContext);
-  // useEffect(createTables, []);
+  const { setReloadPlants, setReloadPlaces } = useContext(ReloadContext);
+  const db = useSQLiteContext();
 
   const handleFocusHome = () => {
-    setReloadPlants(!reloadPlants);
-    setReloadPlaces(!reloadPlaces);
+    setReloadPlants((reloadPlants) => !reloadPlants);
+    setReloadPlaces((reloadPlaces) => !reloadPlaces);
   };
 
   return (
@@ -41,16 +40,16 @@ export default function Navigation() {
           }}
           listeners={{ focus: handleFocusHome }}
         />
-        {/* <Stack.Screen
-          name="Info"
-          component={InfoScreen}
+        <Stack.Screen
+          name="Fenologia"
+          component={PhenologyScreen}
           options={({ route }) => ({ title: route.params.name })}
         />
         <Stack.Screen
-          name="Export"
+          name="Exportar"
           component={ExportScreen}
           options={{ title: "Exportar/Importar" }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

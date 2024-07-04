@@ -1,56 +1,46 @@
-import { createContext, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Observations from "./Observations";
 import Percent from "./Percent";
-// import { update } from "../utils/querys";
-
-const TotalContext = createContext();
+import TotalProvider from "../Utils/TotalContext";
 
 export default function PlantState({ phenology }) {
-  const [total, setTotal] = useState(
-    phenology.esteril +
-      phenology.brotes +
-      phenology.flores +
-      phenology.frutosInmaduros +
-      phenology.frutosMaduros
-  );
 
   return (
     <Pressable style={styles.content}>
       <View style={styles.percentsContainer}>
-        <TotalContext.Provider value={{ total, setTotal }}>
+        <TotalProvider phenology={phenology}>
           <Percent
             iId={phenology.id}
             iPercentage={phenology.esteril}
             tipo={"Esteril"}
-            query="UPDATE INDIVIDUO SET esteril = ? WHERE id = ?;"
+            atribute="esteril"
           />
           <Percent
             iId={phenology.id}
             iPercentage={phenology.brotes}
             tipo={"Brotes Florales"}
             phenology={phenology}
-            query="UPDATE INDIVIDUO SET brotes = ? WHERE id = ?;"
+            atribute="brotes"
           />
           <Percent
             iId={phenology.id}
             iPercentage={phenology.flores}
             tipo="Flores"
-            query="UPDATE INDIVIDUO SET flores = ? WHERE id = ?;"
+            atribute="flores"
           />
           <Percent
             iId={phenology.id}
             iPercentage={phenology.frutosInmaduros}
             tipo="Frutos Inmaduros"
-            query="UPDATE INDIVIDUO SET frutosInmaduros = ? WHERE id = ?;"
+            atribute="frutosInmaduros"
           />
           <Percent
             iId={phenology.id}
             iPercentage={phenology.frutosMaduros}
             tipo="Frutos Maduros"
-            query="UPDATE INDIVIDUO SET frutosMaduros = ? WHERE id = ?;"
+            atribute="frutosMaduros"
           />
-        </TotalContext.Provider>
+        </TotalProvider>
       </View>
       <Observations
         iId={phenology.id}

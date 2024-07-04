@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   button: {
     borderColor: "#003721",
     borderWidth: 2,
+    alignSelf: "center",
     width: 150,
   },
   container: {
@@ -55,6 +56,7 @@ const styles = StyleSheet.create({
     borderColor: "#003721",
     borderRadius: 16,
     borderWidth: 2,
+    paddingBottom: 8,
   },
   MYContainerStyle: {
     backgroundColor: "#0ED97F",

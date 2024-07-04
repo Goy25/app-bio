@@ -1,23 +1,15 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
 import Button from "../../General/Components/Button";
 import Select from "./Select";
-// import { pickFile, readFile } from "../utils/importFile";
+import { handlePickFile, handleReadFile } from "../Utils/handler";
 import theme from "../../General/theme";
 
 export default function ImportField({ setVisible, setText }) {
+  const db = useSQLiteContext();
   const [arc, setArc] = useState("");
   const [items, setItems] = useState([]);
-
-  const handleAccept = () => {
-    if (arc === "") {
-      alert("Seleccione un archivo");
-      return;
-    }
-    readFile(arc, setVisible, setArc);
-    setText("Importando...");
-    setVisible(true);
-  };
 
   return (
     <View style={styles.content}>
@@ -25,9 +17,10 @@ export default function ImportField({ setVisible, setText }) {
       <View style={theme.row}>
         <Text style={theme.label}>Directorio:</Text>
         <Button
-          onPress={() => pickFile(setItems, setArc)}
+          onPress={() => handlePickFile(setItems, setArc)}
           text="Seleccionar"
           style={{ ...theme.select, padding: 10 }}
+          width={150}
         />
       </View>
       <Select
@@ -35,10 +28,9 @@ export default function ImportField({ setVisible, setText }) {
         items={items}
         handleChange={setArc}
         placeholder={{ label: "Selecione archivo", value: "" }}
-        style={{}}
         value={arc}
       />
-      <Button text="Importar" onPress={handleAccept} bgColor="#0ed97f" />
+      <Button text="Importar" onPress={() => handleReadFile(db, arc, setVisible, setText, setArc)} bgColor="#0ed97f" />
     </View>
   );
 }

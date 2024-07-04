@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
 import Button from "../../General/Components/Button";
 import Select from "./Select";
-// import { exportAll, exportPeriod, periodItems } from "../utils/querys";
+import { getPeriods } from "../Utils/database";
+import { handleExportType } from "../Utils/handler";
 import theme from "../../General/theme";
 
-const exportType = {
-  all: exportAll,
-  time: exportPeriod,
-};
-
 export default function ExportField({ setVisible, setText }) {
+  const db = useSQLiteContext();
   const [id, setId] = useState(null);
   const [index, setIndex] = useState(0);
   const [csv, setCSV] = useState(true);
@@ -31,28 +29,9 @@ export default function ExportField({ setVisible, setText }) {
     }
   };
 
-  const handleAccept = () => {
-    if (table === "all") {
-      // exportType[table](title, csv, setVisible);
-      setText("Exportando...");
-      setVisible(true);
-      return;
-    }
-    if (id === null) {
-      alert("Selecciona un periodo");
-      return;
-    }
-    if (title === "") {
-      alert("Ingresa un nombre para el archivo");
-      return;
-    }
-    setVisible(true);
-    // exportType[table](id, title, items[index].label, csv, setVisible);
-  };
-
-  // useEffect(() => {
-  //   periodItems(setItems);
-  // }, []);
+  useEffect(() => {
+    getPeriods(db, setItems);
+  }, []);
 
   useEffect(() => {
     setTitle(table === "all" ? "Todo" : "");
@@ -97,7 +76,22 @@ export default function ExportField({ setVisible, setText }) {
         <Text style={theme.label}>Nombre Archivo:</Text>
         <TextInput onChangeText={setTitle} style={theme.select} value={title} />
       </View>
-      <Button text="Exportar" onPress={handleAccept} bgColor="#0ed97f"/>
+      <Button
+        text="Exportar"
+        onPress={() =>
+          handleExportType(
+            db,
+            title,
+            items[index].label,
+            setVisible,
+            id,
+            table,
+            csv,
+            setText
+          )
+        }
+        bgColor="#0ed97f"
+      />
     </View>
   );
 }

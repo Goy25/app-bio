@@ -13,6 +13,7 @@ function Select({ label, items, handleChange, placeholder, value }) {
         placeholderValue={placeholder.value}
         style={theme.select}
         value={value}
+        width={150}
       />
     </View>
   );

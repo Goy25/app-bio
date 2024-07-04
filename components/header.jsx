@@ -80,7 +80,6 @@ function Header() {
         <InsertElements
           placeholder="Nombre del lugar..."
           query="INSERT INTO LUGAR(nombre) VALUES(?);"
-          reload={reloadPlaces}
           setReload={setReloadPlaces}
           setShow={setPlace}
         />

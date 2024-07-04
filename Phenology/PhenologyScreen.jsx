@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import AddButton from "../General/Components/AddButton";
+import { useSQLiteContext } from "expo-sqlite";
 import PlantInfo from "./Components/PlantInfo";
 import PlantState from "./Components/PlantState";
 import { DataContext } from "../General/Context/DataProvider";
-// import { getIndividuals, insertIndividual } from "../utils/querys";
+import { getIndividuals } from "./Utils/database";
+import { handleSetOptions } from "./Utils/handler";
 import theme from "../General/theme";
 
 const styles = StyleSheet.create({
@@ -15,30 +16,23 @@ const styles = StyleSheet.create({
 });
 
 export default function InfoScreen({ navigation }) {
+  const db = useSQLiteContext();
   const { day, month, place, plant, year } = useContext(DataContext);
   const [individuals, setIndividuals] = useState([]);
   const [reload, setReload] = useState(false);
 
-  const handleAdd = () => {
-    // insertIndividual(year, month, day, plant.id, place, reload, setReload);
-  };
-
-  const setOptions = () => {
-    navigation.setOptions({
-      headerRight: () => (
-        <AddButton
-          color="white"
-          handlePress={handleAdd}
-          size={40}
-          style={{ marginRight: 10 }}
-        />
-      ),
-    });
-  };
-
   useEffect(() => {
-    setOptions();
-    // getIndividuals(plant.id, day, place, month, year, setIndividuals);
+    handleSetOptions(
+      db,
+      navigation,
+      year,
+      month,
+      day,
+      plant.id,
+      place,
+      setReload
+    );
+    getIndividuals(db, plant.id, day, place, month, year, setIndividuals);
   }, [reload]);
 
   return (

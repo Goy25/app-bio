@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { getDay, getMonth, getYear } from "../Functions/getDate";
+import { getDay, getMonth, getYear } from "../Utils/getDate";
 
 export const DataContext = createContext();
 
