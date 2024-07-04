@@ -1,12 +1,3 @@
-export const dropTables = async (db) => {
-  await db.execAsync('DROP TABLE IF EXISTS PLANTA;');
-  await db.execAsync('DROP TABLE IF EXISTS FOTO;');
-  await db.execAsync('DROP TABLE IF EXISTS LUGAR;');
-  await db.execAsync('DROP TABLE IF EXISTS PERIODO;');
-  await db.execAsync('DROP TABLE IF EXISTS INDIVIDUO;');
-  await db.execAsync('DROP TABLE IF EXISTS VISTA;');
-}
-
 export async function createTables(db) {
   await db.execAsync(
     `CREATE TABLE IF NOT EXISTS PLANTA (

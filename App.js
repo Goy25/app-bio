@@ -7,7 +7,7 @@ import { handleMigrateDB } from "./General/Utils/handler";
 
 export default function App() {
   return (
-    <SQLiteProvider databaseName="test.db" onInit={handleMigrateDB}>
+    <SQLiteProvider databaseName="db.db" onInit={handleMigrateDB}>
       <DataProvider>
         <ReloadProvider>
           <FilterProvider>
