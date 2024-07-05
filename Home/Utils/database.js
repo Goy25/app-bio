@@ -2,22 +2,30 @@ import defaultImage from "../../assets/default.png";
 import { filterString } from "../../General/Utils/string";
 
 export async function getPlaces(db, setPlaces) {
-  const places = await db.getAllAsync("SELECT * FROM LUGAR ORDER BY nombre");
-  setPlaces([
-    ...places.map((place) => ({
-      label: place.nombre,
-      value: place.id,
-      filter: filterString(place.nombre),
-    })),
-    { label: "Nuevo Lugar", value: 0, filter: "nuevo lugar" },
-  ]);
+  try {
+    const places = await db.getAllAsync("SELECT * FROM LUGAR ORDER BY nombre");
+    setPlaces([
+      ...places.map((place) => ({
+        label: place.nombre,
+        value: place.id,
+        filter: filterString(place.nombre),
+      })),
+      { label: "Nuevo Lugar", value: 0, filter: "nuevo lugar" },
+    ]);
+  } catch (error) {
+    setPlaces([{ label: "Nuevo Lugar", value: 0, filter: "nuevo lugar" }]);
+  }
 }
 
 export async function getPlants(db, setPlants) {
-  const plants = await db.getAllAsync("SELECT * FROM PLANTA ORDER BY nombre");
-  setPlants(
-    plants.map((plant) => ({ ...plant, filter: filterString(plant.nombre) }))
-  );
+  try {
+    const plants = await db.getAllAsync("SELECT * FROM PLANTA ORDER BY nombre");
+    setPlants(
+      plants.map((plant) => ({ ...plant, filter: filterString(plant.nombre) }))
+    );
+  } catch (error) {
+    setPlants([]);
+  }
 }
 
 export async function getPhotos(db, idPlant, setPhotos) {

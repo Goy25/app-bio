@@ -14,10 +14,12 @@ export const handlePreviousImage = (length, setIndex) => {
   });
 };
 
-export const handleUpdatePhoto = (db, setPhoto, uri) => {
-  setPhoto((prev) => {
-    update(db, "FOTO", "uri", uri, prev.id);
-    return { ...prev, uri };
+export const handleUpdatePhoto = (db, index, setPhotos, uri) => {
+  setPhotos((prev) => {
+    let photos = [...prev];
+    photos[index] = { ...prev[index], uri };
+    update(db, "FOTO", "uri", uri, prev[index].id);
+    return photos;
   });
 };
 
@@ -44,11 +46,9 @@ export const handleSelectImage = async (imageHandler) => {
     if (picker.canceled) {
       return;
     }
-    // console.log(picker.assets[0].base64);
     imageHandler(`data:imagejpeg;base64,${picker.assets[0].base64}`);
   } catch (error) {
     alert("Error al seleccionar la imagen");
-    console.log(error);
   }
 };
 

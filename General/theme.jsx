@@ -40,6 +40,8 @@ const theme = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     color: "#151E21",
+    fontSize: 14,
+    fontWeight: "normal",
     height: 40,
     paddingHorizontal: 5,
     textAlign: "center",

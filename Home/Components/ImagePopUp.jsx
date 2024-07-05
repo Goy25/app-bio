@@ -29,7 +29,7 @@ export default function ImagePopUp({
   const handlePressImage = () => {
     handleSelectImage((uri) =>
       index !== photos.length - 1
-        ? handleUpdatePhoto(db, setUrl, uri)
+        ? handleUpdatePhoto(db, index, setPhotos, uri)
         : handleAddPhoto(db, uri, plant.id, setPhotos, setIndex)
     );
   };

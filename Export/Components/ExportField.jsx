@@ -59,7 +59,6 @@ export default function ExportField({ setVisible, setText }) {
         items={[{ label: "por Periodo", value: "time", filter: "por periodo" }]}
         handleChange={handleChangeTable}
         placeholder={{ label: "Todo", value: "all" }}
-        style={{ color: "#151E21" }}
         value={table}
       />
       {table != "all" && (
@@ -68,7 +67,6 @@ export default function ExportField({ setVisible, setText }) {
           items={items}
           handleChange={handleChangeItem}
           placeholder={{ label: "Seleccionar", value: null }}
-          style={{ color: "#151E21" }}
           value={id}
         />
       )}

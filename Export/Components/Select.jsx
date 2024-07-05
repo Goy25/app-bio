@@ -11,7 +11,7 @@ function Select({ label, items, handleChange, placeholder, value }) {
         items={items}
         placeholder={placeholder.label}
         placeholderValue={placeholder.value}
-        style={theme.select}
+        style={{...theme.select}}
         value={value}
         width={150}
       />

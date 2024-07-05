@@ -1,5 +1,4 @@
-import { useContext, useEffect } from "react";
-import { useSQLiteContext } from "expo-sqlite";
+import { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ExportScreen from "../Export/ExportScreen";
@@ -12,7 +11,6 @@ const Stack = createStackNavigator();
 
 export default function Navigation() {
   const { setReloadPlants, setReloadPlaces } = useContext(ReloadContext);
-  const db = useSQLiteContext();
 
   const handleFocusHome = () => {
     setReloadPlants((reloadPlants) => !reloadPlants);

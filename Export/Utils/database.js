@@ -148,6 +148,5 @@ export const importData = async (db, data, setVisibility, setArc) => {
   } catch (error) {
     alert("Error al importar los datos");
     setVisibility(false);
-    console.log(error);
   }
 };
