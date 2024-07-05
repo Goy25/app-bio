@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
 import ButtonID from "./ButtonID";
 import EditButton from "./EditButton";
 import Row from "./Row";
@@ -8,6 +9,7 @@ import theme from "../../General/theme";
 import { handleUpdateName } from "../Utils/handler";
 
 export default function PlantInfo() {
+  const db = useSQLiteContext();
   const { plant } = useContext(DataContext);
   const [collect, setCollect] = useState(plant.colecta);
   const [editable, setEditable] = useState(false);
@@ -23,7 +25,7 @@ export default function PlantInfo() {
         <EditButton editable={editable} setEditable={setEditable} />
         <TextInput
           editable={editable}
-          onChangeText={(text) => handleUpdateName(text, setName, plant)}
+          onChangeText={(text) => handleUpdateName(db, text, setName, plant)}
           multiline={true}
           style={[theme.title, styles.title]}
           value={name}

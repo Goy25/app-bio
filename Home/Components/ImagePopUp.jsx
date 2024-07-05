@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Modal, Pressable, StyleSheet, TextInput } from "react-native";
 import { useSQLiteContext } from "expo-sqlite";
+import ImageActions from "./ImageActions";
 import {
+  handleChangeImage,
   handleNextImage,
   handlePreviousImage,
   handleUpdatePhoto,
   handleAddPhoto,
+  handleDownloadPhoto,
   handleSelectImage,
 } from "../Utils/handler";
-import { Entypo } from "@expo/vector-icons";
-import theme from "../../General/theme";
 
 export default function ImagePopUp({
   plant,
@@ -19,11 +20,12 @@ export default function ImagePopUp({
   setVisible,
 }) {
   const db = useSQLiteContext();
+  const [name, setName] = useState(plant.nombre);
+  const [height, setHeight] = useState(300);
   const [index, setIndex] = useState(0);
-  const [url, setUrl] = useState(photos[0]);
 
   useEffect(() => {
-    setUrl(photos[index]);
+    handleChangeImage(setHeight, index, photos, plant.nombre, setName);
   }, [index, photos]);
 
   const handlePressImage = () => {
@@ -41,38 +43,21 @@ export default function ImagePopUp({
       onRequestClose={() => setVisible(false)}
     >
       <Pressable onPress={() => setVisible(false)} style={styles.content}>
+        <TextInput onChangeText={setName} value={name} style={styles.text} />
         <Pressable onPress={() => handlePressImage()} style={styles.imageField}>
-          <Text style={styles.text}>{plant.nombre}</Text>
-          <Image source={url} style={styles.image} />
+          <Image source={photos[index]} style={[styles.image, { height }]} />
         </Pressable>
-        <View style={[theme.row, { justifyContent: "center" }]}>
-          <Entypo
-            name="arrow-with-circle-left"
-            size={40}
-            color="white"
-            onPress={() => handlePreviousImage(photos.length, setIndex)}
-            style={[styles.button, { borderBottomLeftRadius: 16 }]}
-          />
-          <Entypo
-            name="arrow-with-circle-right"
-            size={40}
-            color="white"
-            onPress={() => handleNextImage(photos.length, setIndex)}
-            style={[styles.button, { borderBottomRightRadius: 16 }]}
-          />
-        </View>
+        <ImageActions
+          handleNext={() => handleNextImage(photos.length, setIndex)}
+          handleDownload={() => handleDownloadPhoto(photos[index].uri, name)}
+          handlePrevious={() => handlePreviousImage(photos.length, setIndex)}
+        />
       </Pressable>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: "#009658",
-    textAlign: "center",
-    padding: 5,
-    width: 150,
-  },
   content: {
     alignItems: "center",
     height: "100%",
@@ -80,7 +65,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   image: {
-    height: 300,
     resizeMode: "stretch",
     width: 300,
   },
@@ -89,7 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   text: {
-    backgroundColor: "#009658",
+    backgroundColor: "#003721",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     color: "white",
@@ -97,5 +81,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     padding: 5,
     textAlign: "center",
+    width: 300,
   },
 });

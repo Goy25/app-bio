@@ -44,7 +44,8 @@ export const handleMigrateDB = async (db) => {
       );
       await db.execAsync(
         `INSERT INTO FOTO (idPlanta, uri)
-          SELECT id, 'data:imagejpeg;base64,' || url FROM PLANTA_TEMP;`
+          SELECT id, 'data:imagejpeg;base64,' || url FROM PLANTA_TEMP
+          WHERE COALESCE(url, '') != '' ;`
       );
       await db.execAsync("DROP TABLE PLANTA_TEMP;");
     }

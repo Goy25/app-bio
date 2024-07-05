@@ -1,4 +1,6 @@
+import { Dimensions, Image, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 import HideHeader from "../Components/HideHeader";
 import { update } from "../../General/Utils/database";
 import { filterString } from "../../General/Utils/string";
@@ -23,7 +25,13 @@ export const handleUpdatePhoto = (db, index, setPhotos, uri) => {
   });
 };
 
-export const handleAddPhoto = async (db, uri, idPlanta, setPhotos, setIndex) => {
+export const handleAddPhoto = async (
+  db,
+  uri,
+  idPlanta,
+  setPhotos,
+  setIndex
+) => {
   const res = await db.runAsync(
     "INSERT INTO FOTO (uri, idPlanta) VALUES (?, ?)",
     [uri, idPlanta]
@@ -31,6 +39,41 @@ export const handleAddPhoto = async (db, uri, idPlanta, setPhotos, setIndex) => 
   setPhotos((prev) => [{ id: res.lastInsertRowId, uri, idPlanta }, ...prev]);
   setIndex(0);
 };
+
+export const handleDownloadPhoto = async (uri, name) => {
+  try {
+    if (Platform.OS === "android") {
+      const permision =
+        await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (!permision.granted) return;
+      const path = await FileSystem.StorageAccessFramework.createFileAsync(
+        permision.directoryUri,
+        name,
+        "image/jpeg"
+      );
+      const base64Data = uri.replace("data:imagejpeg;base64,", "");
+      await FileSystem.writeAsStringAsync(path, base64Data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+    }
+  } catch (error) {
+    alert("Error al descargar la imagen");
+  }
+};
+
+export const handleChangeImage = (setHeight, index, photos, name, setName) => {
+  if (index + 1 === photos.length) {
+    setHeight(300);
+    setName(name);
+    return;
+  }
+  setName(`${name}_${index + 1}`);
+  const maxHeight = Dimensions.get('window').height - 150;
+  Image.getSize(photos[index].uri, (width, height) => {
+    const proportionalHeight = (300 / width) * height;
+    setHeight(proportionalHeight <= maxHeight ? proportionalHeight : maxHeight);
+  });
+}
 
 export const handleSelectImage = async (imageHandler) => {
   const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
