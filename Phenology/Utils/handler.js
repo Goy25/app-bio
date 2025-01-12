@@ -62,7 +62,7 @@ export const handleUpdateIndividualAtribute = (
   if ([" ", ".", ",", "-"].some((e) => value.includes(e))) {
     return;
   }
-  if (value === "") {
+  if (value === "" || value === null) {
     update(db, "INDIVIDUO", atribute, 0, iId);
     setTotal(total - percentage);
     setPercentage("");

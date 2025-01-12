@@ -8,7 +8,7 @@ import { TotalContext } from "../Utils/TotalContext";
 export default function Percent({ iId, iPercentage, atribute, tipo }) {
   const db = useSQLiteContext();
   const { total, setTotal } = useContext(TotalContext);
-  const [percentage, setPercentage] = useState(iPercentage.toString());
+  const [percentage, setPercentage] = useState(iPercentage !== null ? iPercentage.toString() : "0");
 
   const handleUpdate = (text) =>
     handleUpdateIndividualAtribute(
