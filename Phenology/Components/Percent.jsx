@@ -9,9 +9,11 @@ export default function Percent({ iId, iPercentage, atribute, tipo }) {
   const db = useSQLiteContext();
   const { total, setTotal } = useContext(TotalContext);
   const [percentage, setPercentage] = useState(iPercentage !== null ? iPercentage.toString() : "0");
+  const [borderColor, setBorderColor] = useState("#000000");
 
-  const handleUpdate = (text) =>
-    handleUpdateIndividualAtribute(
+  const handleUpdate = async (text) => {
+    setBorderColor("#000000");
+    const res = await handleUpdateIndividualAtribute(
       db,
       text,
       atribute,
@@ -21,12 +23,21 @@ export default function Percent({ iId, iPercentage, atribute, tipo }) {
       percentage,
       setPercentage
     );
+    if (res == null) return;
+
+    if (res.success) {
+      setBorderColor("#00FF00");
+    } else {
+      setBorderColor("#FF0000");
+      alert(`${res.error} tipo`);
+    }
+  }
 
   return (
     <View style={styles.percentContent}>
       <Button
         onLongPress={() =>
-          handleUpdate((100 - total + parseInt(percentage)).toString())
+          handleUpdate((100 - total + parseInt(percentage == '' ? '0' : percentage)).toString())
         }
         text={tipo}
         style={{fontSize: 11}}
@@ -35,7 +46,7 @@ export default function Percent({ iId, iPercentage, atribute, tipo }) {
         <TextInput
           keyboardType="number-pad"
           onChangeText={handleUpdate}
-          style={styles.percentInput}
+          style={[styles.percentInput, { borderColor }]}
           value={percentage}
         />
       </View>

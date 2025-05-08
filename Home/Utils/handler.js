@@ -83,7 +83,7 @@ export const handleSelectImage = async (imageHandler) => {
   }
   try {
     const picker = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       base64: true,
     });
     if (picker.canceled) {

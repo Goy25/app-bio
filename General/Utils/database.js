@@ -59,5 +59,22 @@ export async function createTables(db) {
 }
 
 export const update = async (db, table, atribute, content, id) => {
-  await db.runAsync(`UPDATE ${table} SET ${atribute} = ? WHERE id = ?;`, [content, id]);
+  try {
+    const res = await db.runAsync(
+      `UPDATE ${table} SET ${atribute} = ? WHERE id = ?;`,
+      [content, id]
+    );
+    if (res.changes === 0) {
+      return {
+        success: false,
+        message: "No se encontró el registro para actualizar",
+      };
+    }
+    return { success: true, changes: res.changes };
+  } catch (error) {
+    return {
+      success: false,
+      message: `Error inesperado en la actualización`,
+    };
+  }
 };

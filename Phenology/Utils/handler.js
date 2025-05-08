@@ -49,7 +49,7 @@ export const handleUpdatePlantAtribute = (
   update(db, "PLANTA", atribute, text, plant.id);
 };
 
-export const handleUpdateIndividualAtribute = (
+export const handleUpdateIndividualAtribute = async (
   db,
   value,
   atribute,
@@ -60,22 +60,27 @@ export const handleUpdateIndividualAtribute = (
   setPercentage
 ) => {
   if ([" ", ".", ",", "-"].some((e) => value.includes(e))) {
-    return;
+    return null;
   }
-  if (value === "" || value === null) {
-    update(db, "INDIVIDUO", atribute, 0, iId);
-    setTotal(total - percentage);
-    setPercentage("");
-    return;
+  if (value === "" || value === null || value === undefined) {
+    const res = await update(db, "INDIVIDUO", atribute, 0, iId);
+    if (res.success) {
+      setTotal(total - percentage);
+      setPercentage("");
+    }
+    return res;
   }
   let number = parseInt(value);
   const np = percentage === "" ? 0 : parseInt(percentage);
   if (number > 100 - total + np) {
     number = 100 - total + np;
   }
-  setTotal(total - percentage + number);
-  setPercentage(number.toString());
-  update(db, "INDIVIDUO", atribute, number, iId);
+  const res = await update(db, "INDIVIDUO", atribute, number, iId);
+  if (res.success) {
+    setTotal(total - percentage + number);
+    setPercentage(number.toString());
+  }
+  return res;
 };
 
 export const handleUpdateIndividualObservations = (
