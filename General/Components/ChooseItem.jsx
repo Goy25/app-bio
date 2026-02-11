@@ -33,7 +33,7 @@ export default function ChooseItem({
     >
       <Pressable onPress={() => setShow(false)} style={styles.container}>
         <View style={styles.searchContainer}>
-          <AntDesign name="search1" size={35} color="#00153A" />
+          <AntDesign name="search" size={35} color="#00153A" />
           <TextInput
             onChangeText={(text) =>
               handleSelectFilter(text, items, setElements, setFilter)

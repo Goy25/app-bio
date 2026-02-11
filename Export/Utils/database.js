@@ -14,16 +14,23 @@ export const getPeriods = async (db, setPeriods) => {
   );
 };
 
-export const exportAll = async (db) => {
-  return await db.getAllAsync(`
-SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,COALESCE(F.urls, '') AS urls,I.dia,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones,X.anio,X.mes,L.nombre as lugar
-FROM PLANTA P
+export const exportAll = async (db, exportPhotos = true) => {
+  let joinPhotos = '';
+  let colUrls = "'' AS urls";
+  if (exportPhotos) {
+    colUrls = "COALESCE(F.urls, '') AS urls";
+    joinPhotos = `
 LEFT JOIN (
   SELECT idPlanta, GROUP_CONCAT(uri, '|-*-|') as urls
   FROM FOTO
   GROUP BY idPlanta 
 ) F
-ON P.id = F.idPlanta
+ON P.id = F.idPlanta`;
+  }
+
+  return await db.getAllAsync(`
+SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,${colUrls},I.dia,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones,X.anio,X.mes,L.nombre as lugar
+FROM PLANTA P${joinPhotos}
 JOIN INDIVIDUO I
 ON P.id = I.idPlanta
 JOIN VISTA V
@@ -36,17 +43,24 @@ ORDER BY X.anio DESC, X.mes DESC, I.dia DESC, L.nombre, P.nombre;
 `);
 };
 
-export const exportPeriod = async (db, id) => {
-  return await db.getAllAsync(
-    `
-SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,COALESCE(F.urls, '') AS urls,I.dia,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones,L.nombre as lugar
-FROM PLANTA P
+export const exportPeriod = async (db, id, exportPhotos = true) => {
+  let joinPhotos = '';
+  let colUrls = "'' AS urls";
+  if (exportPhotos) {
+    colUrls = "COALESCE(F.urls, '') AS urls";
+    joinPhotos = `
 LEFT JOIN (
   SELECT idPlanta, GROUP_CONCAT(uri, '|-*-|') as urls
   FROM FOTO
   GROUP BY idPlanta 
 ) F
-ON P.id = F.idPlanta
+ON P.id = F.idPlanta`;
+  }
+
+  return await db.getAllAsync(
+    `
+SELECT P.nombre,P.familia,P.idB,P.colecta,P.obs,${colUrls},I.dia,I.esteril,I.brotes,I.flores,I.frutosInmaduros,I.frutosMaduros,I.observaciones,L.nombre as lugar
+FROM PLANTA P${joinPhotos}
 JOIN INDIVIDUO I
 ON P.id = I.idPlanta
 JOIN VISTA V
