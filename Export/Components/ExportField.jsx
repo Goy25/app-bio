@@ -118,6 +118,6 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 		gap: 20,
 		padding: 20,
-		width: "85%",
+		width: "100%",
 	},
 });
